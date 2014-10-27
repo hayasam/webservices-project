@@ -1,4 +1,4 @@
 webservices-project
 ===================
 
-Software Development of Web Services, Fall DTU'14
+Software Development of Web Services, DTU Fall'14
