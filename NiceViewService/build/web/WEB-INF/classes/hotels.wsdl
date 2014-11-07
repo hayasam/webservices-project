@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="hotels" targetNamespace="dtu.ws"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="dtu.ws" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types>
+        <xsd:schema targetNamespace="dtu.ws" xmlns:tns="dtu.ws">
+            <xsd:complexType name="hotel">
+                <xsd:sequence>
+                    <xsd:element name="bookingNumber" type="xsd:int"></xsd:element>
+                    <xsd:element name="name" type="xsd:string"></xsd:element>
+                    <xsd:element name="price" type="xsd:int"></xsd:element>
+                    <xsd:element name="guaranteed" type="xsd:boolean"></xsd:element>
+                    <xsd:element name="serviceName" type="xsd:string"></xsd:element>
+                    <xsd:element name="status" type="xsd:string"></xsd:element>
+                    <xsd:element name="address" type="tns:address"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="address">
+                <xsd:sequence>
+                    <xsd:element name="streetName" type="xsd:string"></xsd:element>
+                        <xsd:element name="city" type="xsd:string"></xsd:element>
+                        <xsd:element name="streetNumber" type="xsd:string"></xsd:element>
+                        <xsd:element name="zipCode" type="xsd:string"></xsd:element>
+                        <xsd:element name="country" type="xsd:string"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="hotelsArray">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="hotel" type="tns:hotel" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="getHotelsInput">
+                <xsd:sequence>
+                    <xsd:element name="city" type="xsd:string"></xsd:element>
+                    <xsd:element name="arrival" type="xsd:date"></xsd:element>
+                    <xsd:element name="departure" type="xsd:date"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="bookHotelInput">
+                <xsd:sequence>
+                    <xsd:element name="bookingNumber" type="xsd:int"></xsd:element>
+                    <xsd:element name="creditCard" type="tns:creditCardInformation"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="creditCardInformation">
+                <xsd:sequence>
+                    <xsd:element name="holderName" type="xsd:string"></xsd:element>
+                    <xsd:element name="cardNumber" type="xsd:int"></xsd:element>
+                    <xsd:element name="expirationDate" type="xsd:date"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+    <message name="getHotelsOperationRequest">
+        <part name="getHotelsInput" type="tns:getHotelsInput"/>
+    </message>
+    <message name="getHotelsOperationResponse">
+        <part name="getHotelsList" element="tns:hotelsArray"/>
+    </message>
+    <message name="bookHotelsOperationRequest">
+        <part name="bookHotelInput" type="tns:bookHotelInput"/>
+    </message>
+    <message name="bookHotelsOperationResponse">
+        <part name="bookHotelOutput" type="xsd:boolean"/>
+    </message>
+    <portType name="getHotelsPortType">
+        <operation name="getHotels">
+            <input name="input1" message="tns:getHotelsOperationRequest"/>
+            <output name="output1" message="tns:getHotelsOperationResponse"/>
+        </operation>
+        <operation name="bookHotel">
+            <input name="input2" message="tns:bookHotelsOperationRequest"/>
+            <output name="output2" message="tns:bookHotelsOperationResponse"/>
+        </operation>
+    </portType>
+    <binding name="getHotelsPortTypeBinding" type="tns:getHotelsPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getHotels">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="hotelsService">
+        <port name="getHotelsPortTypeBindingPort" binding="tns:getHotelsPortTypeBinding">
+            <soap:address location="http://localhost:${HttpDefaultPort}/service"/>
+        </port>
+        <port name="getHotelsPortTypeBinding1Port" binding="tns:bookHotel">
+            <soap:address location="http://localhost:${HttpDefaultPort}/service"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="hotels">
+        <!-- A partner link type is automatically generated when a new port type is added. Partner link types are used by BPEL processes. 
+In a BPEL process, a partner link represents the interaction between the BPEL process and a partner service. Each partner link is associated with a partner link type.
+A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
+        <plnk:role name="hotelsPortTypeRole" portType="tns:hotelsPortType"/>
+    </plnk:partnerLinkType>
+</definitions>
