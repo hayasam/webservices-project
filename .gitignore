@@ -1,7 +1,5 @@
 *.class
 /LameDuck/build/
-/LameDuck/nbproject/
 /NiceViewService/build/
-/NiceViewService/nbproject/
-/LameDuckClient/build/
-/LameDuckClient/nbproject/
+/LameDuckTest/build/
+/LameDuckTest/dist/
