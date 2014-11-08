@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "flightService", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuck/java/flight", wsdlLocation = "file:/C:/Users/Audrius/Documents/NetBeansProjects/LameDuck/src/conf/xml-resources/web-services/FlightService/wsdl/flight.wsdl")
+@WebServiceClient(name = "flightService", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuck/java/flight", wsdlLocation = "file:/D:/Master/Digital%20Media%20Engineering/Courses/Sem%20III/Software%20Development%20of%20Web%20Services/webservices-project/LameDuck/src/conf/xml-resources/web-services/FlightService/wsdl/flight.wsdl")
 public class FlightService
     extends Service
 {
@@ -30,7 +30,7 @@ public class FlightService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/C:/Users/Audrius/Documents/NetBeansProjects/LameDuck/src/conf/xml-resources/web-services/FlightService/wsdl/flight.wsdl");
+            url = new URL("file:/D:/Master/Digital%20Media%20Engineering/Courses/Sem%20III/Software%20Development%20of%20Web%20Services/webservices-project/LameDuck/src/conf/xml-resources/web-services/FlightService/wsdl/flight.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
