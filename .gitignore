@@ -1,4 +1,7 @@
-*.properties
 *.class
-/LameDuckClient/nbproject/private/
 /LameDuck/build/
+/LameDuck/nbproject/
+/NiceViewService/build/
+/NiceViewService/nbproject/
+/LameDuckClient/build/
+/LameDuckClient/nbproject/
