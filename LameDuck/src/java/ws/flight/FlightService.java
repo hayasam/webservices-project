@@ -4,47 +4,93 @@
  */
 package ws.flight;
 
-
+import java.util.List;
 import javax.jws.WebService;
-import javax.xml.datatype.XMLGregorianCalendar;
-import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
-import org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightFault;
-import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray;
-import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
+import org.netbeans.j2ee.wsdl.lameduck.java.flight.*;
+import ws.bank.AccountType;
+import ws.bank.CreditCardFaultMessage;
+import ws.flight.builder.AccountBuilder;
+import ws.flight.builder.BankCCInfoBuilder;
+import ws.flight.builder.Builders;
+import ws.flight.builder.ExpirationDateBuilder;
+import ws.flight.builder.FlightInfoArrayBuilder;
+import ws.flight.query.Flights;
 
 /**
  *
- * @author Audrius
+ * @author VAIO
  */
 @WebService(serviceName = "flightService", portName = "flightPortTypeBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuck/java/flight", wsdlLocation = "WEB-INF/wsdl/FlightService/flight.wsdl")
 public class FlightService {
-    
+
     public org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray getFlightsOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.GetFlightInputType getFlightsInput) {
-        XMLGregorianCalendar date = getFlightsInput.getDate();
-        String startAirport = getFlightsInput.getStartAirport();
-        String destinationAirport = getFlightsInput.getEndAirport();
-       
-        //createFlightInfos();
+        List<FlightInfoType> flightInfos = Flights.newQuery()
+                                                .from(getFlightsInput.getStartAirport())
+                                                .to(getFlightsInput.getEndAirport())
+                                                .when(getFlightsInput.getDate())
+                                                .find();
         
-        FlightInfoArray array = new FlightInfoArray();
-                
-        for(FlightInfoType flightInfo : FlightUtils.flightInfos)
-            if(flightInfo.getFlight().getDateDeparture().equals(date) &&
-                    flightInfo.getFlight().getStartAirport().equals(startAirport) &&
-                    flightInfo.getFlight().getDestinationAirport().equals(destinationAirport))
-                array.getFlightInfo().add(flightInfo);
-                
-        return array;
+        return Builders.newBuilder(FlightInfoArrayBuilder.class)
+                            .withFlightInfos(flightInfos)
+                            .create();
     }
 
     public boolean bookFlightOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightInputType bookFlightInput) throws BookFlightFault {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet.");
+        ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
+                                                    .withName(bookFlightInput.getCreditCardInfo().getHolderName())
+                                                    .withNumber(bookFlightInput.getCreditCardInfo().getCardNumber())
+                                                    .withExpirationDate(Builders.newBuilder(ExpirationDateBuilder.class)
+                                                                                    .withMonth(bookFlightInput.getCreditCardInfo().getExpirationDate().getMonth())
+                                                                                    .withYear(bookFlightInput.getCreditCardInfo().getExpirationDate().getYear())
+                                                                                    .create())
+                                                    .create();
+        
+        AccountType account = Builders.newBuilder(AccountBuilder.class)
+                                            .withName("LameDuck")
+                                            .withNumber("50208812")
+                                            .create();
+        
+        FlightInfoType flightInfo = Flights.getFlightInfo(bookFlightInput.getBookingNr());
+        
+        try {
+            boolean chargedCreditCard = BankService.chargeCreditCard(ccInfo, flightInfo.getPrice(), account);
+            
+            if(chargedCreditCard) {
+                flightInfo.setStatus(Flights.Status.CONFIRMED.toString());
+            }
+            return chargedCreditCard;
+        } catch (CreditCardFaultMessage ex) {
+            throw new BookFlightFault("Flight cancellation failed!", ex.getFaultInfo().getMessage());
+        }   
     }
 
     public boolean cancelFlightOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
-        //TODO implement this method
-        throw new UnsupportedOperationException("Not implemented yet.");
+        ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
+                                                    .withName(cancelFlightInput.getCreditCardInfo().getHolderName())
+                                                    .withNumber(cancelFlightInput.getCreditCardInfo().getCardNumber())
+                                                    .withExpirationDate(Builders.newBuilder(ExpirationDateBuilder.class)
+                                                                                    .withMonth(cancelFlightInput.getCreditCardInfo().getExpirationDate().getMonth())
+                                                                                    .withYear(cancelFlightInput.getCreditCardInfo().getExpirationDate().getYear())
+                                                                                    .create())
+                                                    .create();
+        
+        AccountType account = Builders.newBuilder(AccountBuilder.class)
+                                            .withName("LameDuck")
+                                            .withNumber("50208812")
+                                            .create();
+        
+        FlightInfoType flightInfo = Flights.getFlightInfo(cancelFlightInput.getBookingNr());
+        
+        try {
+            boolean refundedCreditCard = BankService.refundCreditCard(ccInfo, (int) cancelFlightInput.getPrice() / 2, account);
+            
+            if(refundedCreditCard) {
+                flightInfo.setStatus(Flights.Status.CANCELLED.toString());
+            }
+            return refundedCreditCard;
+        } catch (CreditCardFaultMessage ex) {
+            throw new CancelFlightFault("Flight cancellation failed!", ex.getFaultInfo().getMessage());
+        }   
     }
     
 }

@@ -7,10 +7,8 @@ package ws.flight.test;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -23,13 +21,6 @@ import ws.flight.*;
  * @author Monica
  */
 public class TestUtils {
-    public static List<FlightInfoType> flightInfos = new ArrayList<FlightInfoType>();
-    
-    public static enum Status{
-       CONFIRMED ,
-       UNCONFIRMED,
-       CANCELLED
-    }
     
     public static XMLGregorianCalendar createDate (String strDate) {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm"); 
@@ -50,21 +41,30 @@ public class TestUtils {
         return xmlDate;
     }
     
-    public static void createFlightInfosTest1 () {        
-        FlightInfoType info2 = new FlightInfoType();
-        info2.setBookingNr(222);
-        info2.setNameOfReservService("LameDuck");
-        info2.setPrice(100);
-        info2.setStatus(Status.UNCONFIRMED.toString());
+    public static CreditCardInfoType validCCInfo() {
+        ExpirationDateType expDate = new ExpirationDateType();
+        expDate.setMonth(5);
+        expDate.setYear(9);
         
-        FlightType flight2 = new FlightType();
-        flight2.setCarrier("SAS");
-        flight2.setDateDeparture(createDate("18-12-2014 18:00"));
-        flight2.setDateArrival(createDate("04-01-2015 09:00"));
-        flight2.setStartAirport("Copenhagen Lufthavn");
-        flight2.setDestinationAirport("Bucharest Otopeni");
+        CreditCardInfoType ccInfo = new CreditCardInfoType();
+        ccInfo.setCardNumber("50408816");
+        ccInfo.setHolderName("Anne Strandberg");
+        ccInfo.setExpirationDate(expDate);
         
-        info2.setFlight(flight2);
-        flightInfos.add(info2);
+        return ccInfo;
+    }
+    
+    // Invalid for purchases more 1000
+    public static CreditCardInfoType invalidCCInfo() {
+        ExpirationDateType expDate = new ExpirationDateType();
+        expDate.setMonth(7);
+        expDate.setYear(9);
+        
+        CreditCardInfoType ccInfo = new CreditCardInfoType();
+        ccInfo.setCardNumber("50408822");
+        ccInfo.setHolderName("Bech Camilla");
+        ccInfo.setExpirationDate(expDate);
+        
+        return ccInfo;
     }
 }
