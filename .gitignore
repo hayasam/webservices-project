@@ -1,1 +1,4 @@
 *.properties
+*.class
+/LameDuckClient/nbproject/private/
+/LameDuck/build/
