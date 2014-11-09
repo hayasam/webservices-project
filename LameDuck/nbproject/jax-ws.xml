@@ -3,7 +3,7 @@
   <services>
     <service name="FlightService">
       <implementation-class>ws.flight.FlightService</implementation-class>
-      <wsdl-url>file:/C:/Users/Audrius/Documents/NetBeansProjects/LameDuck/src/java/flight.wsdl</wsdl-url>
+      <wsdl-url>file:/C:/Users/VAIO/Desktop/DTU/Web%20Services/Project/webservices-project/LameDuck/src/java/ws/flight/flight.wsdl</wsdl-url>
       <local-wsdl-file>flight.wsdl</local-wsdl-file>
       <service-name>flightService</service-name>
       <port-name>flightPortTypeBindingPort</port-name>
@@ -30,6 +30,39 @@
       </wsimport-options>
     </service>
   </services>
-  <clients/>
+  <clients>
+    <client name="BankService">
+      <wsdl-url>http://fastmoney.imm.dtu.dk:8080/BankService?wsdl</wsdl-url>
+      <local-wsdl-file>fastmoney.imm.dtu.dk_8080/BankService.wsdl</local-wsdl-file>
+      <package-name forceReplace="true">ws.bank</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+      <wsimport-options>
+        <wsimport-option>
+          <wsimport-option-name>extension</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>verbose</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>wsdlLocation</wsimport-option-name>
+          <wsimport-option-value>http://fastmoney.imm.dtu.dk:8080/BankService?wsdl</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>xnocompile</wsimport-option-name>
+          <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>package</wsimport-option-name>
+          <wsimport-option-value>ws.bank</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>target</wsimport-option-name>
+          <wsimport-option-value>2.1</wsimport-option-value>
+        </wsimport-option>
+      </wsimport-options>
+    </client>
+  </clients>
   <jsr109>true</jsr109>
 </jax-ws>
