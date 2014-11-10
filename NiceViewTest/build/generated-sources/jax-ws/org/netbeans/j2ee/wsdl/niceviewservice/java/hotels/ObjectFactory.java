@@ -48,6 +48,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CancelHotelInputType }
+     * 
+     */
+    public CancelHotelInputType createCancelHotelInputType() {
+        return new CancelHotelInputType();
+    }
+
+    /**
      * Create an instance of {@link BookHotelInputType }
      * 
      */
@@ -69,6 +77,14 @@ public class ObjectFactory {
      */
     public HotelInfoType createHotelInfoType() {
         return new HotelInfoType();
+    }
+
+    /**
+     * Create an instance of {@link ExpirationDateType }
+     * 
+     */
+    public ExpirationDateType createExpirationDateType() {
+        return new ExpirationDateType();
     }
 
     /**
@@ -133,12 +149,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Integer }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link CancelHotelInputType }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels", name = "cancelHotelInput")
-    public JAXBElement<Integer> createCancelHotelInput(Integer value) {
-        return new JAXBElement<Integer>(_CancelHotelInput_QNAME, Integer.class, null, value);
+    public JAXBElement<CancelHotelInputType> createCancelHotelInput(CancelHotelInputType value) {
+        return new JAXBElement<CancelHotelInputType>(_CancelHotelInput_QNAME, CancelHotelInputType.class, null, value);
     }
 
     /**

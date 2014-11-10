@@ -4,17 +4,9 @@
  */
 package ws.hotel.test;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.*;
-import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CreditCardInfoType;
-import ws.hotel.*;
-import ws.bank.*;
 
 
 /**
@@ -25,32 +17,85 @@ public class HotelServiceTest {
     
     public HotelServiceTest() {
     }
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
+    
     @Test
-    public void testBookHotelValid() throws BookOperationFault, DatatypeConfigurationException 
+    public void getHotelsTest()
     {
-        BookHotelInputType input = new BookHotelInputType();
-        CreditCardInfoType cc = new CreditCardInfoType();
-        GregorianCalendar c = new GregorianCalendar();
-        Date date = new Date();
-        date.setMonth(6);
-        date.setYear(2008);
-        //dd/MM/yyyy
-        c.setTime(date);
-        XMLGregorianCalendar dateXML = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        GetHotelsInputType getHotelsInput = new GetHotelsInputType();
+         
+        getHotelsInput.setCity("Paris");
+        getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
+        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
         
-        cc.setCardNumber("50408817");
-        cc.setHolderName("Klinkby Poul");
-        cc.setDateExpiration(dateXML);
         
-        input.setBookingNr(888);
-        input.setCreditCardInfo(cc);
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
+    
+        assertEquals(1, actualHotelInfos.getHotelInfo().size());
+        assertEquals(888, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+    }
+    
+    @Test
+    public void testBookHotelValid() throws BookOperationFault
+    {
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
         
-        boolean result = bookHotelsOperation(input);
+        bookHotelInput.setBookingNr(888);
+        bookHotelInput.setCreditCardInfo(TestUtils.validCCInfo());
+        
+        boolean result = bookHotelsOperation(bookHotelInput);
         
         assertTrue(result);
+    }
+    
+    @Test
+    public void testBookHotelNoGuarantee() throws BookOperationFault
+    {
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
+        
+        bookHotelInput.setBookingNr(999);
+        
+        boolean result = bookHotelsOperation(bookHotelInput);
+        
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testBookHotelInvalid() throws BookOperationFault
+    {
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
+        
+        bookHotelInput.setBookingNr(888);
+        bookHotelInput.setCreditCardInfo(TestUtils.invalidCCInfo());
+        
+        try {
+            bookHotelsOperation(bookHotelInput);
+            fail("bookHotelsOperation should have thrown an exception!");
+        } catch (BookOperationFault ex) {
+            assertTrue(true);
+        }
+    }
+    
+    @Test
+    public void testCancelHotel() throws CancelHotelFault
+    {
+        CancelHotelInputType input = new CancelHotelInputType();
+        input.setBookingNr(999);
+
+        boolean result = cancelHotelsOperation(input);
+    }
+    
+    @Test
+    public void testCancelHotelFail() throws CancelHotelFault
+    {
+        CancelHotelInputType input = new CancelHotelInputType();
+        input.setBookingNr(123);
+
+        try {
+            cancelHotelsOperation(input);
+            fail("cancelHotelsOperation should have thrown an exception!");
+        } catch (CancelHotelFault ex) {
+            assertTrue(true);
+        }
     }
 
     private static boolean bookHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookHotelInputType bookHotelInput) throws BookOperationFault {
@@ -58,6 +103,22 @@ public class HotelServiceTest {
         org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsPortType port = service.getHotelsPortTypeBindingPort();
         return port.bookHotelsOperation(bookHotelInput);
     }
+
+    private static HotelsInfoArray getHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType getHotelsInput) {
+        org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService service = new org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService();
+        org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsPortType port = service.getHotelsPortTypeBindingPort();
+        return port.getHotelsOperation(getHotelsInput);
+    }
+
+    private static boolean cancelHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelInputType cancelHotelInput) throws CancelHotelFault {
+        org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService service = new org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService();
+        org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsPortType port = service.getHotelsPortTypeBindingPort();
+        return port.cancelHotelsOperation(cancelHotelInput);
+    }
+
+
+
+
 
 
 }

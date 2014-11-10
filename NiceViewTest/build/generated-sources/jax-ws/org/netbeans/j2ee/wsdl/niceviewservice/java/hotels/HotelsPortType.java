@@ -61,7 +61,7 @@ public interface HotelsPortType {
     @WebResult(name = "cancelHotelOutput", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels", partName = "cancelHotelOutput")
     public boolean cancelHotelsOperation(
         @WebParam(name = "cancelHotelInput", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels", partName = "cancelHotelInput")
-        int cancelHotelInput)
+        CancelHotelInputType cancelHotelInput)
         throws CancelHotelFault
     ;
 

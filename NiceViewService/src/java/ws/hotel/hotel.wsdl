@@ -36,6 +36,7 @@
                     <xsd:element name="price" type="xsd:int"></xsd:element>
                     <xsd:element name="guarantee" type="xsd:boolean"></xsd:element>
                     <xsd:element name="status" type="xsd:string"></xsd:element>
+                    <xsd:element name="stayPrice" type="xsd:int"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="addressType">
@@ -63,13 +64,13 @@
             </xsd:element>
             <xsd:element name="bookHotelInput" type="tns:bookHotelInputType"></xsd:element>
             <xsd:element name="bookHotelOutput" type="xsd:boolean"></xsd:element>
-            <xsd:element name="cancelHotelInput" type="xsd:int"></xsd:element>
             <xsd:element name="cancelHotelOutput" type="xsd:boolean"></xsd:element>
             <xsd:complexType name="cancelHotelInputType">
                 <xsd:sequence>
                     <xsd:element name="bookingNr" type="xsd:int"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
+            <xsd:element name="cancelHotelInput" type="tns:cancelHotelInputType"></xsd:element>
         </xsd:schema>
     </types>
     <message name="hotelsOperationRequest">

@@ -4,9 +4,7 @@ package org.netbeans.j2ee.wsdl.niceviewservice.java.hotels;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -21,7 +19,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="holderName" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="cardNumber" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateExpiration" type="{http://www.w3.org/2001/XMLSchema}date"/>
+ *         &lt;element name="expirationDate" type="{http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels}expirationDateType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,7 +32,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 @XmlType(name = "creditCardInfoType", propOrder = {
     "holderName",
     "cardNumber",
-    "dateExpiration"
+    "expirationDate"
 })
 public class CreditCardInfoType {
 
@@ -43,8 +41,7 @@ public class CreditCardInfoType {
     @XmlElement(required = true)
     protected String cardNumber;
     @XmlElement(required = true)
-    @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar dateExpiration;
+    protected ExpirationDateType expirationDate;
 
     /**
      * Gets the value of the holderName property.
@@ -95,27 +92,27 @@ public class CreditCardInfoType {
     }
 
     /**
-     * Gets the value of the dateExpiration property.
+     * Gets the value of the expirationDate property.
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link ExpirationDateType }
      *     
      */
-    public XMLGregorianCalendar getDateExpiration() {
-        return dateExpiration;
+    public ExpirationDateType getExpirationDate() {
+        return expirationDate;
     }
 
     /**
-     * Sets the value of the dateExpiration property.
+     * Sets the value of the expirationDate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link ExpirationDateType }
      *     
      */
-    public void setDateExpiration(XMLGregorianCalendar value) {
-        this.dateExpiration = value;
+    public void setExpirationDate(ExpirationDateType value) {
+        this.expirationDate = value;
     }
 
 }

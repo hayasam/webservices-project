@@ -21,7 +21,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *       &lt;sequence>
  *         &lt;element name="city" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="arrival" type="{http://www.w3.org/2001/XMLSchema}date"/>
- *         &lt;element name="departure" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="departure" type="{http://www.w3.org/2001/XMLSchema}date"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -44,7 +44,8 @@ public class GetHotelsInputType {
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar arrival;
     @XmlElement(required = true)
-    protected String departure;
+    @XmlSchemaType(name = "date")
+    protected XMLGregorianCalendar departure;
 
     /**
      * Gets the value of the city property.
@@ -99,10 +100,10 @@ public class GetHotelsInputType {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public String getDeparture() {
+    public XMLGregorianCalendar getDeparture() {
         return departure;
     }
 
@@ -111,10 +112,10 @@ public class GetHotelsInputType {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link XMLGregorianCalendar }
      *     
      */
-    public void setDeparture(String value) {
+    public void setDeparture(XMLGregorianCalendar value) {
         this.departure = value;
     }
 

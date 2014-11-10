@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite errors="1" failures="0" hostname="Paulina-Lenovo" name="ws.hotel.test.HotelServiceTest" tests="1" time="1.092" timestamp="2014-11-10T09:41:41">
+<testsuite errors="0" failures="0" hostname="Paulina-Lenovo" name="ws.hotel.test.HotelServiceTest" tests="6" time="0.655" timestamp="2014-11-10T13:59:25">
   <properties>
     <property name="libs.jsp-compiler.javadoc" value="" />
     <property name="netbeans.autoupdate.country" value="US" />
@@ -16,7 +16,7 @@
     <property name="libs.hibernate-persistence.javadoc" value="" />
     <property name="java.vm.version" value="24.65-b04" />
     <property name="libs.jstl11.maven-pom" value="" />
-    <property name="libs.JAX-WS-ENDORSED.classpath" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar;D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\jaxb\jaxb-impl.jar" />
+    <property name="libs.JAX-WS-ENDORSED.classpath" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar" />
     <property name="libs.MySQLDriver.classpath" value="D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\mysql-connector-java-5.1.23-bin.jar" />
     <property name="libs.eclipselinkmodelgen.src" value="" />
     <property name="libs.jstl11.src" value="" />
@@ -58,7 +58,7 @@
     <property name="copylibs.rebase" value="true" />
     <property name="libs.spring-webmvc3.0.maven-pom" value="" />
     <property name="libs.swing-layout.maven-pom" value="" />
-    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner ws.hotel.test.HotelServiceTest filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\test\results\TEST-ws.hotel.test.HotelServiceTest.xml crashfile=D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\junitvmwatcher985790371085693277.properties propsfile=D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\junit7383550989529151286.properties" />
+    <property name="sun.java.command" value="org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner ws.hotel.test.HotelServiceTest filtertrace=true haltOnError=false haltOnFailure=false showoutput=true outputtoformatters=true logfailedtests=true logtestlistenerevents=true formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter,D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\test\results\TEST-ws.hotel.test.HotelServiceTest.xml crashfile=D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\junitvmwatcher6193760626422745512.properties propsfile=D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\junit2059749238210788885.properties" />
     <property name="build.classes.dir" value="build/classes" />
     <property name="build.sysclasspath" value="ignore" />
     <property name="ap.supported.internal" value="true" />
@@ -98,7 +98,7 @@
     <property name="javac.debug" value="true" />
     <property name="javadoc.splitindex" value="true" />
     <property name="file.separator" value="\" />
-    <property name="javac.includesfile.binary" value="D:\Users\Paulina\Documents\webservices-project\NiceViewTest\null494978949" />
+    <property name="javac.includesfile.binary" value="D:\Users\Paulina\Documents\webservices-project\NiceViewTest\null1520915564" />
     <property name="libs.junit_4.maven-pom" value="" />
     <property name="mkdist.disabled" value="false" />
     <property name="javac.test.processorpath" value=":build/classes:D:\OpenESB-v2.3.1\netbeans\platform\modules\ext\junit-4.10.jar" />
@@ -230,7 +230,7 @@
     <property name="javadoc.additionalparam" value="" />
     <property name="java.io.tmpdir" value="D:\Users\Paulina\AppData\Local\Temp\" />
     <property name="java.vendor.url" value="http://java.oracle.com/" />
-    <property name="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:&apos;D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar;D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\jaxb\jaxb-impl.jar&apos;" />
+    <property name="endorsed.classpath.cmd.line.arg" value="-Xbootclasspath/p:&apos;D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar&apos;" />
     <property name="junit.available" value="true" />
     <property name="libs.jsp-compiler.src" value="" />
     <property name="org.openide.awt.ActionReference.completion" value="org.netbeans.modules.apisupport.project.layers.PathCompletions" />
@@ -310,7 +310,7 @@
     <property name="nb.junit.batch" value="true" />
     <property name="junit.forkmode" value="perTest" />
     <property name="libs.spring-framework.maven-pom" value="" />
-    <property name="sun.boot.class.path" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar;D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\jaxb\jaxb-impl.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\resources.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\rt.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jce.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.7.0_67\jre\classes" />
+    <property name="sun.boot.class.path" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\resources.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\rt.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jce.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.7.0_67\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.7.0_67\jre\classes" />
     <property name="javac.target" value="1.7" />
     <property name="built-jar.properties" value="D:\Users\Paulina\Documents\webservices-project\NiceViewTest\build\built-jar.properties" />
     <property name="build.test.classes.dir" value="build/test/classes" />
@@ -351,7 +351,7 @@
     <property name="libs.jsf20.javadoc" value="D:\OpenESB-v2.3.1\netbeans\enterprise\docs\javaee-doc-api.jar" />
     <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.7.0_67\jre\lib\ext;C:\Windows\Sun\Java\lib\ext" />
     <property name="libs.metro.src" value="" />
-    <property name="endorsed.classpath" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar;D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\jaxb\jaxb-impl.jar" />
+    <property name="endorsed.classpath" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\jaxws22\api\jaxws-api.jar" />
     <property name="libs.absolutelayout.classpath" value="D:\OpenESB-v2.3.1\netbeans\java\modules\ext\AbsoluteLayout.jar" />
     <property name="excludes" value="" />
     <property name="libs.metro.classpath" value="D:\OpenESB-v2.3.1\netbeans\ide\modules\ext\jaxb\activation.jar;D:\OpenESB-v2.3.1\netbeans\enterprise\modules\ext\metro\webservices-api.jar;D:\OpenESB-v2.3.1\netbeans\enterprise\modules\ext\metro\webservices-extra-api.jar;D:\OpenESB-v2.3.1\netbeans\enterprise\modules\ext\metro\webservices-extra.jar;D:\OpenESB-v2.3.1\netbeans\enterprise\modules\ext\metro\webservices-rt.jar;D:\OpenESB-v2.3.1\netbeans\enterprise\modules\ext\metro\webservices-tools.jar" />
@@ -405,22 +405,12 @@
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit" />
     <property name="libs.javaee-web-api-7.0.javadoc" value="D:\OpenESB-v2.3.1\netbeans\enterprise\docs\javaee-doc-api.jar" />
   </properties>
-  <testcase classname="ws.hotel.test.HotelServiceTest" name="testBookHotelValid" time="1.046">
-    <error type="java.lang.ExceptionInInitializerError">java.lang.ExceptionInInitializerError
-	at com.sun.xml.internal.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:107)
-	at com.sun.xml.internal.ws.client.sei.SyncMethodHandler.invoke(SyncMethodHandler.java:78)
-	at com.sun.xml.internal.ws.client.sei.SEIStub.invoke(SEIStub.java:135)
-	at com.sun.proxy.$Proxy24.bookHotelsOperation(Unknown Source)
-	at ws.hotel.test.HotelServiceTest.bookHotelsOperation(HotelServiceTest.java:59)
-	at ws.hotel.test.HotelServiceTest.testBookHotelValid(HotelServiceTest.java:51)
-Caused by: java.lang.ClassCastException: com.sun.xml.bind.v2.runtime.JAXBContextImpl cannot be cast to com.sun.xml.internal.bind.api.JAXBRIContext
-	at com.sun.xml.internal.ws.fault.SOAPFaultBuilder$1.run(SOAPFaultBuilder.java:570)
-	at com.sun.xml.internal.ws.fault.SOAPFaultBuilder$1.run(SOAPFaultBuilder.java:566)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at com.sun.xml.internal.ws.fault.SOAPFaultBuilder.createJAXBContext(SOAPFaultBuilder.java:565)
-	at com.sun.xml.internal.ws.fault.SOAPFaultBuilder.&lt;clinit&gt;(SOAPFaultBuilder.java:555)
-</error>
-  </testcase>
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="testBookHotelNoGuarantee" time="0.312" />
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="testBookHotelInvalid" time="0.14" />
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="testCancelHotel" time="0.031" />
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="testBookHotelValid" time="0.078" />
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="testCancelHotelFail" time="0.016" />
+  <testcase classname="ws.hotel.test.HotelServiceTest" name="getHotelsTest" time="0.031" />
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="price" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="guarantee" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="status" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="stayPrice" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "bookingNr",
     "price",
     "guarantee",
-    "status"
+    "status",
+    "stayPrice"
 })
 public class HotelInfoType {
 
@@ -55,6 +57,7 @@ public class HotelInfoType {
     protected boolean guarantee;
     @XmlElement(required = true)
     protected String status;
+    protected int stayPrice;
 
     /**
      * Gets the value of the nameOfReservService property.
@@ -198,6 +201,22 @@ public class HotelInfoType {
      */
     public void setStatus(String value) {
         this.status = value;
+    }
+
+    /**
+     * Gets the value of the stayPrice property.
+     * 
+     */
+    public int getStayPrice() {
+        return stayPrice;
+    }
+
+    /**
+     * Sets the value of the stayPrice property.
+     * 
+     */
+    public void setStayPrice(int value) {
+        this.stayPrice = value;
     }
 
 }

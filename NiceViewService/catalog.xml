@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
     <system systemId="file:/C:/Users/Caecilie/Documents/DTU/Kandidat/E14/02267_SoftwareDevelopmentOfWebServices/webservices-project/NiceViewService/src/java/hotels.wsdl" uri="src/conf/xml-resources/web-services/HotelService/wsdl/hotels.wsdl"/>
+    <system systemId="http://fastmoney.imm.dtu.dk:8080/BankService?wsdl" uri="src/conf/xml-resources/web-service-references/BankService/wsdl/fastmoney.imm.dtu.dk_8080/BankService.wsdl"/>
+    <system systemId="http://fastmoney.imm.dtu.dk:8080/BankService?xsd=1" uri="src/conf/xml-resources/web-service-references/BankService/wsdl/fastmoney.imm.dtu.dk_8080/BankService.xsd_1.xsd"/>
+    <system systemId="file:/D:/Users/Paulina/Documents/webservices-project/NiceViewService/src/java/ws/hotel/hotel.wsdl" uri="src/conf/xml-resources/web-services/HotelService/wsdl/hotel.wsdl"/>
 </catalog>
