@@ -18,7 +18,7 @@
                 <xsd:sequence>
                     <xsd:element name="city" type="xsd:string"></xsd:element>
                     <xsd:element name="arrival" type="xsd:date"></xsd:element>
-                    <xsd:element name="departure" type="xsd:string"></xsd:element>
+                    <xsd:element name="departure" type="xsd:date"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="hotelInfoType">
