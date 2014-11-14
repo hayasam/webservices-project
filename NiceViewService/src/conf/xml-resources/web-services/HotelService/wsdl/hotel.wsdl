@@ -5,29 +5,38 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     <types>
         <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels">
+            <xsd:complexType name="expirationDateType">
+                <xsd:sequence>
+                    <xsd:element name="month" type="xsd:int"></xsd:element>
+                    <xsd:element name="year" type="xsd:int"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
             <xsd:element name="cancelHotelFault" type="xsd:string"></xsd:element>
             <xsd:element name="bookHotelFault" type="xsd:string"></xsd:element>
             <xsd:complexType name="creditCardInfoType">
                 <xsd:sequence>
                     <xsd:element name="holderName" type="xsd:string"></xsd:element>
                     <xsd:element name="cardNumber" type="xsd:string"></xsd:element>
-                    <xsd:element name="dateExpiration" type="xsd:date"></xsd:element>
+                    <xsd:element name="expirationDate" type="tns:expirationDateType"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="getHotelsInputType">
                 <xsd:sequence>
                     <xsd:element name="city" type="xsd:string"></xsd:element>
                     <xsd:element name="arrival" type="xsd:date"></xsd:element>
-                    <xsd:element name="departure" type="xsd:string"></xsd:element>
+                    <xsd:element name="departure" type="xsd:date"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="hotelInfoType">
                 <xsd:sequence>
+                    <xsd:element name="nameOfReservService" type="xsd:string"></xsd:element>
                     <xsd:element name="name" type="xsd:string"></xsd:element>
                     <xsd:element name="address" type="tns:addressType"></xsd:element>
                     <xsd:element name="bookingNr" type="xsd:int"></xsd:element>
                     <xsd:element name="price" type="xsd:int"></xsd:element>
                     <xsd:element name="guarantee" type="xsd:boolean"></xsd:element>
+                    <xsd:element name="status" type="xsd:string"></xsd:element>
+                    <xsd:element name="stayPrice" type="xsd:int"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="addressType">
@@ -55,8 +64,13 @@
             </xsd:element>
             <xsd:element name="bookHotelInput" type="tns:bookHotelInputType"></xsd:element>
             <xsd:element name="bookHotelOutput" type="xsd:boolean"></xsd:element>
-            <xsd:element name="cancelHotelInput" type="xsd:int"></xsd:element>
             <xsd:element name="cancelHotelOutput" type="xsd:boolean"></xsd:element>
+            <xsd:complexType name="cancelHotelInputType">
+                <xsd:sequence>
+                    <xsd:element name="bookingNr" type="xsd:int"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="cancelHotelInput" type="tns:cancelHotelInputType"></xsd:element>
         </xsd:schema>
     </types>
     <message name="hotelsOperationRequest">
