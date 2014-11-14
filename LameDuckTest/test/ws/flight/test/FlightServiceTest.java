@@ -50,12 +50,11 @@ public class FlightServiceTest {
         
         bookFlightInput.setBookingNr(111);
         bookFlightInput.setCreditCardInfo(TestUtils.invalidCCInfo());
-        
+    
         try {
-         boolean result = bookFlightOperation(bookFlightInput);
+            bookFlightOperation(bookFlightInput);
             fail("BookFlightOperation should have thrown an exception!");
         } catch (BookFlightFault ex) {
-           ex.getMessage();
             assertTrue(true);
         }
     }
