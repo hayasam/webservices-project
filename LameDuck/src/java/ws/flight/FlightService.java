@@ -59,8 +59,8 @@ public class FlightService {
                 flightInfo.setStatus(Flights.Status.CONFIRMED.toString());
             }
             return chargedCreditCard;
-        } catch (CreditCardFaultMessage ex) {
-            throw new BookFlightFault("Flight cancellation failed!", ex.getFaultInfo().getMessage());
+        } catch (Exception ex) {
+            throw new BookFlightFault("Flight cancellation failed!", ex.getMessage());
         }   
     }
 
