@@ -6,8 +6,17 @@ package ws.travel.test;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.*;
-import org.netbeans.xml.schema.itinerarydata.*;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddFlightToItineraryInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetFlightsInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetTravelHotelsInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService;
+import org.netbeans.xml.schema.itinerarydata.FlightInfoArray;
+import org.netbeans.xml.schema.itinerarydata.FlightInfoType;
+import org.netbeans.xml.schema.itinerarydata.GetFlightInputType;
+import org.netbeans.xml.schema.itinerarydata.GetHotelsInputType;
+import org.netbeans.xml.schema.itinerarydata.HotelsInfoArray;
+import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
 
 
@@ -45,6 +54,29 @@ public class TravelServiceTest {
         GetFlightsInputType input = new GetFlightsInputType();
         input.setItineraryId(itineraryId);
         input.setGetFlightInput(createGetFlightInput());
+        return input;
+    }
+    
+    @Test
+    public void testAddToItinerary() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("123");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        
+        // add flight to itinerary
+        ItineraryInfoType itineraryInfo = addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+    
+        // assert that it is added to itinerary
+        assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
+    }
+    
+    private AddFlightToItineraryInputType createAddFlightToItineraryInput(String itineraryId, FlightInfoType flightInfo) {
+        AddFlightToItineraryInputType input = new AddFlightToItineraryInputType();
+        input.setItineraryId(itineraryId);
+        input.setFlightInfo(flightInfo);
         return input;
     }
     

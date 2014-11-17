@@ -37,10 +37,22 @@
     <sequence name="MainProcess">
         <sequence name="CreateItinerarySeq">
             <receive name="ReceiveCreateItinerary" createInstance="yes" partnerLink="PartnerLink4" operation="createItineraryOperation" variable="CreateItineraryOperationIn" portType="ns0:travelPortType"></receive>
-            <assign name="CreateItineraryId">
+            <assign name="CreateItinerary">
                 <copy>
                     <from>sxxf:getGUID()</from>
                     <to variable="CreateItineraryOperationOut" part="createItineraryOutput"/>
+                </copy>
+                <copy>
+                    <from>
+                        <literal>&lt;ns1:flightInfoArray /&gt;</literal>
+                    </from>
+                    <to>$itineraryInfo/ns1:flightInfoArray</to>
+                </copy>
+                <copy>
+                    <from>
+                        <literal>&lt;ns1:hotelsInfoArray /&gt;</literal>
+                    </from>
+                    <to>$itineraryInfo/ns1:hotelsInfoArray</to>
                 </copy>
             </assign>
             <reply name="ReplyCreateItinerary" partnerLink="PartnerLink4" operation="createItineraryOperation"  variable="CreateItineraryOperationOut" portType="ns0:travelPortType">

@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.netbeans.xml.schema.itinerarydata.*;
+import org.netbeans.xml.schema.itinerarydata.CreditCardInfoType;
+import org.netbeans.xml.schema.itinerarydata.ExpirationDateType;
 
 
 
