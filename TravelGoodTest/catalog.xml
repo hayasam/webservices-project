@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://localhost:9080/service?wsdl" uri="xml-resources/web-service-references/service/wsdl/localhost_9080/service.wsdl"/>
+    <system systemId="http://10.16.172.212:9080/TravelGoodApp-sun-http-binding/TravelGoodBPEL/itineraryData.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.172.212_9080/TravelGoodApp-sun-http-binding/TravelGoodBPEL/itineraryData.xsd"/>
+</catalog>
