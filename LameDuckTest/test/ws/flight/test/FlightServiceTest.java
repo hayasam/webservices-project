@@ -7,8 +7,6 @@ package ws.flight.test;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import ws.flight.*;
 
 /**
@@ -26,9 +24,14 @@ public class FlightServiceTest {
         getFlightsInput.setEndAirport("Bucharest Otopeni");
         
         FlightInfoArray actualFlightInfos = getFlightsOperation(getFlightsInput);
-    
+     
         assertEquals(1, actualFlightInfos.getFlightInfo().size());
-        assertEquals(111, actualFlightInfos.getFlightInfo().get(0).getBookingNr());
+        
+        /*
+         * This cannot be tested like that anymore since a booking (e.g. a flight info object)
+         * is created every time the test is run and the booking will always have different id
+         */
+        //assertEquals(222, actualFlightInfos.getFlightInfo().get(0).getBookingNr());
     }
     
     @Test
@@ -71,31 +74,7 @@ public class FlightServiceTest {
         
         assertTrue(result);
     }
-
     
-    // This test is wrong.
-    // Reason 1: result returns empty array.
-    // Reason 2: assertEquals for object comparison should fail since two objects are seperately
-    //           created objects and since equals method is not overriden on FlightInfoType class, 
-    //           assertEquals(flightInfo1, flightInfo2) should fail.
-     /* @Test
-     public void getFlightsTest() {
-         GetFlightInputType getFlightsInput = new GetFlightInputType();
-         
-         getFlightsInput.setDate(TestUtils.createDate("18-12-2014 18:00"));
-         getFlightsInput.setStartAirport("Copehagen Lufthavn");
-         getFlightsInput.setEndAirport("Bucharest Otopeni");
-         
-         FlightInfoArray result = getFlightsOperation(getFlightsInput);
-         TestUtils.createFlightInfosTest1();
-         
-         List<FlightInfoType> expected = TestUtils.flightInfos;
-         
-         int index = 0;
-         for (FlightInfoType info : result.getFlightInfo())
-                assertEquals(expected.get(index++), info);
-     } */
-
     private static boolean bookFlightOperation(ws.flight.BookFlightInputType bookFlightInput) throws BookFlightFault {
         ws.flight.FlightService service = new ws.flight.FlightService();
         ws.flight.FlightPortType port = service.getFlightPortTypeBindingPort();

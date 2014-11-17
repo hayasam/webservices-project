@@ -11,15 +11,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
-import ws.flight.builder.Builders;
-import ws.flight.builder.FlightBuilder;
-import ws.flight.builder.FlightInfoBuilder;
+import java.util.Random;
+import java.util.UUID;
+import java.util.logging.*;
+import javax.xml.datatype.*;
+import org.netbeans.j2ee.wsdl.lameduck.java.flight.*;
+import ws.flight.builder.*;
 
 /**
  *
@@ -34,12 +31,40 @@ public class Flights {
     }
     
     static final List<FlightInfoType> flightInfos;
+    static int flightInfoCounter;
+    
+    static final List<FlightType> flights;
+    static final Random randomGenerator;
+    
     
     /*
      * Initializes flight info array with hardcoded data. 
      */
     static {
+        FlightType flight1 = Builders.newBuilder(FlightBuilder.class)
+                        .withCarrier("Lufthansa")
+                        .withDateDeparture(createDate("07-11-2014 08:50"))
+                        .withDateArrival(createDate("14-11-2014 20:50"))
+                        .withStartAirport("Copenhagen Lufthavnen")
+                        .withDestinationAirport("Bucharest Otopeni")
+                        .create();
+        FlightType flight2 = Builders.newBuilder(FlightBuilder.class)
+                            .withCarrier("SAS")
+                            .withDateDeparture(createDate("18-12-2014 08:50"))
+                            .withDateArrival(createDate("01-01-2015 20:50"))
+                            .withStartAirport("Copenhagen Lufthavnen")
+                            .withDestinationAirport("Bucharest Otopeni")
+                            .create();
+        flights = new ArrayList<FlightType>();
+        flights.add(flight1);
+        flights.add(flight2);
         
+        flightInfos = new ArrayList<FlightInfoType>();
+        flightInfoCounter = 0;
+        
+        randomGenerator = new Random();
+        
+        /*
         FlightInfoType flightInfo1 = Builders.newBuilder(FlightInfoBuilder.class)
                                                 .withBookingNumber(111)
                                                 .withReservationServiceName("LameDuck")
@@ -65,10 +90,10 @@ public class Flights {
                                                                 .withStartAirport("Copenhagen Lufthavnen")
                                                                 .withDestinationAirport("Bucharest Otopeni")
                                                                 .create())
-                                                .create();
-        flightInfos = new ArrayList<FlightInfoType>();
+                                                .create(); 
+        
         flightInfos.add(flightInfo1);
-        flightInfos.add(flightInfo2);
+        flightInfos.add(flightInfo2); */
     }
   
     private static XMLGregorianCalendar createDate (String strDate) {
@@ -97,16 +122,36 @@ public class Flights {
     protected static List<FlightInfoType> getFlights(String departureAirport, String arrivalAirport, XMLGregorianCalendar departureDate) {
         List<FlightInfoType> result = new ArrayList<FlightInfoType>();
         
-        for(FlightInfoType flightInfo : flightInfos) {
+        /*for(FlightInfoType flightInfo : flightInfos) {
             if(flightInfo.getFlight().getStartAirport().equals(departureAirport) 
                     && flightInfo.getFlight().getDestinationAirport().equals(arrivalAirport)
                     && equalDates(flightInfo.getFlight().getDateDeparture(), departureDate))
                 result.add(flightInfo);
-        }
+        }*/
+        
+        for(FlightType flight : flights)
+            if(flight.getStartAirport().equals(departureAirport) 
+                    && flight.getDestinationAirport().equals(arrivalAirport)
+                    && equalDates(flight.getDateDeparture(), departureDate)) {
+                FlightInfoType flightInfo = Builders.newBuilder(FlightInfoBuilder.class)
+                                                .withBookingNumber(getFlightInfoId())
+                                                .withReservationServiceName("LameDuck")
+                                                .withStatus(Status.UNCONFIRMED.toString())
+                                                .withPrice(randomGenerator.nextInt(10000))
+                                                .withFlight(flight)
+                                                .create();
+                result.add(flightInfo);
+                flightInfos.add(flightInfo);
+            }
+                
         
         return result;
     }
     
+    private static int getFlightInfoId () {
+        flightInfoCounter++;
+        return flightInfoCounter*100+flightInfoCounter*10+flightInfoCounter;
+    }
     private static boolean equalDates(XMLGregorianCalendar date1, XMLGregorianCalendar date2) {
         return date1.getDay()   == date2.getDay()   &&
                date1.getMonth() == date2.getMonth() &&

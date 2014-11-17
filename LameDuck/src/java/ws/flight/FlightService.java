@@ -23,7 +23,7 @@ import ws.flight.query.Flights;
 @WebService(serviceName = "flightService", portName = "flightPortTypeBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuck/java/flight", wsdlLocation = "WEB-INF/wsdl/FlightService/flight.wsdl")
 public class FlightService {
 
-    public org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray getFlightsOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.GetFlightInputType getFlightsInput) {
+    public FlightInfoArray getFlightsOperation(GetFlightInputType getFlightsInput) {
         List<FlightInfoType> flightInfos = Flights.newQuery()
                                                 .from(getFlightsInput.getStartAirport())
                                                 .to(getFlightsInput.getEndAirport())
@@ -35,7 +35,7 @@ public class FlightService {
                             .create();
     }
 
-    public boolean bookFlightOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightInputType bookFlightInput) throws BookFlightFault {
+    public boolean bookFlightOperation(BookFlightInputType bookFlightInput) throws BookFlightFault {
         ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
                                                     .withName(bookFlightInput.getCreditCardInfo().getHolderName())
                                                     .withNumber(bookFlightInput.getCreditCardInfo().getCardNumber())
@@ -64,7 +64,7 @@ public class FlightService {
         }   
     }
 
-    public boolean cancelFlightOperation(org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
+    public boolean cancelFlightOperation(CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
         ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
                                                     .withName(cancelFlightInput.getCreditCardInfo().getHolderName())
                                                     .withNumber(cancelFlightInput.getCreditCardInfo().getCardNumber())
