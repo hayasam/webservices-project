@@ -63,7 +63,7 @@
         <part name="createItineraryInput" element="tns:createItineraryInput"/>
     </message>
     <message name="createItineraryOperationResponse">
-        <part name="createItineraryOutput" type="xsd:string"/>
+        <part name="createItineraryOutput" element="tns:createItineraryOutput"/>
     </message>
     <message name="getFlightsOperationRequest">
         <part name="getFlightInput" element="tns:getFlightsInput"/>

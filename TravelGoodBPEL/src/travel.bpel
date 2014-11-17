@@ -101,8 +101,16 @@
                         <sequence name="Sequence4">
                             <assign name="Assign3">
                                 <copy>
-                                    <from>$GetFlightsOperationIn.getFlightInput/getFlightInput</from>
-                                    <to variable="GetFlightsOperationIn1" part="getFlightsInput"/>
+                                    <from>$GetFlightsOperationIn.getFlightInput/getFlightInput/ns1:startAirport</from>
+                                    <to>$GetFlightsOperationIn1.getFlightsInput/startAirport</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationIn.getFlightInput/getFlightInput/ns1:endAirport</from>
+                                    <to>$GetFlightsOperationIn1.getFlightsInput/endAirport</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationIn.getFlightInput/getFlightInput/ns1:date</from>
+                                    <to>$GetFlightsOperationIn1.getFlightsInput/date</to>
                                 </copy>
                             </assign>
                             <invoke name="InvokeGetFlights" partnerLink="PartnerLink2" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
