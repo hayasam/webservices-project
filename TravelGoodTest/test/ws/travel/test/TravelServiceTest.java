@@ -6,8 +6,8 @@ package ws.travel.test;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import ws.flight.FlightInfoArray;
 import ws.flight.*;
+
 
 /**
  *
@@ -51,16 +51,16 @@ public class TravelServiceTest {
         return getFlightsInput;
     }
     
-    private static String createItineraryOperation(java.lang.String createItineraryInput) {
-        ws.flight.TravelService service = new ws.flight.TravelService();
-        ws.flight.TravelPortType port = service.getTravelPortTypeBindingPort();
-        return port.createItineraryOperation(createItineraryInput);
+    private static FlightInfoArray getFlightsOperation(GetFlightsInputType getFlightInput) {
+        TravelService service = new TravelService();
+        TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.getFlightsOperation(getFlightInput);
     }
 
-    private static FlightInfoArray getFlightsOperation(ws.flight.GetFlightsInputType getFlightInput) {
-        ws.flight.TravelService service = new ws.flight.TravelService();
-        ws.flight.TravelPortType port = service.getTravelPortTypeBindingPort();
-        return port.getFlightsOperation(getFlightInput);
+    private static String createItineraryOperation(java.lang.String createItineraryInput) {
+        TravelService service = new TravelService();
+        TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.createItineraryOperation(createItineraryInput);
     }
     
 }

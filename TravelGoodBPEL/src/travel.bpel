@@ -11,14 +11,12 @@
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
     xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" xmlns:ns3="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels">
     <import namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" location="travel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
-    <import namespace="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" location="flight.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
-    <import namespace="http://enterprise.netbeans.org/bpel/hotelWrapper" location="hotelWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
-    <import namespace="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels" location="hotel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://xml.netbeans.org/schema/itineraryData" location="itineraryData.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" location="http://localhost:8080/LameDuck/flightService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/flightServiceWrapper" location="flightServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <partnerLinks>
+        <partnerLink name="PartnerLink6" partnerLinkType="tns:flightServiceLinkType" partnerRole="flightRole" xmlns:tns="http://enterprise.netbeans.org/bpel/flightServiceWrapper"/>
         <partnerLink name="PartnerLink4" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" partnerLinkType="tns:travel" myRole="travelPortTypeRole"/>
-        <partnerLink name="PartnerLink2" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" partnerLinkType="tns:flight" partnerRole="flightPortTypeRole"/>
-        <partnerLink name="PartnerLink3" xmlns:tns="http://enterprise.netbeans.org/bpel/hotelWrapper" partnerLinkType="tns:hotelsLinkType" partnerRole="hotelsRole"/>
     </partnerLinks>
     <variables>
         <variable name="itineraryInfo" type="ns1:itineraryInfoType"/>
@@ -45,7 +43,7 @@
         </sequence>
         <scope name="BookingScope">
             <variables>
-                <variable name="currentHotelInfo" type="ns3:hotelInfoType"/>
+               
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
                 <variable name="BookItineraryOperationOut" messageType="ns0:bookItineraryOperationResponse"/>
                 <variable name="BookItineraryOperationIn" messageType="ns0:bookItineraryOperationRequest"/>
@@ -113,11 +111,43 @@
                                     <to>$GetFlightsOperationIn1.getFlightsInput/date</to>
                                 </copy>
                             </assign>
-                            <invoke name="InvokeGetFlights" partnerLink="PartnerLink2" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
+                            <invoke name="InvokeGetFlights" partnerLink="PartnerLink6" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
                             <assign name="Assign4">
                                 <copy>
-                                    <from variable="GetFlightsOperationOut1" part="getFlightsOutput"/>
-                                    <to variable="GetFlightsOperationOut2" part="flightInfoArray"/>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/bookingNr</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:bookingNr</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/price</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:price</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/nameOfReservService</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:nameOfReservService</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/startAirport</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:startAirport</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/destinationAirport</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:destinationAirport</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/dateDeparture</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/dateArrival</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateArrival</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/carrier</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:carrier</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/status</from>
+                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:status</to>
                                 </copy>
                             </assign>
                             <reply name="Reply3" partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationOut2"/>
@@ -160,7 +190,7 @@
                                         <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo</to>
                                     </copy>
                                 </assign>
-                                <invoke name="InvokeBookFlight" partnerLink="PartnerLink2" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>
+                                <invoke name="InvokeBookFlight" partnerLink="PartnerLink6" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>
                                 <assign name="Assign1">
                                     <copy>
                                         <from variable="BookFlightOperationOut" part="bookFlightOutput"/>
