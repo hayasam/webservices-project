@@ -9,7 +9,7 @@
     xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
     xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
-    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight">
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" xmlns:ns3="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels">
     <import namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" location="travel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" location="flight.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://enterprise.netbeans.org/bpel/hotelWrapper" location="hotelWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
@@ -48,27 +48,46 @@
         </sequence>
         <scope name="BookingScope">
             <variables>
+                <variable name="currentHotelInfo" type="ns3:hotelInfoType"/>
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
                 <variable name="BookItineraryOperationOut" messageType="ns0:bookItineraryOperationResponse"/>
                 <variable name="BookItineraryOperationIn" messageType="ns0:bookItineraryOperationRequest"/>
                 <variable name="numberOfFlights" type="xsd:int"/>
+                <variable name="numberOfHotels" type="xsd:int"/>
             </variables>
             <eventHandlers>
                 <onEvent partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="addFlightToItineraryIn" messageType="ns0:addFlightToItineraryOperationRequest">
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
-                    <scope name="Scope1">
+                    <scope name="AddFlightEventScope">
+                        <variables>
+                            <variable name="AddFlightToItineraryOperationOut" messageType="ns0:addFlightToItineraryOperationResponse"/>
+                        </variables>
                         <sequence name="Sequence2">
-                            <assign name="AssignNmberofFlights">
+                            <assign name="AssignNumberofFlights">
                                 <copy>
                                         <from>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</from>
                                             <to>$numberOfFlights</to>
                                     </copy>
                             </assign>
-                            <assign name="Assign1">
-                               
+                            <assign name="AppendToFlights">
+                                <copy>
+                                    <from>$addFlightToItineraryIn.addFlightToItineraryInput/flightInfo</from>
+                                    <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
+                                </copy>
                             </assign>
+                            <assign name="Assign2">
+                                <copy>
+                                    <from>$itineraryInfo/ns1:flightInfoArray</from>
+                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
+                                </copy>
+                                <copy>
+                                    <from>$itineraryInfo/ns1:hotelsInfoArray</from>
+                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:hotelsInfoArray</to>
+                                </copy>
+                            </assign>
+                            <reply name="Reply2" partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="AddFlightToItineraryOperationOut"/>
                         </sequence>
                     </scope>
                 </onEvent>
@@ -80,14 +99,44 @@
                     </correlations>
                 </receive>
                 <flow name="Flow1">
-                    <forEach name="ForEach1" parallel="no" counterName="ForEach1Counter">
+                    <forEach name="ForEachFlight" parallel="no" counterName="i">
                         <startCounterValue>1</startCounterValue>
-                        <finalCounterValue>count($itineraryInfo.flightInfoArray.flightInfo/ns0:flightInfoType)</finalCounterValue>
+                        <finalCounterValue>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</finalCounterValue>
                         <completionCondition>
                             <branches/>
                         </completionCondition>
+                        <scope name="BookFlightScope">
+                            <variables>
+                                <variable name="BookFlightOperationOut" messageType="ns2:bookFlightResponse"/>
+                                <variable name="BookFlightOperationIn" messageType="ns2:bookFlightRequest"/>
+                            </variables>
+                            <sequence name="Sequence3">
+                                <assign name="AssignToCurrentFlight">
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[i]</from>
+                                        <to>$currentFlightInfo</to>
+                                    </copy>
+                                </assign>
+                                <assign name="AssignToWSInput">
+                                    <copy>
+                                        <from>$currentFlightInfo/bookingNr</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/bookingNr</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo</to>
+                                    </copy>
+                                </assign>
+                                <invoke name="InvokeBookFlight" partnerLink="PartnerLink2" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>
+                                <assign name="Assign1">
+                                    <copy>
+                                        <from variable="BookFlightOperationOut" part="bookFlightOutput"/>
+                                        <to variable="BookItineraryOperationOut" part="bookItineraryOutput"/>
+                                    </copy>
+                                </assign>
+                            </sequence>
+                        </scope>
                     </forEach>
-                    <forEach name="ForEach2" parallel="no" counterName="ForEach2Counter"/>
                 </flow>
                 <reply name="Reply1" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
             </sequence>
