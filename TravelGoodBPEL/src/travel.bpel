@@ -278,8 +278,12 @@
                             <sequence name="BookFlightSequence">
                                 <assign name="AssignToCurrentFlight">
                                     <copy>
-                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]</from>
-                                        <to>$currentFlightInfo</to>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to variable="currentFlightInfo"/>
                                     </copy>
                                 </assign>
                                 <assign name="AssignToFlightWSInput">
@@ -288,8 +292,20 @@
                                         <to>$BookFlightOperationIn.bookFlightInput/bookingNr</to>
                                     </copy>
                                     <copy>
-                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
-                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo</to>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:holderName</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo/holderName</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo/cardNumber</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo/expirationDate/month</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                        <to>$BookFlightOperationIn.bookFlightInput/creditCardInfo/expirationDate/year</to>
                                     </copy>
                                 </assign>
                                 <invoke name="InvokeBookFlight" partnerLink="PartnerLink6" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>

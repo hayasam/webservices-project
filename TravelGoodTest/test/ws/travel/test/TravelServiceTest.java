@@ -7,10 +7,13 @@ package ws.travel.test;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddFlightToItineraryInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryOperationFault;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetFlightsInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetTravelHotelsInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService;
+import org.netbeans.xml.schema.itinerarydata.CreditCardInfoType;
 import org.netbeans.xml.schema.itinerarydata.FlightInfoArray;
 import org.netbeans.xml.schema.itinerarydata.FlightInfoType;
 import org.netbeans.xml.schema.itinerarydata.GetFlightInputType;
@@ -50,11 +53,14 @@ public class TravelServiceTest {
         assertEquals(1, actualFlightInfos.getFlightInfo().size());
         assertEquals(111, actualFlightInfos.getFlightInfo().get(0).getBookingNr());
     }
-    private GetFlightsInputType createGetFlightsInput(String itineraryId) {
-        GetFlightsInputType input = new GetFlightsInputType();
-        input.setItineraryId(itineraryId);
-        input.setGetFlightInput(createGetFlightInput());
-        return input;
+    
+    @Test 
+    public void testGetHotels () {
+        String itineraryId = createItineraryOperation("123");
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        
+        assertEquals(1, actualHotelInfos.getHotelInfo().size());
+        assertEquals(888, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
     }
     
     @Test
@@ -73,6 +79,40 @@ public class TravelServiceTest {
         assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
     }
     
+    @Test
+    public void testBookItinerary() throws BookItineraryOperationFault {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("444");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+    
+        // assert that booking is successful
+        boolean res = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+    
+        assertTrue(res);
+        
+        
+    }
+    
+    private BookItineraryInputType createBookItineraryInput(String itineraryId, CreditCardInfoType ccInfo) {
+        BookItineraryInputType input = new BookItineraryInputType();
+        input.setItineraryId(itineraryId);
+        input.setCreditCardInfo(ccInfo);
+        return input;
+    }
+    
+    private GetFlightsInputType createGetFlightsInput(String itineraryId) {
+        GetFlightsInputType input = new GetFlightsInputType();
+        input.setItineraryId(itineraryId);
+        input.setGetFlightInput(createGetFlightInput());
+        return input;
+    }
+    
     private AddFlightToItineraryInputType createAddFlightToItineraryInput(String itineraryId, FlightInfoType flightInfo) {
         AddFlightToItineraryInputType input = new AddFlightToItineraryInputType();
         input.setItineraryId(itineraryId);
@@ -86,15 +126,6 @@ public class TravelServiceTest {
         getFlightsInput.setStartAirport("Copenhagen Lufthavnen");
         getFlightsInput.setEndAirport("Bucharest Otopeni");
         return getFlightsInput;
-    }
-    
-    @Test 
-    public void testGetHotels () {
-        String itineraryId = createItineraryOperation("123");
-        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
-        
-        assertEquals(1, actualHotelInfos.getHotelInfo().size());
-        assertEquals(888, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
     }
     
     private GetTravelHotelsInputType createGetTravelHotelsInput (String itineraryId) {
@@ -137,6 +168,12 @@ public class TravelServiceTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
         return port.getHotelsOperation(getHotelsInput);
+    }
+
+    private static boolean bookItineraryOperation(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryInputType bookItineraryInput) throws BookItineraryOperationFault {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.bookItineraryOperation(bookItineraryInput);
     }
     
 }
