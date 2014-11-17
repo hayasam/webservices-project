@@ -5,7 +5,7 @@
     <client name="service">
       <wsdl-url>http://localhost:9080/service?wsdl</wsdl-url>
       <local-wsdl-file>localhost_9080/service.wsdl</local-wsdl-file>
-      <package-name>org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel</package-name>
+      <package-name forceReplace="true">ws.flight</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
         <wsimport-option>
@@ -23,6 +23,10 @@
         <wsimport-option>
           <wsimport-option-name>xendorsed</wsimport-option-name>
           <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>package</wsimport-option-name>
+          <wsimport-option-value>ws.flight</wsimport-option-value>
         </wsimport-option>
       </wsimport-options>
     </client>

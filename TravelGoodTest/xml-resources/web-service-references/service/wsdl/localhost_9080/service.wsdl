@@ -73,7 +73,7 @@
     </part>
   </message>
   <message name="createItineraryOperationResponse">
-    <part name="createItineraryOutput" type="xsd:string">
+    <part name="createItineraryOutput" element="tns:createItineraryOutput">
     </part>
   </message>
   <message name="createItineraryOperationRequest">

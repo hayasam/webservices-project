@@ -21,7 +21,7 @@
     <target name="wsimport-client-service" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/service"/>
         <property name="wsdl-service" location="xml-resources/web-service-references/service/wsdl/localhost_9080/service.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/service" destdir="${build.generated.dir}/jax-wsCache/service" wsdl="${wsdl-service}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" wsdlLocation="http://localhost:9080/service?wsdl" xendorsed="true">
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/service" destdir="${build.generated.dir}/jax-wsCache/service" wsdl="${wsdl-service}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" wsdlLocation="http://localhost:9080/service?wsdl" xendorsed="true" package="ws.flight">
             <depends file="${wsdl-service}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/service"/>
         </wsimport>
@@ -33,7 +33,7 @@
     </target>
     <target name="wsimport-client-clean-service" depends="-init-project">
         <delete dir="${build.generated.dir}/jax-wsCache/service"/>
-        <delete dir="${build.generated.sources.dir}/jax-ws/org/netbeans/j2ee/wsdl/travelgoodbpel/src/travel"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/ws/flight"/>
     </target>
     <target name="wsimport-client-generate" depends="wsimport-client-service"/>
 </project>
