@@ -91,6 +91,34 @@
                         </sequence>
                     </scope>
                 </onEvent>
+                <onEvent partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="GetFlightsEvent">
+                        <variables>
+                            <variable name="GetFlightsOperationOut2" messageType="ns0:getFlightsOperationResponse"/>
+                            <variable name="GetFlightsOperationOut1" messageType="ns2:flightOperationResponse"/>
+                            <variable name="GetFlightsOperationIn1" messageType="ns2:flightOperationRequest"/>
+                        </variables>
+                        <sequence name="Sequence4">
+                            <assign name="Assign3">
+                                <copy>
+                                    <from>$GetFlightsOperationIn.getFlightInput/getFlightInput</from>
+                                    <to variable="GetFlightsOperationIn1" part="getFlightsInput"/>
+                                </copy>
+                            </assign>
+                            <invoke name="InvokeGetFlights" partnerLink="PartnerLink2" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
+                            <assign name="Assign4">
+                                <copy>
+                                    <from variable="GetFlightsOperationOut1"/>
+                                    <to variable="GetFlightsOperationOut2"/>
+                                </copy>
+                            </assign>
+                            <reply name="Reply3" partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationOut2"/>
+                        </sequence>
+                    </scope>
+                </onEvent>
             </eventHandlers>
             <sequence name="Sequence1">
                 <receive name="Receive1" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" createInstance="no" variable="BookItineraryOperationIn">
