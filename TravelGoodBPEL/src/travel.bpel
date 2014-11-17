@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<process
+    name="travel"
+    targetNamespace="http://enterprise.netbeans.org/bpel/TravelGoodBPEL/travel"
+    xmlns:tns="http://enterprise.netbeans.org/bpel/TravelGoodBPEL/travel"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+    xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
+    xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
+    xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions">
+    <import namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" location="travel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" location="flight.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/hotelWrapper" location="hotelWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels" location="hotel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <partnerLinks>
+        <partnerLink name="PartnerLink4" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" partnerLinkType="tns:travel" myRole="travelPortTypeRole"/>
+        <partnerLink name="PartnerLink2" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" partnerLinkType="tns:flight" partnerRole="flightPortTypeRole"/>
+        <partnerLink name="PartnerLink3" xmlns:tns="http://enterprise.netbeans.org/bpel/hotelWrapper" partnerLinkType="tns:hotelsLinkType" partnerRole="hotelsRole"/>
+    </partnerLinks>
+    <variables>
+        <variable name="GetFlightsOperationOut" messageType="ns0:getFlightsOperationResponse"/>
+        <variable name="GetFlightsOperationIn" messageType="ns0:getFlightsOperationRequest"/>
+        <variable name="itineraryInfo" element="ns0:itineraryOutput"/>
+        <variable name="CreateItineraryOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationRequest"/>
+        <variable name="CreateItineraryOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationResponse"/>
+    </variables>
+    <correlationSets>
+        <correlationSet name="CorrelationSet" properties="ns0:ItineraryId"/>
+    </correlationSets>
+    <sequence name="MainProcess">
+        <sequence name="CreateItinerarySeq">
+            <receive name="ReceiveCreateItinerary" createInstance="yes" partnerLink="PartnerLink4" operation="createItineraryOperation" variable="CreateItineraryOperationIn" portType="ns0:travelPortType"></receive>
+            <assign name="CreateItineraryId">
+                <copy>
+                    <from>sxxf:getGUID()</from>
+                    <to variable="CreateItineraryOperationOut" part="createItineraryOutput"/>
+                </copy>
+            </assign>
+            <reply name="ReplyCreateItinerary" partnerLink="PartnerLink4" operation="createItineraryOperation"  variable="CreateItineraryOperationOut" portType="ns0:travelPortType">
+                <correlations>
+                    <correlation set="CorrelationSet" initiate="yes"/>
+                </correlations>
+            </reply>
+        </sequence>
+    </sequence>
+</process>

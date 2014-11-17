@@ -133,7 +133,6 @@
         <xsd:sequence>
             <xsd:element ref="tns:flightInfoArray"/>
             <xsd:element ref="tns:hotelsInfoArray"/>
-            <xsd:element name="itineraryNr" type="xsd:string"></xsd:element>
         </xsd:sequence>
     </xsd:complexType>
 </xsd:schema>
