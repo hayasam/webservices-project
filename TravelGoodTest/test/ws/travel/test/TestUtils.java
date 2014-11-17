@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import ws.flight.*;
+import org.netbeans.xml.schema.itinerarydata.*;
+
 
 
 /**

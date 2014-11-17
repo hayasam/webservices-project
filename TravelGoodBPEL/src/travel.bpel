@@ -9,13 +9,21 @@
     xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
     xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
-    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" xmlns:ns3="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels">
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" 
+    xmlns:ns0="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" 
+    xmlns:ns1="http://xml.netbeans.org/schema/itineraryData" 
+    xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" 
+    xmlns:ns2="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" 
+    xmlns:ns3="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels">
     <import namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" location="travel.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://xml.netbeans.org/schema/itineraryData" location="itineraryData.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
     <import namespace="http://j2ee.netbeans.org/wsdl/LameDuck/java/flight" location="http://localhost:8080/LameDuck/flightService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://enterprise.netbeans.org/bpel/flightServiceWrapper" location="flightServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://enterprise.netbeans.org/bpel/hotelsServiceWrapper" location="hotelsServiceWrapper.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <import namespace="http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels" location="http://localhost:8080/NiceViewService/hotelsService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <partnerLinks>
         <partnerLink name="PartnerLink6" partnerLinkType="tns:flightServiceLinkType" partnerRole="flightRole" xmlns:tns="http://enterprise.netbeans.org/bpel/flightServiceWrapper"/>
+        <partnerLink name="PartnerLink7" xmlns:tns="http://enterprise.netbeans.org/bpel/hotelsServiceWrapper" partnerLinkType="tns:hotelsLinkType" partnerRole="hotelsRole"/>
         <partnerLink name="PartnerLink4" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" partnerLinkType="tns:travel" myRole="travelPortTypeRole"/>
     </partnerLinks>
     <variables>
@@ -45,6 +53,7 @@
             <variables>
                
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
+                <variable name="currentHotelInfo" type="ns1:hotelInfoType"/>
                 <variable name="BookItineraryOperationOut" messageType="ns0:bookItineraryOperationResponse"/>
                 <variable name="BookItineraryOperationIn" messageType="ns0:bookItineraryOperationRequest"/>
                 <variable name="numberOfFlights" type="xsd:int"/>
@@ -97,7 +106,7 @@
                             <variable name="GetFlightsOperationIn1" messageType="ns2:flightOperationRequest"/>
                         </variables>
                         <sequence name="Sequence4">
-                            <assign name="Assign3">
+                            <assign name="AssignFlightWSInput">
                                 <copy>
                                     <from>$GetFlightsOperationIn.getFlightInput/getFlightInput/ns1:startAirport</from>
                                     <to>$GetFlightsOperationIn1.getFlightsInput/startAirport</to>
@@ -112,7 +121,7 @@
                                 </copy>
                             </assign>
                             <invoke name="InvokeGetFlights" partnerLink="PartnerLink6" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
-                            <assign name="Assign4">
+                            <assign name="AssignFlightWSResult">
                                 <copy>
                                     <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/bookingNr</from>
                                     <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:bookingNr</to>
@@ -150,7 +159,88 @@
                                     <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:status</to>
                                 </copy>
                             </assign>
-                            <reply name="Reply3" partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationOut2"/>
+                            <reply name="ReplyGetFlights" partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationOut2"/>
+                        </sequence>
+                    </scope>
+                </onEvent>
+                <onEvent partnerLink="PartnerLink4" operation="getHotelsOperation" portType="ns0:travelPortType" variable="GetHotelsOperationIn" messageType="ns0:getHotelsOperationRequest">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="GetHotelsEvent">
+                        <variables>
+                            <variable name="GetHotelsOperationOut" messageType="ns0:getHotelsOperationResponse"/>
+                            <variable name="GetHotelsOperationOut1" messageType="ns3:hotelsOperationResponse"/>
+                            <variable name="GetHotelsOperationIn1" messageType="ns3:hotelsOperationRequest"/>
+                          
+                        </variables>
+                        <sequence name="Sequence5">
+                            <assign name="AssignHotelWSInput">
+                                <copy>
+                                    <from>$GetHotelsOperationIn.getHotelsInput/getHotelsInput/ns1:city</from>
+                                    <to>$GetHotelsOperationIn1.getHotelsInput/city</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationIn.getHotelsInput/getHotelsInput/ns1:arrival</from>
+                                    <to>$GetHotelsOperationIn1.getHotelsInput/arrival</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationIn.getHotelsInput/getHotelsInput/ns1:departure</from>
+                                    <to>$GetHotelsOperationIn1.getHotelsInput/departure</to>
+                                </copy>
+                            </assign>
+                            <invoke name="InvokeGetHotels" partnerLink="PartnerLink7" operation="getHotelsOperation" portType="ns3:hotelsPortType" inputVariable="GetHotelsOperationIn1" outputVariable="GetHotelsOperationOut1"/>
+                            <assign name="AssignHotelWSResult">
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/nameOfReservService</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:nameOfReservService</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/name</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:name</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/address/country</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:address/ns1:country</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/address/city</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:address/ns1:city</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/address/street</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:address/ns1:street</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/address/zipcode</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:address/ns1:zipcode</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/address/number</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:address/ns1:number</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/bookingNr</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:bookingNr</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/price</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:price</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/guarantee</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:guarantee</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/status</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:status</to>
+                                </copy>
+                                <copy>
+                                    <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo/stayPrice</from>
+                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo/ns1:stayPrice</to>
+                                </copy>
+                            </assign>
+                            <reply name="ReplyGetHotels" partnerLink="PartnerLink4" operation="getHotelsOperation" portType="ns0:travelPortType" variable="GetHotelsOperationOut"/>
                         </sequence>
                     </scope>
                 </onEvent>
@@ -173,14 +263,14 @@
                                 <variable name="BookFlightOperationOut" messageType="ns2:bookFlightResponse"/>
                                 <variable name="BookFlightOperationIn" messageType="ns2:bookFlightRequest"/>
                             </variables>
-                            <sequence name="Sequence3">
+                            <sequence name="BookFlightSequence">
                                 <assign name="AssignToCurrentFlight">
                                     <copy>
                                         <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]</from>
                                         <to>$currentFlightInfo</to>
                                     </copy>
                                 </assign>
-                                <assign name="AssignToWSInput">
+                                <assign name="AssignToFlightWSInput">
                                     <copy>
                                         <from>$currentFlightInfo/bookingNr</from>
                                         <to>$BookFlightOperationIn.bookFlightInput/bookingNr</to>
@@ -191,9 +281,47 @@
                                     </copy>
                                 </assign>
                                 <invoke name="InvokeBookFlight" partnerLink="PartnerLink6" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>
-                                <assign name="Assign1">
+                                <assign name="AssignBookFlightResult">
                                     <copy>
                                         <from variable="BookFlightOperationOut" part="bookFlightOutput"/>
+                                        <to variable="BookItineraryOperationOut" part="bookItineraryOutput"/>
+                                    </copy>
+                                </assign>
+                            </sequence>
+                        </scope>
+                    </forEach>
+                    <forEach name="ForEachHotel" parallel="no" counterName="j">
+                        <startCounterValue>1</startCounterValue>
+                        <finalCounterValue>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</finalCounterValue>
+                        <completionCondition>
+                            <branches/>
+                        </completionCondition>
+                        <scope name="BookHotelScope">
+                            <variables>
+                                <variable name="BookHotelsOperationOut" messageType="ns3:bookOperationResponse"/>
+                                <variable name="BookHotelsOperationIn" messageType="ns3:bookOperationRequest"/>
+                            </variables>
+                            <sequence name="BookHotelSequence">
+                                <assign name="AssignToCurrentHotel">
+                                    <copy>
+                                            <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]</from>
+                                                <to>$currentHotelInfo</to>
+                                        </copy>
+                                </assign>
+                                <assign name="AssignToHotelWSInput">
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:bookingNr</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/bookingNr</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo</to>
+                                    </copy>
+                                </assign>
+                                <invoke name="Invoke1" partnerLink="PartnerLink7" operation="bookHotelsOperation" portType="ns3:hotelsPortType" inputVariable="BookHotelsOperationIn" outputVariable="BookHotelsOperationOut"/>
+                                <assign name="AssignBookHotelResult">
+                                    <copy>
+                                        <from variable="BookHotelsOperationOut" part="bookHotelOutput"/>
                                         <to variable="BookItineraryOperationOut" part="bookItineraryOutput"/>
                                     </copy>
                                 </assign>

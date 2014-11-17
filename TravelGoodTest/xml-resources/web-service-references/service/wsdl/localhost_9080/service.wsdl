@@ -50,6 +50,13 @@
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="getFlightsInput" type="tns:getFlightsInputType"/>
+            <xsd:complexType name="getTravelHotelsInputType">
+                <xsd:sequence>
+                    <xsd:element name="itineraryId" type="xsd:string"/>
+                    <xsd:element name="getHotelsInput" type="ns2:getHotelsInputType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getHotelsInput" type="tns:getTravelHotelsInputType"/>
         </xsd:schema>
   </types>
   <message name="cancelItineraryOperationRequest">
@@ -117,7 +124,7 @@
     </part>
   </message>
   <message name="getHotelsOperationRequest">
-    <part name="getHotelsInput" element="ns2:getHotelsInput">
+    <part name="getHotelsInput" element="tns:getHotelsInput">
     </part>
   </message>
   <portType name="travelPortType">
@@ -125,12 +132,6 @@
       <input name="input1" message="tns:createItineraryOperationRequest">
     </input>
       <output name="output1" message="tns:createItineraryOperationResponse">
-    </output>
-    </operation>
-    <operation name="getHotelsOperation">
-      <input name="input3" message="tns:getHotelsOperationRequest">
-    </input>
-      <output name="output3" message="tns:getHotelsOperationResponse">
     </output>
     </operation>
     <operation name="addFlightToItineraryOperation">
@@ -169,6 +170,12 @@
       <input name="input2" message="tns:getFlightsOperationRequest">
     </input>
       <output name="output2" message="tns:getFlightsOperationResponse">
+    </output>
+    </operation>
+    <operation name="getHotelsOperation">
+      <input name="input3" message="tns:getHotelsOperationRequest">
+    </input>
+      <output name="output3" message="tns:getHotelsOperationResponse">
     </output>
     </operation>
   </portType>
@@ -275,6 +282,9 @@ A partner link type characterizes the conversational relationship between two se
         <vprop:query>itineraryId</vprop:query>
     </vprop:propertyAlias>
     <vprop:propertyAlias messageType="tns:getFlightsOperationRequest" part="getFlightInput" propertyName="tns:ItineraryId">
+        <vprop:query>itineraryId</vprop:query>
+    </vprop:propertyAlias>
+    <vprop:propertyAlias messageType="tns:getHotelsOperationRequest" part="getHotelsInput" propertyName="tns:ItineraryId">
         <vprop:query>itineraryId</vprop:query>
     </vprop:propertyAlias>
     <vprop:propertyAlias messageType="tns:getItineraryOperationRequest" part="getItineraryInput" propertyName="tns:ItineraryId">
