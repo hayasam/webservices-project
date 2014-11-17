@@ -22,9 +22,6 @@
     </partnerLinks>
     <variables>
         <variable name="itineraryInfo" type="ns1:itineraryInfoType"/>
-        <variable name="GetFlightsOperationOut" messageType="ns0:getFlightsOperationResponse"/>
-        <variable name="GetFlightsOperationIn" messageType="ns0:getFlightsOperationRequest"/>
-        
         <variable name="CreateItineraryOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationRequest"/>
         <variable name="CreateItineraryOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationResponse"/>
     </variables>
@@ -56,7 +53,7 @@
                 <variable name="numberOfHotels" type="xsd:int"/>
             </variables>
             <eventHandlers>
-                <onEvent partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="addFlightToItineraryIn" messageType="ns0:addFlightToItineraryOperationRequest">
+                <onEvent partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="AddFlightToItineraryIn" messageType="ns0:addFlightToItineraryOperationRequest">
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
@@ -73,7 +70,7 @@
                             </assign>
                             <assign name="AppendToFlights">
                                 <copy>
-                                    <from>$addFlightToItineraryIn.addFlightToItineraryInput/flightInfo</from>
+                                    <from>$AddFlightToItineraryIn.addFlightToItineraryInput/flightInfo</from>
                                     <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
                                 </copy>
                             </assign>
@@ -91,7 +88,7 @@
                         </sequence>
                     </scope>
                 </onEvent>
-                <onEvent partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType">
+                <onEvent partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationIn" messageType="ns0:getFlightsOperationRequest">
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
