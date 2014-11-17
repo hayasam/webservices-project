@@ -24,6 +24,7 @@
         <variable name="itineraryInfo" type="ns1:itineraryInfoType"/>
         <variable name="GetFlightsOperationOut" messageType="ns0:getFlightsOperationResponse"/>
         <variable name="GetFlightsOperationIn" messageType="ns0:getFlightsOperationRequest"/>
+        
         <variable name="CreateItineraryOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationRequest"/>
         <variable name="CreateItineraryOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationResponse"/>
     </variables>
@@ -90,7 +91,7 @@
                         </sequence>
                     </scope>
                 </onEvent>
-                <onEvent partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="getFlightsIn" messageType="ns0:getFlightsOperationRequest">
+                <onEvent partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType">
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
