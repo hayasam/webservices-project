@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddFlightToItineraryInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryOperationFault;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.CancelItineraryInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetFlightsInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.GetTravelHotelsInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType;
@@ -95,8 +96,74 @@ public class TravelServiceTest {
         boolean res = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
+    }
+    
+    @Test
+    public void testCancelFlightsBeforeBooking() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("987");
         
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
         
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        // cancel itinerary
+        boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+    
+        assertTrue(res);
+        
+    }
+    
+    @Test
+    public void testCancelFlightsAfterBooking() throws BookItineraryOperationFault {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("987");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        // book itinerary
+        bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+        
+        // cancel itinerary
+        boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+    
+        assertTrue(res);
+    }
+    
+    
+    @Test
+    public void testGetItinerary() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("555");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        // get itinerary
+        ItineraryInfoType itineraryInfo = getItineraryOperation(itineraryId);
+        
+        // assert that flight with correct status is in the current itinerary
+        assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
+        assertEquals(flightInfo.getStatus(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getStatus());
+    }
+    
+    private CancelItineraryInputType createCancelItineraryInput(String itineraryId, CreditCardInfoType ccInfo) {
+        CancelItineraryInputType input = new CancelItineraryInputType();
+        input.setCreditCardInfo(ccInfo);
+        input.setItineraryId(itineraryId);
+        return input;
     }
     
     private BookItineraryInputType createBookItineraryInput(String itineraryId, CreditCardInfoType ccInfo) {
@@ -174,6 +241,18 @@ public class TravelServiceTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
         return port.bookItineraryOperation(bookItineraryInput);
+    }
+
+    private static boolean cancelItineraryOperation(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.CancelItineraryInputType cancelItineraryInput) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.cancelItineraryOperation(cancelItineraryInput);
+    }
+
+    private static ItineraryInfoType getItineraryOperation(java.lang.String getItineraryInput) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.getItineraryOperation(getItineraryInput);
     }
     
 }

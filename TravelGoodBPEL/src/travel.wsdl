@@ -14,11 +14,7 @@
             <xsd:complexType name="cancelItineraryInputType">
                 <xsd:sequence>
                     <xsd:element name="creditCardInfo" type="ns2:creditCardInfoType"></xsd:element>
-                    <xsd:element name="itineraryId">
-                        <xsd:complexType>
-                            <xsd:sequence/>
-                        </xsd:complexType>
-                    </xsd:element>
+                    <xsd:element name="itineraryId" type="xsd:string"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>   
             <xsd:element name="itineraryOutput" type="ns2:itineraryInfoType"></xsd:element>
@@ -39,7 +35,7 @@
             <xsd:complexType name="bookItineraryInputType">
                 <xsd:sequence>
                     <xsd:element name="creditCardInfo" type="ns2:creditCardInfoType"></xsd:element>
-                    <xsd:element name="itineraryId"/>
+                    <xsd:element name="itineraryId" type="xsd:string"/>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="bookItineraryInput" type="tns:bookItineraryInputType"></xsd:element>

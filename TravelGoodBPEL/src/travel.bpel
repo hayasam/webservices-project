@@ -27,6 +27,7 @@
         <partnerLink name="PartnerLink4" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" partnerLinkType="tns:travel" myRole="travelPortTypeRole"/>
     </partnerLinks>
     <variables>
+        <variable name="booked" type="xsd:boolean"/>
         <variable name="itineraryInfo" type="ns1:itineraryInfoType"/>
         <variable name="CreateItineraryOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationRequest"/>
         <variable name="CreateItineraryOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationResponse"/>
@@ -54,6 +55,10 @@
                     </from>
                     <to>$itineraryInfo/ns1:hotelsInfoArray</to>
                 </copy>
+                <copy>
+                    <from>false()</from>
+                    <to variable="booked"/>
+                </copy>
             </assign>
             <reply name="ReplyCreateItinerary" partnerLink="PartnerLink4" operation="createItineraryOperation"  variable="CreateItineraryOperationOut" portType="ns0:travelPortType">
                 <correlations>
@@ -61,7 +66,7 @@
                 </correlations>
             </reply>
         </sequence>
-        <scope name="BookingScope">
+        <scope name="PlanningScope">
             <variables>
                
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
@@ -81,28 +86,33 @@
                             <variable name="AddFlightToItineraryOperationOut" messageType="ns0:addFlightToItineraryOperationResponse"/>
                         </variables>
                         <sequence name="Sequence2">
-                            <assign name="AssignNumberofFlights">
-                                <copy>
-                                        <from>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</from>
-                                            <to>$numberOfFlights</to>
-                                    </copy>
-                            </assign>
-                            <assign name="AppendToFlights">
-                                <copy>
-                                    <from>$AddFlightToItineraryIn.addFlightToItineraryInput/flightInfo</from>
-                                    <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
-                                </copy>
-                            </assign>
-                            <assign name="Assign2">
-                                <copy>
-                                    <from>$itineraryInfo/ns1:flightInfoArray</from>
-                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
-                                </copy>
-                                <copy>
-                                    <from>$itineraryInfo/ns1:hotelsInfoArray</from>
-                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:hotelsInfoArray</to>
-                                </copy>
-                            </assign>
+                            <if name="IfNotBooked">
+                                <condition>not($booked)</condition>
+                                <sequence name="Sequence10">
+                                    <assign name="AssignNumberofFlights">
+                                        <copy>
+                                                <from>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</from>
+                                                    <to>$numberOfFlights</to>
+                                            </copy>
+                                    </assign>
+                                    <assign name="AppendToFlights">
+                                        <copy>
+                                                <from>$AddFlightToItineraryIn.addFlightToItineraryInput/flightInfo</from>
+                                                    <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
+                                            </copy>
+                                    </assign>
+                                    <assign name="Assign2">
+                                        <copy>
+                                                <from>$itineraryInfo/ns1:flightInfoArray</from>
+                                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$itineraryInfo/ns1:hotelsInfoArray</from>
+                                                    <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:hotelsInfoArray</to>
+                                            </copy>
+                                    </assign>
+                                </sequence>
+                            </if>
                             <reply name="Reply2" partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="AddFlightToItineraryOperationOut"/>
                         </sequence>
                     </scope>
@@ -111,7 +121,7 @@
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
-                    <scope name="GetFlightsEvent">
+                    <scope name="GetFlightsEventScope">
                         <variables>
                             <variable name="GetFlightsOperationOut2" messageType="ns0:getFlightsOperationResponse"/>
                             <variable name="GetFlightsOperationOut1" messageType="ns2:flightOperationResponse"/>
@@ -179,7 +189,7 @@
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
-                    <scope name="GetHotelsEvent">
+                    <scope name="GetHotelsEventScope">
                         <variables>
                             <variable name="GetHotelsOperationOut" messageType="ns0:getHotelsOperationResponse"/>
                             <variable name="GetHotelsOperationOut1" messageType="ns3:hotelsOperationResponse"/>
@@ -254,6 +264,112 @@
                             </assign>
                             <reply name="ReplyGetHotels" partnerLink="PartnerLink4" operation="getHotelsOperation" portType="ns0:travelPortType" variable="GetHotelsOperationOut"/>
                         </sequence>
+                    </scope>
+                </onEvent>
+                <onEvent partnerLink="PartnerLink4" operation="cancelItineraryOperation" portType="ns0:travelPortType" variable="CancelItineraryOperationIn" messageType="ns0:cancelItineraryOperationRequest">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="CancelItineraryEvent">
+                        <variables>
+                            <variable name="CancelItineraryOperationOut" messageType="ns0:cancelItineraryOperationResponse"/>
+                        </variables>
+                        <sequence name="Sequence6">
+                            <if name="IfBooked">
+                                <condition>$booked</condition>
+                                <flow name="Flow2">
+                                    <forEach name="ForEachFlight" parallel="no" counterName="i">
+                                        <startCounterValue>1</startCounterValue>
+                                            <finalCounterValue>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</finalCounterValue>
+                                            <scope name="CancelFlightScope">
+                                                <variables>
+                                                        <variable name="CancelFlightOperationOut" messageType="ns2:cancelFlightResponse"/>
+                                                            <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
+                                                    </variables>
+                                                    <sequence name="Sequence8">
+                                                        <assign name="AssignToCurrentFlight">
+                                                                <copy>
+                                                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
+                                            <sxed:editor>
+                                                                                        <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                                                                    </sxed:editor>
+                                                                            </from>
+                                                                            <to variable="currentFlightInfo"/>
+                                                                    </copy>
+                                                            </assign>
+                                                            <assign name="AssignToFlightWSInput">
+                                                                <copy>
+                                                                        <from>$currentFlightInfo/bookingNr</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>$currentFlightInfo/price</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:holderName</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
+                                                                    </copy>
+                                                            </assign>
+                                                            <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
+                                                            <assign name="AssignCancelFlightResult">
+                                                                <copy>
+                                                                    <from variable="CancelFlightOperationOut" part="cancelFlightOutput"/>
+                                                                    <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                                                </copy>
+                                                            </assign>
+                                                    </sequence>
+                                            </scope>
+                                    </forEach>
+                                </flow>
+                                <else>
+                                    <sequence name="Sequence11">
+                                        <assign name="Assign3">
+                                            <copy>
+                                                <from>true()</from>
+                                                    <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                            </copy>
+                                        </assign>
+                                    </sequence>
+                                </else>
+                            </if>
+                            <reply name="Reply6" partnerLink="PartnerLink4" operation="cancelItineraryOperation" portType="ns0:travelPortType" variable="CancelItineraryOperationOut"/>
+                            <if name="IfNotBookedTerminate">
+                                <condition>not($booked)</condition>
+                                <exit name="Exit1"/>
+                            </if>
+                        </sequence>
+                    </scope>
+                </onEvent>
+                <onEvent partnerLink="PartnerLink4" operation="getItineraryOperation" portType="ns0:travelPortType" variable="GetItineraryOperationIn" messageType="ns0:getItineraryOperationRequest">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="GetItineraryEventScope">
+                        <variables>
+                                <variable name="GetItineraryOperationOut" messageType="ns0:getItineraryOperationResponse"/>
+                            </variables>
+                            <sequence name="Sequence7">
+                                <assign name="Assign4">
+                                        <copy>
+                                                <from variable="itineraryInfo"/>
+                                                    <to variable="GetItineraryOperationOut" part="getItineraryOutput"/>
+                                            </copy>
+                                    </assign>
+                                    <reply name="Reply4" partnerLink="PartnerLink4" operation="getItineraryOperation" portType="ns0:travelPortType" variable="GetItineraryOperationOut"/>
+                            </sequence>
                     </scope>
                 </onEvent>
             </eventHandlers>
@@ -357,7 +473,16 @@
                         </scope>
                     </forEach>
                 </flow>
-                <reply name="Reply1" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
+                <assign name="BookedTrue">
+                    <copy>
+                        <from>true()</from>
+                        <to variable="booked"/>
+                    </copy>
+                </assign>
+                <reply name="ReplyBookItinerary" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
+                <wait name="Wait1H">
+                    <for>'P0Y0M0DT1H0M0.0S'</for>
+                </wait>
             </sequence>
         </scope>
     </sequence>
