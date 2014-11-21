@@ -497,8 +497,20 @@
                                         <to>$BookHotelsOperationIn.bookHotelInput/bookingNr</to>
                                     </copy>
                                     <copy>
-                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
-                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo</to>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:holderName</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/holderName</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/cardNumber</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/month</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/year</to>
                                     </copy>
                                 </assign>
                                 <invoke name="Invoke1" partnerLink="PartnerLink7" operation="bookHotelsOperation" portType="ns3:hotelsPortType" inputVariable="BookHotelsOperationIn" outputVariable="BookHotelsOperationOut"/>
