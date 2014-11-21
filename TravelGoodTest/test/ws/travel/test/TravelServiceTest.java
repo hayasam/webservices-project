@@ -19,6 +19,7 @@ import org.netbeans.xml.schema.itinerarydata.FlightInfoArray;
 import org.netbeans.xml.schema.itinerarydata.FlightInfoType;
 import org.netbeans.xml.schema.itinerarydata.GetFlightInputType;
 import org.netbeans.xml.schema.itinerarydata.GetHotelsInputType;
+import org.netbeans.xml.schema.itinerarydata.HotelInfoType;
 import org.netbeans.xml.schema.itinerarydata.HotelsInfoArray;
 import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
@@ -109,6 +110,25 @@ public class TravelServiceTest {
         
         // add flight to itinerary
         addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        // cancel itinerary
+        boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+    
+        assertTrue(res);
+        
+    }
+    
+    @Test
+    public void testCancelHotelsBeforeBooking() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("987");
+        
+        // search for a flight
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        
+        // add flight to itinerary
+        addToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
         
         // cancel itinerary
         boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));

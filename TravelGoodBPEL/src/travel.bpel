@@ -274,6 +274,9 @@
                         <variables>
                             <variable name="CancelItineraryOperationOut" messageType="ns0:cancelItineraryOperationResponse"/>
                         </variables>
+                        <faultHandlers>
+                            <catchAll/>
+                        </faultHandlers>
                         <sequence name="Sequence6">
                             <if name="IfBooked">
                                 <condition>$booked</condition>
@@ -284,54 +287,89 @@
                                             <scope name="CancelFlightScope">
                                                 <variables>
                                                         <variable name="CancelFlightOperationOut" messageType="ns2:cancelFlightResponse"/>
-                                                            <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
-                                                    </variables>
-                                                    <sequence name="Sequence8">
-                                                        <assign name="AssignToCurrentFlight">
-                                                                <copy>
-                                                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
-                                            <sxed:editor>
-                                                                                        <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to variable="currentFlightInfo"/>
-                                                                    </copy>
-                                                            </assign>
-                                                            <assign name="AssignToFlightWSInput">
-                                                                <copy>
-                                                                        <from>$currentFlightInfo/bookingNr</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$currentFlightInfo/price</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:holderName</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:cardNumber</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
-                                                            <assign name="AssignCancelFlightResult">
-                                                                <copy>
-                                                                    <from variable="CancelFlightOperationOut" part="cancelFlightOutput"/>
-                                                                    <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
-                                                                </copy>
-                                                            </assign>
-                                                    </sequence>
+                                                        <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
+                                                </variables>
+                                                <sequence name="Sequence8">
+                                                    <assign name="AssignToCurrentFlight">
+                                                            <copy>
+                                                                <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
+                                                                    <sxed:editor>
+                                                                       <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                                                    </sxed:editor>
+                                                                </from>
+                                                                <to variable="currentFlightInfo"/>
+                                                            </copy>
+                                                    </assign>
+                                                    <assign name="AssignToFlightWSInput">
+                                                        <copy>
+                                                                <from>$currentFlightInfo/bookingNr</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$currentFlightInfo/price</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:holderName</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
+                                                            </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
+                                                    <assign name="AssignCancelFlightResult">
+                                                        <copy>
+                                                            <from variable="CancelFlightOperationOut" part="cancelFlightOutput"/>
+                                                            <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
                                             </scope>
+                                    </forEach>
+                                    <forEach name="ForEachHotel" parallel="no" counterName="j">
+                                        <startCounterValue>1</startCounterValue>
+                                        <finalCounterValue>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</finalCounterValue>
+                                        <scope name="CancelHotelScope">
+                                                <variables>
+                                                    <variable name="CancelHotelsOperationOut" messageType="ns3:cancelHotelResponse"/>
+                                                    <variable name="CancelHotelsOperationIn" messageType="ns3:cancelHotelRequest"/>
+                                                </variables>
+                                                <sequence name="Sequence9">
+                                                    <assign name="AssignToCurrentHotel">
+                                                            <copy>
+                                                                <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]
+                                                                    <sxed:editor>
+                                                                       <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                                                    </sxed:editor>
+                                                                </from>
+                                                                <to variable="currentHotelInfo"/>
+                                                            </copy>
+                                                    </assign>
+                                                    <assign name="AssignToHotelWSInput">
+                                                        <copy>
+                                                            <from>$currentHotelInfo/bookingNr</from>
+                                                            <to>$CancelHotelsOperationIn.cancelHotelInput/bookingNr</to>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeCancelHotel" partnerLink="PartnerLink7" operation="cancelHotelsOperation" portType="ns3:hotelsPortType" inputVariable="CancelHotelsOperationIn" outputVariable="CancelHotelsOperationOut"/>
+                                                    <assign name="AssignCancelHotelResult">
+                                                        <copy>
+                                                            <from variable="CancelHotelsOperationOut" part="cancelHotelOutput"/>
+                                                            <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
+                                        </scope>
                                     </forEach>
                                 </flow>
                                 <else>
