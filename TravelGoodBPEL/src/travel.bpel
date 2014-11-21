@@ -115,7 +115,7 @@
                                                     <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
                                             </copy>
                                     </assign>
-                                    <assign name="Assign2">
+                                    <assign name="ReturnItinerary">
                                         <copy>
                                                 <from>$itineraryInfo/ns1:flightInfoArray</from>
                                                     <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
@@ -304,54 +304,89 @@
                                             <scope name="CancelFlightScope">
                                                 <variables>
                                                         <variable name="CancelFlightOperationOut" messageType="ns2:cancelFlightResponse"/>
-                                                            <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
-                                                    </variables>
-                                                    <sequence name="Sequence8">
-                                                        <assign name="AssignToCurrentFlight">
-                                                                <copy>
-                                                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
-                                            <sxed:editor>
-                                                                                        <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to variable="currentFlightInfo"/>
-                                                                    </copy>
-                                                            </assign>
-                                                            <assign name="AssignToFlightWSInput">
-                                                                <copy>
-                                                                        <from>$currentFlightInfo/bookingNr</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$currentFlightInfo/price</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:holderName</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:cardNumber</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
-                                                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
-                                                            <assign name="AssignCancelFlightResult">
-                                                                <copy>
-                                                                    <from variable="CancelFlightOperationOut" part="cancelFlightOutput"/>
-                                                                    <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
-                                                                </copy>
-                                                            </assign>
-                                                    </sequence>
+                                                        <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
+                                                </variables>
+                                                <sequence name="Sequence8">
+                                                    <assign name="AssignToCurrentFlight">
+                                                            <copy>
+                                                                <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
+                                                                    <sxed:editor>
+                                                                       <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                                                    </sxed:editor>
+                                                                </from>
+                                                                <to variable="currentFlightInfo"/>
+                                                            </copy>
+                                                    </assign>
+                                                    <assign name="AssignToFlightWSInput">
+                                                        <copy>
+                                                                <from>$currentFlightInfo/bookingNr</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$currentFlightInfo/price</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:holderName</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
+                                                            </copy>
+                                                            <copy>
+                                                                <from>$CancelItineraryOperationIn.cancelItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                                                    <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
+                                                            </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
+                                                    <assign name="AssignCancelFlightResult">
+                                                        <copy>
+                                                            <from variable="CancelFlightOperationOut" part="cancelFlightOutput"/>
+                                                            <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
                                             </scope>
+                                    </forEach>
+                                    <forEach name="ForEachHotel" parallel="no" counterName="j">
+                                        <startCounterValue>1</startCounterValue>
+                                        <finalCounterValue>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</finalCounterValue>
+                                        <scope name="CancelHotelScope">
+                                                <variables>
+                                                    <variable name="CancelHotelsOperationOut" messageType="ns3:cancelHotelResponse"/>
+                                                    <variable name="CancelHotelsOperationIn" messageType="ns3:cancelHotelRequest"/>
+                                                </variables>
+                                                <sequence name="Sequence9">
+                                                    <assign name="AssignToCurrentHotel">
+                                                            <copy>
+                                                                <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]
+                                                                    <sxed:editor>
+                                                                       <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                                                    </sxed:editor>
+                                                                </from>
+                                                                <to variable="currentHotelInfo"/>
+                                                            </copy>
+                                                    </assign>
+                                                    <assign name="AssignToHotelWSInput">
+                                                        <copy>
+                                                            <from>$currentHotelInfo/ns1:bookingNr</from>
+                                                            <to>$CancelHotelsOperationIn.cancelHotelInput/bookingNr</to>
+                                                        </copy>
+                                                    </assign>
+                                                    <invoke name="InvokeCancelHotel" partnerLink="PartnerLink7" operation="cancelHotelsOperation" portType="ns3:hotelsPortType" inputVariable="CancelHotelsOperationIn" outputVariable="CancelHotelsOperationOut"/>
+                                                    <assign name="AssignCancelHotelResult">
+                                                        <copy>
+                                                            <from variable="CancelHotelsOperationOut" part="cancelHotelOutput"/>
+                                                            <to variable="CancelItineraryOperationOut" part="cancelItineraryOutput"/>
+                                                        </copy>
+                                                    </assign>
+                                                </sequence>
+                                        </scope>
                                     </forEach>
                                 </flow>
                                 <else>
@@ -392,14 +427,54 @@
                             </sequence>
                     </scope>
                 </onEvent>
+                <onEvent variable="AddHotelToItineraryIn" partnerLink="PartnerLink4" operation="addHotelToItineraryOperation" messageType="ns0:addHotelToItineraryOperationRequest" portType="ns0:travelPortType">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="AddHotelEventScope">
+                        <variables>
+                            <variable name="AddHotelToItineraryOperationOut" messageType="ns0:addHotelToItineraryOperationResponse"/>
+                        </variables>
+                        <sequence name="Sequence12">
+                            <if name="IfNotBooked">
+                                <condition>not($booked)</condition>
+                                <sequence name="Sequence13">
+                                    <assign name="AssignNumberofHotels">
+                                        <copy>
+                                            <from>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</from>
+                                            <to variable="numberOfHotels"/>
+                                        </copy>
+                                    </assign>
+                                    <assign name="AppendToHotels">
+                                        <copy>
+                                            <from>$AddHotelToItineraryIn.addHotelToItineraryInput/hotelInfo</from>
+                                            <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$numberOfHotels + 1]</to>
+                                        </copy>
+                                    </assign>
+                                    <assign name="ReturnItinerary">
+                                        <copy>
+                                            <from>$itineraryInfo/ns1:flightInfoArray</from>
+                                            <to>$AddHotelToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$itineraryInfo/ns1:hotelsInfoArray</from>
+                                            <to>$AddHotelToItineraryOperationOut.itineraryOutput/ns1:hotelsInfoArray</to>
+                                        </copy>
+                                    </assign>
+                                </sequence>
+                            </if>
+                            <reply name="Reply7" partnerLink="PartnerLink4" operation="addHotelToItineraryOperation" portType="ns0:travelPortType" variable="AddHotelToItineraryOperationOut"/>
+                        </sequence>
+                    </scope>
+                </onEvent>
             </eventHandlers>
-            <sequence name="Sequence1">
+            <sequence name="BookingSequence">
                 <receive name="Receive1" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" createInstance="no" variable="BookItineraryOperationIn">
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
                 </receive>
-                <flow name="Flow1">
+                <flow name="BookingFlow">
                     <forEach name="ForEachFlight" parallel="no" counterName="i">
                         <startCounterValue>1</startCounterValue>
                         <finalCounterValue>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</finalCounterValue>
@@ -710,9 +785,101 @@
                             <sequence name="BookHotelSequence">
                                 <assign name="AssignToCurrentHotel">
                                     <copy>
-                                            <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]</from>
-                                                <to>$currentHotelInfo</to>
-                                        </copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:nameOfReservService
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:nameOfReservService</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:name
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:name</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:country
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:address/ns1:country</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:city
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:address/ns1:city</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:street
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:address/ns1:street</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:zipcode
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:address/ns1:zipcode</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:number
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:address/ns1:number</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:bookingNr
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:bookingNr</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:price
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:price</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:guarantee
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:guarantee</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:status
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:status</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:stayPrice
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentHotelInfo/ns1:stayPrice</to>
+                                    </copy>
                                 </assign>
                                 <assign name="AssignToHotelWSInput">
                                     <copy>
@@ -720,15 +887,77 @@
                                         <to>$BookHotelsOperationIn.bookHotelInput/bookingNr</to>
                                     </copy>
                                     <copy>
-                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
-                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo</to>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:holderName</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/holderName</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/cardNumber</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/month</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/year</to>
                                     </copy>
                                 </assign>
-                                <invoke name="Invoke1" partnerLink="PartnerLink7" operation="bookHotelsOperation" portType="ns3:hotelsPortType" inputVariable="BookHotelsOperationIn" outputVariable="BookHotelsOperationOut"/>
+                                <invoke name="InvokeBookHotel" partnerLink="PartnerLink7" operation="bookHotelsOperation" portType="ns3:hotelsPortType" inputVariable="BookHotelsOperationIn" outputVariable="BookHotelsOperationOut"/>
                                 <assign name="AssignBookHotelResult">
                                     <copy>
                                         <from variable="BookHotelsOperationOut" part="bookHotelOutput"/>
                                         <to variable="BookItineraryOperationOut" part="bookItineraryOutput"/>
+                                    </copy>
+                                </assign>
+                                <assign name="CurrentHotelBooked">
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:nameOfReservService</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:nameOfReservService</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:name</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:name</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:bookingNr</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:bookingNr</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:price</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:price</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:guarantee</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:guarantee</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:status</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:status</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:stayPrice</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:stayPrice</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:address/ns1:country</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:country</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:address/ns1:city</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:city</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:address/ns1:street</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:street</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:address/ns1:zipcode</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:zipcode</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$currentHotelInfo/ns1:address/ns1:number</from>
+                                        <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$j]/ns1:address/ns1:number</to>
                                     </copy>
                                 </assign>
                             </sequence>

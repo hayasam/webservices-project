@@ -26,12 +26,6 @@ public class FlightServiceTest {
         FlightInfoArray actualFlightInfos = getFlightsOperation(getFlightsInput);
      
         assertEquals(1, actualFlightInfos.getFlightInfo().size());
-        
-        /*
-         * This cannot be tested like that anymore since a booking (e.g. a flight info object)
-         * is created every time the test is run and the booking will always have different id
-         */
-        //assertEquals(222, actualFlightInfos.getFlightInfo().get(0).getBookingNr());
     }
     
     @Test

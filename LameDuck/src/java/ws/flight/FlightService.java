@@ -14,6 +14,7 @@ import ws.flight.builder.BankCCInfoBuilder;
 import ws.flight.builder.Builders;
 import ws.flight.builder.ExpirationDateBuilder;
 import ws.flight.builder.FlightInfoArrayBuilder;
+import ws.flight.debugger.FlightDebugger;
 import ws.flight.query.Flights;
 
 /**
@@ -24,6 +25,7 @@ import ws.flight.query.Flights;
 public class FlightService {
 
     public FlightInfoArray getFlightsOperation(GetFlightInputType getFlightsInput) {
+        FlightDebugger.log(System.out, "getFlightsOperation", getFlightsInput);
         List<FlightInfoType> flightInfos = Flights.newQuery()
                                                 .from(getFlightsInput.getStartAirport())
                                                 .to(getFlightsInput.getEndAirport())
@@ -36,6 +38,7 @@ public class FlightService {
     }
 
     public boolean bookFlightOperation(BookFlightInputType bookFlightInput) throws BookFlightFault {
+        FlightDebugger.log(System.out, "bookFlightOperation", bookFlightInput);
         ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
                                                     .withName(bookFlightInput.getCreditCardInfo().getHolderName())
                                                     .withNumber(bookFlightInput.getCreditCardInfo().getCardNumber())
@@ -65,6 +68,7 @@ public class FlightService {
     }
 
     public boolean cancelFlightOperation(CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
+        FlightDebugger.log(System.out, "cancelFlightOperation", cancelFlightInput);
         ws.bank.CreditCardInfoType ccInfo = Builders.newBuilder(BankCCInfoBuilder.class)
                                                     .withName(cancelFlightInput.getCreditCardInfo().getHolderName())
                                                     .withNumber(cancelFlightInput.getCreditCardInfo().getCardNumber())

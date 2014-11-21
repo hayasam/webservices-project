@@ -55,45 +55,22 @@ public class Flights {
                             .withStartAirport("Copenhagen Lufthavnen")
                             .withDestinationAirport("Bucharest Otopeni")
                             .create();
+        FlightType flight3 = Builders.newBuilder(FlightBuilder.class)
+                        .withCarrier("Turkish Airlines")
+                        .withDateDeparture(createDate("07-11-2014 08:50"))
+                        .withDateArrival(createDate("14-11-2014 20:50"))
+                        .withStartAirport("Copenhagen Lufthavnen")
+                        .withDestinationAirport("Bucharest Otopeni")
+                        .create();
         flights = new ArrayList<FlightType>();
         flights.add(flight1);
         flights.add(flight2);
+        flights.add(flight3);
         
         flightInfos = new ArrayList<FlightInfoType>();
         flightInfoCounter = 0;
         
         randomGenerator = new Random();
-        
-        /*
-        FlightInfoType flightInfo1 = Builders.newBuilder(FlightInfoBuilder.class)
-                                                .withBookingNumber(111)
-                                                .withReservationServiceName("LameDuck")
-                                                .withStatus(Status.UNCONFIRMED.toString())
-                                                .withPrice(10000)
-                                                .withFlight(Builders.newBuilder(FlightBuilder.class)
-                                                                .withCarrier("Lufthansa")
-                                                                .withDateDeparture(createDate("07-11-2014 08:50"))
-                                                                .withDateArrival(createDate("14-11-2014 20:50"))
-                                                                .withStartAirport("Copenhagen Lufthavnen")
-                                                                .withDestinationAirport("Bucharest Otopeni")
-                                                                .create())
-                                                .create();
-        FlightInfoType flightInfo2 = Builders.newBuilder(FlightInfoBuilder.class)
-                                                .withBookingNumber(222)
-                                                .withReservationServiceName("LameDuck")
-                                                .withStatus(Status.UNCONFIRMED.toString())
-                                                .withPrice(100)
-                                                .withFlight(Builders.newBuilder(FlightBuilder.class)
-                                                                .withCarrier("SAS")
-                                                                .withDateDeparture(createDate("18-12-2014 08:50"))
-                                                                .withDateArrival(createDate("01-01-2015 20:50"))
-                                                                .withStartAirport("Copenhagen Lufthavnen")
-                                                                .withDestinationAirport("Bucharest Otopeni")
-                                                                .create())
-                                                .create(); 
-        
-        flightInfos.add(flightInfo1);
-        flightInfos.add(flightInfo2); */
     }
   
     private static XMLGregorianCalendar createDate (String strDate) {
@@ -122,13 +99,7 @@ public class Flights {
     protected static List<FlightInfoType> getFlights(String departureAirport, String arrivalAirport, XMLGregorianCalendar departureDate) {
         List<FlightInfoType> result = new ArrayList<FlightInfoType>();
         
-        /*for(FlightInfoType flightInfo : flightInfos) {
-            if(flightInfo.getFlight().getStartAirport().equals(departureAirport) 
-                    && flightInfo.getFlight().getDestinationAirport().equals(arrivalAirport)
-                    && equalDates(flightInfo.getFlight().getDateDeparture(), departureDate))
-                result.add(flightInfo);
-        }*/
-        
+        boolean expensive = false;
         for(FlightType flight : flights)
             if(flight.getStartAirport().equals(departureAirport) 
                     && flight.getDestinationAirport().equals(arrivalAirport)
@@ -137,14 +108,14 @@ public class Flights {
                                                 .withBookingNumber(getFlightInfoId())
                                                 .withReservationServiceName("LameDuck")
                                                 .withStatus(Status.UNCONFIRMED.toString())
-                                                .withPrice(randomGenerator.nextInt(10000))
+                                                .withPrice(expensive ? randomGenerator.nextInt(10000) + 1000 : randomGenerator.nextInt(100))
                                                 .withFlight(flight)
                                                 .create();
                 result.add(flightInfo);
                 flightInfos.add(flightInfo);
+                expensive = !expensive;
             }
                 
-        
         return result;
     }
     

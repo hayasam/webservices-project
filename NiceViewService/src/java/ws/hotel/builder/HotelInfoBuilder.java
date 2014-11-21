@@ -6,6 +6,7 @@ package ws.hotel.builder;
 
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.AddressType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
+import ws.hotel.query.HotelType;
 
 /**
  *
@@ -56,6 +57,17 @@ public class HotelInfoBuilder {
     
     public HotelInfoBuilder withAddress(AddressType address) {
         hotelInfo.setAddress(address);
+        return this;
+    }
+    
+    public HotelInfoBuilder withHotel(HotelType hotel)
+    {
+        hotelInfo.setNameOfReservService(hotel.getReservationService());
+        hotelInfo.setName(hotel.getName());
+        hotelInfo.setGuarantee(hotel.getGuarantee());
+        hotelInfo.setPrice(hotel.getPrice());
+        hotelInfo.setAddress(hotel.getAddress());
+        
         return this;
     }
     
