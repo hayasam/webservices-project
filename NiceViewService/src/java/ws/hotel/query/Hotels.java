@@ -30,10 +30,11 @@ public class Hotels {
     }
     
     static final List<HotelInfoType> hotelInfos;
+    static int hotelInfoCounter;
     
     static {
         HotelInfoType hotel1 = Builders.newBuilder(HotelInfoBuilder.class)
-                .withBookingNumber(888)
+                //.withBookingNumber(888)
                 .withReservationServiceName("NiceView")
                 .withPrice(100)
                 .withName("Grand Hotel")
@@ -49,7 +50,7 @@ public class Hotels {
                 .create();
         
         HotelInfoType hotel2 = Builders.newBuilder(HotelInfoBuilder.class)
-                .withBookingNumber(999)
+                //.withBookingNumber(999)
                 .withReservationServiceName("NiceView")
                 .withPrice(120)
                 .withName("Bucharest Hotel")
@@ -68,10 +69,17 @@ public class Hotels {
         hotelInfos = new ArrayList<HotelInfoType>();
         hotelInfos.add(hotel1);
         hotelInfos.add(hotel2);
+        
+        hotelInfoCounter = 0;
     }
     
     public static HotelQuery newQuery() {
         return new HotelQuery();
+    }
+    
+   private static int getHotelInfoId () {
+        hotelInfoCounter++;
+        return hotelInfoCounter*100+hotelInfoCounter*10+hotelInfoCounter;
     }
     
     protected static List<HotelInfoType> getHotels(String city, XMLGregorianCalendar arrivalDate, XMLGregorianCalendar departureDate) {
@@ -83,6 +91,7 @@ public class Hotels {
                 int days = daysBetween(arrivalDate.toGregorianCalendar().getTimeInMillis(), 
                         departureDate.toGregorianCalendar().getTimeInMillis());
                 hotelInfo.setStayPrice(days * hotelInfo.getPrice());
+                hotelInfo.setBookingNr(getHotelInfoId());
                 result.add(hotelInfo);
             }
         }
