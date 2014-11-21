@@ -52,7 +52,7 @@ public class TravelServiceTest {
         FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
         
         assertEquals(1, actualFlightInfos.getFlightInfo().size());
-        assertEquals(111, actualFlightInfos.getFlightInfo().get(0).getBookingNr());
+        assertEquals("UNCONFIRMED", actualFlightInfos.getFlightInfo().get(0).getStatus());
     }
     
     @Test 
