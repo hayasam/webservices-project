@@ -63,7 +63,7 @@ public class TravelServiceTest {
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
         
         assertEquals(1, actualHotelInfos.getHotelInfo().size());
-        assertEquals(1443, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        assertEquals("UNCONFIRMED", actualHotelInfos.getHotelInfo().get(0).getStatus());
     }
     
     @Test
@@ -149,6 +149,44 @@ public class TravelServiceTest {
         assertTrue(result);
     }
     
+     @Test
+    public void testCancelMixedItineraryBeforeBooking() throws BookItineraryOperationFault
+    {
+        String itineraryId = createItineraryOperation("666");
+        
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        
+        boolean result = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+       
+        assertTrue(result);
+    }
+     
+     @Test
+    public void testCancelMixedItineraryAfterBooking() throws BookItineraryOperationFault
+    {
+        String itineraryId = createItineraryOperation("666");
+        
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        
+        bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+        
+        boolean result = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+       
+        assertTrue(result);
+    }
+     
     @Test
     public void testCancelFlightsBeforeBooking() {
         // create an itinerary
@@ -178,7 +216,7 @@ public class TravelServiceTest {
         HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
         
         // add flight to itinerary
-        addToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
         
         // cancel itinerary
         boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
@@ -208,6 +246,27 @@ public class TravelServiceTest {
         assertTrue(res);
     }
     
+    @Test
+    public void testCancelHotelsAfterBooking() throws BookItineraryOperationFault {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("987");
+        
+        
+        // search for a flight
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+                
+        // add flight to itinerary
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+            
+        // book itinerary
+        bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+        
+        // cancel itinerary
+        boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
+    
+        assertTrue(res);
+    }
     
     @Test
     public void testGetItinerary() {
@@ -249,14 +308,6 @@ public class TravelServiceTest {
         input.setGetFlightInput(createGetFlightInput());
         return input;
     }
-//
-//    private GetTravelHotelsInputType createGetHotelsInput(String itineraryId)
-//    {
-//        GetTravelHotelsInputType input = new GetTravelHotelsInputType();
-//        input.setItineraryId(itineraryId);
-//        input.setGetHotelsInput(cre);
-//        return input;
-//    }
 
     private AddFlightToItineraryInputType createAddFlightToItineraryInput(String itineraryId, FlightInfoType flightInfo) {
         AddFlightToItineraryInputType input = new AddFlightToItineraryInputType();
@@ -277,15 +328,7 @@ public class TravelServiceTest {
         getFlightsInput.setEndAirport("Bucharest Otopeni");
         return getFlightsInput;
     }
-    
-    private AddHotelToItineraryInputType createAddHotelToItineraryInput(String itineraryId, HotelInfoType hotelInfo)
-    {
-        AddHotelToItineraryInputType input = new AddHotelToItineraryInputType();
-        input.setItineraryId(itineraryId);
-        input.setHotelInfo(hotelInfo);
-        return input;
-    }
-    
+        
     private GetTravelHotelsInputType createGetTravelHotelsInput (String itineraryId) {
         GetTravelHotelsInputType travelHotelsInputType = new GetTravelHotelsInputType();
         travelHotelsInputType.setGetHotelsInput(createGetHotelsInput());

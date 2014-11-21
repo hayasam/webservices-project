@@ -273,9 +273,6 @@
                         <variables>
                             <variable name="CancelItineraryOperationOut" messageType="ns0:cancelItineraryOperationResponse"/>
                         </variables>
-                        <faultHandlers>
-                            <catchAll/>
-                        </faultHandlers>
                         <sequence name="Sequence6">
                             <if name="IfBooked">
                                 <condition>$booked</condition>
@@ -413,7 +410,7 @@
                     <correlations>
                         <correlation set="CorrelationSet" initiate="no"/>
                     </correlations>
-                    <scope name="Scope1">
+                    <scope name="AddHotelEventScope">
                         <variables>
                             <variable name="AddHotelToItineraryOperationOut" messageType="ns0:addHotelToItineraryOperationResponse"/>
                         </variables>
