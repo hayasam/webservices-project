@@ -63,7 +63,7 @@ public class TravelServiceTest {
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
         
         assertEquals(1, actualHotelInfos.getHotelInfo().size());
-        assertEquals(888, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        assertEquals(1443, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
     }
     
     @Test
