@@ -70,4 +70,18 @@ public class TestUtils {
         
         return ccInfo;
     }
+    
+    // Stupid CC info
+    public static CreditCardInfoType stupidCCInfo() {
+        ExpirationDateType expDate = new ExpirationDateType();
+        expDate.setMonth(20);
+        expDate.setYear(15);
+        
+        CreditCardInfoType ccInfo = new CreditCardInfoType();
+        ccInfo.setCardNumber("123456789");
+        ccInfo.setHolderName("Oguz Demir");
+        ccInfo.setExpirationDate(expDate);
+        
+        return ccInfo;
+    }
 }
