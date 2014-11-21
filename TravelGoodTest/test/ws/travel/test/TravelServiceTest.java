@@ -67,7 +67,7 @@ public class TravelServiceTest {
     }
     
     @Test
-    public void testAddToItinerary() {
+    public void testFlightAddToItinerary() {
         // create an itinerary
         String itineraryId = createItineraryOperation("123");
         
@@ -80,6 +80,23 @@ public class TravelServiceTest {
     
         // assert that it is added to itinerary
         assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
+    }
+    
+    
+    @Test
+    public void testHotelAddToItinerary() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("444");
+        
+        // search for a hotel
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        
+        // add hotel to itinerary
+        ItineraryInfoType itineraryInfo = addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+    
+        // assert that it is added to itinerary
+        assertEquals(hotelInfo.getBookingNr(), itineraryInfo.getHotelsInfoArray().getHotelInfo().get(0).getBookingNr());
     }
     
     @Test
@@ -228,7 +245,12 @@ public class TravelServiceTest {
         input.setFlightInfo(flightInfo);
         return input;
     }
-    
+    private AddHotelToItineraryInputType createAddHotelToItineraryInput(String itineraryId, HotelInfoType hotelInfo) {
+        AddHotelToItineraryInputType input = new AddHotelToItineraryInputType();
+        input.setItineraryId(itineraryId);
+        input.setHotelInfo(hotelInfo);
+        return input;
+    }
     private GetFlightInputType createGetFlightInput() {
         GetFlightInputType getFlightsInput = new GetFlightInputType();
         getFlightsInput.setDate(TestUtils.createDate("07-11-2014 08:50"));
@@ -248,18 +270,15 @@ public class TravelServiceTest {
     private GetTravelHotelsInputType createGetTravelHotelsInput (String itineraryId) {
         GetTravelHotelsInputType travelHotelsInputType = new GetTravelHotelsInputType();
         travelHotelsInputType.setGetHotelsInput(createGetHotelsInput());
-        travelHotelsInputType.setItineraryId(itineraryId);
-        
+        travelHotelsInputType.setItineraryId(itineraryId);       
         return travelHotelsInputType;
     }
     
     private GetHotelsInputType createGetHotelsInput () {
         GetHotelsInputType getHotelsInput = new GetHotelsInputType();
-         
         getHotelsInput.setCity("Paris");
         getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
-        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
-        
+        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50")); 
         return getHotelsInput;
     }
     
@@ -310,5 +329,4 @@ public class TravelServiceTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
         return port.addHotelToItineraryOperation(addHotelToItineraryInput);
     }
-    
 }
