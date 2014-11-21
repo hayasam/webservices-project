@@ -45,13 +45,13 @@
                 </copy>
                 <copy>
                     <from>
-                        <literal>&lt;ns1:flightInfoArray /&gt;</literal>
+                        <literal/>
                     </from>
                     <to>$itineraryInfo/ns1:flightInfoArray</to>
                 </copy>
                 <copy>
                     <from>
-                        <literal>&lt;ns1:hotelsInfoArray /&gt;</literal>
+                        <literal/>
                     </from>
                     <to>$itineraryInfo/ns1:hotelsInfoArray</to>
                 </copy>
@@ -68,14 +68,28 @@
         </sequence>
         <scope name="PlanningScope">
             <variables>
-               
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
                 <variable name="currentHotelInfo" type="ns1:hotelInfoType"/>
                 <variable name="BookItineraryOperationOut" messageType="ns0:bookItineraryOperationResponse"/>
                 <variable name="BookItineraryOperationIn" messageType="ns0:bookItineraryOperationRequest"/>
+                <variable name="BookItineraryOperationFault" messageType="ns0:bookItineraryOperationFault"/>
                 <variable name="numberOfFlights" type="xsd:int"/>
                 <variable name="numberOfHotels" type="xsd:int"/>
             </variables>
+            <faultHandlers>
+                <catchAll>
+                    <sequence name="Sequence12">
+                        <compensate name="Compensate1"/>
+                        <assign name="CreateFaultMessage">
+                                <copy>
+                                        <from>'Booking itinerary failed!'</from>
+                                            <to variable="BookItineraryOperationFault" part="itineraryFault"/>
+                                    </copy>
+                            </assign>
+                            <reply name="ReplyFault" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" faultName="ns0:fault1" variable="BookItineraryOperationFault"/>
+                    </sequence>
+                </catchAll>
+            </faultHandlers>
             <eventHandlers>
                 <onEvent partnerLink="PartnerLink4" operation="addFlightToItineraryOperation" portType="ns0:travelPortType" variable="AddFlightToItineraryIn" messageType="ns0:addFlightToItineraryOperationRequest">
                     <correlations>
@@ -143,44 +157,50 @@
                                 </copy>
                             </assign>
                             <invoke name="InvokeGetFlights" partnerLink="PartnerLink6" operation="getFlightsOperation" portType="ns2:flightPortType" inputVariable="GetFlightsOperationIn1" outputVariable="GetFlightsOperationOut1"/>
-                            <assign name="AssignFlightWSResult">
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/bookingNr</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:bookingNr</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/price</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:price</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/nameOfReservService</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:nameOfReservService</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/startAirport</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:startAirport</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/destinationAirport</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:destinationAirport</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/dateDeparture</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/dateArrival</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateArrival</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/flight/carrier</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:flight/ns1:carrier</to>
-                                </copy>
-                                <copy>
-                                    <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo/status</from>
-                                    <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo/ns1:status</to>
-                                </copy>
-                            </assign>
+                            <forEach name="ForEachFlight" parallel="no" counterName="i">
+                                <startCounterValue>1</startCounterValue>
+                                <finalCounterValue>count($GetFlightsOperationOut1.getFlightsOutput/flightInfo)</finalCounterValue>
+                                <scope name="CopyFlight">
+                                    <assign name="AssignFlightWSResult">
+                                        <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/bookingNr</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:bookingNr</to>
+                                        </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/price</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:price</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/nameOfReservService</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:nameOfReservService</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/flight/startAirport</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:startAirport</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/flight/destinationAirport</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:destinationAirport</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/flight/dateDeparture</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateDeparture</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/flight/dateArrival</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateArrival</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/flight/carrier</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:carrier</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetFlightsOperationOut1.getFlightsOutput/flightInfo[$i]/status</from>
+                                                <to>$GetFlightsOperationOut2.flightInfoArray/ns1:flightInfo[$i]/ns1:status</to>
+                                            </copy>
+                                    </assign>
+                                </scope>
+                            </forEach>
                             <reply name="ReplyGetFlights" partnerLink="PartnerLink4" operation="getFlightsOperation" portType="ns0:travelPortType" variable="GetFlightsOperationOut2"/>
                         </sequence>
                     </scope>
@@ -383,23 +403,191 @@
                     <forEach name="ForEachFlight" parallel="no" counterName="i">
                         <startCounterValue>1</startCounterValue>
                         <finalCounterValue>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</finalCounterValue>
-                        <completionCondition>
-                            <branches/>
-                        </completionCondition>
                         <scope name="BookFlightScope">
                             <variables>
+                                <variable name="CancelFlightOperationOut" messageType="ns2:cancelFlightResponse"/>
+                                <variable name="CancelFlightOperationIn" messageType="ns2:cancelFlightRequest"/>
                                 <variable name="BookFlightOperationOut" messageType="ns2:bookFlightResponse"/>
                                 <variable name="BookFlightOperationIn" messageType="ns2:bookFlightRequest"/>
                             </variables>
+                            <compensationHandler>
+                                <sequence name="Sequence13">
+                                    <assign name="AssignToCancelWSInput">
+                                        <copy>
+                                            <from>$BookFlightOperationIn.bookFlightInput/bookingNr</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/bookingNr</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$BookFlightOperationIn.bookFlightInput/creditCardInfo/holderName</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/holderName</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$BookFlightOperationIn.bookFlightInput/creditCardInfo/cardNumber</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/cardNumber</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$BookFlightOperationIn.bookFlightInput/creditCardInfo/expirationDate/month</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/month</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$BookFlightOperationIn.bookFlightInput/creditCardInfo/expirationDate/year</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/creditCardInfo/expirationDate/year</to>
+                                        </copy>
+                                        <copy>
+                                            <from>2 * $currentFlightInfo/price</from>
+                                            <to>$CancelFlightOperationIn.cancelFlightInput/price</to>
+                                        </copy>
+                                    </assign>
+                                    <invoke name="InvokeCancelFlight" partnerLink="PartnerLink6" operation="cancelFlightOperation" portType="ns2:flightPortType" inputVariable="CancelFlightOperationIn" outputVariable="CancelFlightOperationOut"/>
+                                    <assign name="CurrentFlightCancelled">
+                                        <copy>
+                                            <from>$currentFlightInfo/bookingNr</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:bookingNr
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/price</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:price
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/nameOfReservService</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:nameOfReservService
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/startAirport</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:startAirport
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/destinationAirport</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:destinationAirport
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/dateDeparture</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateDeparture
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/dateArrival</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateArrival
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/carrier</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:carrier
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>'CANCELLED'</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:status
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                    </assign>
+                                </sequence>
+                            </compensationHandler>
                             <sequence name="BookFlightSequence">
                                 <assign name="AssignToCurrentFlight">
                                     <copy>
-                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:bookingNr
                                             <sxed:editor>
                                                 <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
                                             </sxed:editor>
                                         </from>
-                                        <to variable="currentFlightInfo"/>
+                                        <to>$currentFlightInfo/bookingNr</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:price
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/price</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:nameOfReservService
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/nameOfReservService</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:startAirport
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/flight/startAirport</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:destinationAirport
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/flight/destinationAirport</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateDeparture
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/flight/dateDeparture</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateArrival
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/flight/dateArrival</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:carrier
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/flight/carrier</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:status
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to>$currentFlightInfo/status</to>
                                     </copy>
                                 </assign>
                                 <assign name="AssignToFlightWSInput">
@@ -430,6 +618,80 @@
                                         <from variable="BookFlightOperationOut" part="bookFlightOutput"/>
                                         <to variable="BookItineraryOperationOut" part="bookItineraryOutput"/>
                                     </copy>
+                                </assign>
+                                <assign name="CurrentFlightBooked">
+                                    <copy>
+                                            <from>$currentFlightInfo/bookingNr</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:bookingNr
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/price</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:price
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/nameOfReservService</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:nameOfReservService
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/startAirport</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:startAirport
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/destinationAirport</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:destinationAirport
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/dateDeparture</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateDeparture
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/dateArrival</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:dateArrival
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>$currentFlightInfo/flight/carrier</from>
+                                                <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:flight/ns1:carrier
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
+                                        <copy>
+                                            <from>'CONFIRMED'</from>
+                                            <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]/ns1:status
+                                                <sxed:editor>
+                                                    <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$i]" source="to"/>
+                                                </sxed:editor>
+                                            </to>
+                                        </copy>
                                 </assign>
                             </sequence>
                         </scope>
@@ -473,13 +735,15 @@
                         </scope>
                     </forEach>
                 </flow>
-                <assign name="BookedTrue">
-                    <copy>
-                        <from>true()</from>
-                        <to variable="booked"/>
-                    </copy>
-                </assign>
-                <reply name="ReplyBookItinerary" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
+                <sequence name="Sequence14">
+                    <assign name="BookedTrue">
+                            <copy>
+                                <from>true()</from>
+                                    <to variable="booked"/>
+                            </copy>
+                        </assign>
+                        <reply name="ReplyBookItinerary" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
+                </sequence>
                 <wait name="Wait1H">
                     <for>'P0Y0M0DT1H0M0.0S'</for>
                 </wait>

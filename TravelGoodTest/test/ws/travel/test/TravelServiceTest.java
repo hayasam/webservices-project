@@ -51,8 +51,9 @@ public class TravelServiceTest {
         String itineraryId = createItineraryOperation("123");
         FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
         
-        assertEquals(1, actualFlightInfos.getFlightInfo().size());
+        assertEquals(2, actualFlightInfos.getFlightInfo().size());
         assertEquals("UNCONFIRMED", actualFlightInfos.getFlightInfo().get(0).getStatus());
+        assertEquals("UNCONFIRMED", actualFlightInfos.getFlightInfo().get(1).getStatus());
     }
     
     @Test 
@@ -87,15 +88,43 @@ public class TravelServiceTest {
         
         // search for a flight
         FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
         
         // add flight to itinerary
-        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
     
+        
         // assert that booking is successful
         boolean res = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
+    }
+    
+    @Test
+    public void testBookItineraryWithInvalidCC() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("555");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
+        
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
+        
+        // book with invalid credit card
+        try {
+            bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.invalidCCInfo()));
+   
+            fail("Book itinerary should have failed!");
+        } catch(BookItineraryOperationFault ex) {
+            String faultInfo = ex.getFaultInfo();
+            assertEquals("Booking itinerary failed!", faultInfo);
+        }
     }
     
     @Test
