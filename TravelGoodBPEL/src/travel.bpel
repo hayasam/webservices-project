@@ -68,7 +68,6 @@
         </sequence>
         <scope name="PlanningScope">
             <variables>
-               
                 <variable name="currentFlightInfo" type="ns2:flightInfoType"/>
                 <variable name="currentHotelInfo" type="ns1:hotelInfoType"/>
                 <variable name="BookItineraryOperationOut" messageType="ns0:bookItineraryOperationResponse"/>
@@ -101,7 +100,7 @@
                                                     <to>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo[$numberOfFlights + 1]</to>
                                             </copy>
                                     </assign>
-                                    <assign name="Assign2">
+                                    <assign name="ReturnItinerary">
                                         <copy>
                                                 <from>$itineraryInfo/ns1:flightInfoArray</from>
                                                     <to>$AddFlightToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
@@ -410,6 +409,46 @@
                             </sequence>
                     </scope>
                 </onEvent>
+                <onEvent variable="AddHotelToItineraryIn" partnerLink="PartnerLink4" operation="addHotelToItineraryOperation" messageType="ns0:addHotelToItineraryOperationRequest" portType="ns0:travelPortType">
+                    <correlations>
+                        <correlation set="CorrelationSet" initiate="no"/>
+                    </correlations>
+                    <scope name="Scope1">
+                        <variables>
+                            <variable name="AddHotelToItineraryOperationOut" messageType="ns0:addHotelToItineraryOperationResponse"/>
+                        </variables>
+                        <sequence name="Sequence12">
+                            <if name="IfNotBooked">
+                                <condition>not($booked)</condition>
+                                <sequence name="Sequence13">
+                                    <assign name="AssignNumberofHotels">
+                                        <copy>
+                                            <from>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</from>
+                                            <to variable="numberOfHotels"/>
+                                        </copy>
+                                    </assign>
+                                    <assign name="AppendToHotels">
+                                        <copy>
+                                            <from>$AddHotelToItineraryIn.addHotelToItineraryInput/hotelInfo</from>
+                                            <to>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo[$numberOfHotels + 1]</to>
+                                        </copy>
+                                    </assign>
+                                    <assign name="ReturnItinerary">
+                                        <copy>
+                                            <from>$itineraryInfo/ns1:flightInfoArray</from>
+                                            <to>$AddHotelToItineraryOperationOut.itineraryOutput/ns1:flightInfoArray</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$itineraryInfo/ns1:hotelsInfoArray</from>
+                                            <to>$AddHotelToItineraryOperationOut.itineraryOutput/ns1:hotelsInfoArray</to>
+                                        </copy>
+                                    </assign>
+                                </sequence>
+                            </if>
+                            <reply name="Reply7" partnerLink="PartnerLink4" operation="addHotelToItineraryOperation" portType="ns0:travelPortType" variable="AddHotelToItineraryOperationOut"/>
+                        </sequence>
+                    </scope>
+                </onEvent>
             </eventHandlers>
             <sequence name="Sequence1">
                 <receive name="Receive1" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" createInstance="no" variable="BookItineraryOperationIn">
@@ -496,8 +535,20 @@
                                         <to>$BookHotelsOperationIn.bookHotelInput/bookingNr</to>
                                     </copy>
                                     <copy>
-                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo</from>
-                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo</to>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:holderName</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/holderName</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:cardNumber</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/cardNumber</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:month</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/month</to>
+                                    </copy>
+                                    <copy>
+                                        <from>$BookItineraryOperationIn.bookItineraryInput/creditCardInfo/ns1:expirationDate/ns1:year</from>
+                                        <to>$BookHotelsOperationIn.bookHotelInput/creditCardInfo/expirationDate/year</to>
                                     </copy>
                                 </assign>
                                 <invoke name="Invoke1" partnerLink="PartnerLink7" operation="bookHotelsOperation" portType="ns3:hotelsPortType" inputVariable="BookHotelsOperationIn" outputVariable="BookHotelsOperationOut"/>
