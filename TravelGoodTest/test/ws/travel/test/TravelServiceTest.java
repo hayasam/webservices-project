@@ -7,6 +7,7 @@ package ws.travel.test;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddFlightToItineraryInputType;
+import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddHotelToItineraryInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryInputType;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.BookItineraryOperationFault;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.CancelItineraryInputType;
@@ -19,6 +20,7 @@ import org.netbeans.xml.schema.itinerarydata.FlightInfoArray;
 import org.netbeans.xml.schema.itinerarydata.FlightInfoType;
 import org.netbeans.xml.schema.itinerarydata.GetFlightInputType;
 import org.netbeans.xml.schema.itinerarydata.GetHotelsInputType;
+import org.netbeans.xml.schema.itinerarydata.HotelInfoType;
 import org.netbeans.xml.schema.itinerarydata.HotelsInfoArray;
 import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
@@ -96,6 +98,38 @@ public class TravelServiceTest {
         boolean res = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
+    }
+    
+    @Test
+    public void testBookHotelItinerary() throws BookItineraryOperationFault {
+        String itineraryId = createItineraryOperation("555");
+        
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        
+        ItineraryInfoType output = addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        
+        boolean result = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+        
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testBookMixedItinerary() throws BookItineraryOperationFault
+    {
+        String itineraryId = createItineraryOperation("666");
+        
+        FlightInfoArray actualFlightInfos = getFlightsOperation(createGetFlightsInput(itineraryId));
+        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId));
+        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        
+        boolean result = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+       
+        assertTrue(result);
     }
     
     @Test
@@ -179,7 +213,15 @@ public class TravelServiceTest {
         input.setGetFlightInput(createGetFlightInput());
         return input;
     }
-    
+//
+//    private GetTravelHotelsInputType createGetHotelsInput(String itineraryId)
+//    {
+//        GetTravelHotelsInputType input = new GetTravelHotelsInputType();
+//        input.setItineraryId(itineraryId);
+//        input.setGetHotelsInput(cre);
+//        return input;
+//    }
+
     private AddFlightToItineraryInputType createAddFlightToItineraryInput(String itineraryId, FlightInfoType flightInfo) {
         AddFlightToItineraryInputType input = new AddFlightToItineraryInputType();
         input.setItineraryId(itineraryId);
@@ -193,6 +235,14 @@ public class TravelServiceTest {
         getFlightsInput.setStartAirport("Copenhagen Lufthavnen");
         getFlightsInput.setEndAirport("Bucharest Otopeni");
         return getFlightsInput;
+    }
+    
+    private AddHotelToItineraryInputType createAddHotelToItineraryInput(String itineraryId, HotelInfoType hotelInfo)
+    {
+        AddHotelToItineraryInputType input = new AddHotelToItineraryInputType();
+        input.setItineraryId(itineraryId);
+        input.setHotelInfo(hotelInfo);
+        return input;
     }
     
     private GetTravelHotelsInputType createGetTravelHotelsInput (String itineraryId) {
@@ -253,6 +303,12 @@ public class TravelServiceTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
         return port.getItineraryOperation(getItineraryInput);
+    }
+
+    private static ItineraryInfoType addHotelToItineraryOperation(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.AddHotelToItineraryInputType addHotelToItineraryInput) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travel.TravelPortType port = service.getTravelPortTypeBindingPort();
+        return port.addHotelToItineraryOperation(addHotelToItineraryInput);
     }
     
 }
