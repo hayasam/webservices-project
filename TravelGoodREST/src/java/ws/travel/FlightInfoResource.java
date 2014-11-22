@@ -16,6 +16,7 @@ public class FlightInfoResource {
     /**
      * @POST
      * @Path("add")
+     * [Oguz]
      * Implement add to itinerary.
      */
 }

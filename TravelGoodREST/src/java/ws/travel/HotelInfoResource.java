@@ -17,6 +17,9 @@ public class HotelInfoResource {
     /**
      * @POST
      * @Path("add")
+     * [Paulina]
      * Implement add to itinerary.
      */
+    
+    
 }
