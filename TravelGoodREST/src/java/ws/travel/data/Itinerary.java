@@ -17,6 +17,10 @@ public class Itinerary {
     private List<FlightInfo> flightInfos; 
 
     private List<HotelInfo> hotelInfos;
+    
+    public Itinerary() {
+        
+    }
 
     public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos) {
         this.flightInfos = flightInfos;
