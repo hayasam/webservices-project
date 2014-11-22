@@ -111,6 +111,8 @@ public class Hotels {
                         .withStatus(Status.UNCONFIRMED.toString())
                         .withStayPrice(days * hotel.getPrice())
                         .withHotel(hotel)
+                        .withStartDate(arrivalDate)
+                        .withEndDate(departureDate)
                         .create();
                 
                 result.add(hotelInfo);

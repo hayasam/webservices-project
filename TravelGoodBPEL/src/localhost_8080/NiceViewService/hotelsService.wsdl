@@ -33,6 +33,8 @@
                     <xsd:element name="guarantee" type="xsd:boolean"/>
                     <xsd:element name="status" type="xsd:string"/>
                     <xsd:element name="stayPrice" type="xsd:int"/>
+                    <xsd:element name="startDate" type="xsd:date"/>
+                    <xsd:element name="endDate" type="xsd:date"/>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:complexType name="addressType">

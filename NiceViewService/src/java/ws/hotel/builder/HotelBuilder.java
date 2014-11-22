@@ -4,6 +4,7 @@
  */
 package ws.hotel.builder;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.AddressType;
 import ws.hotel.query.HotelType;
 

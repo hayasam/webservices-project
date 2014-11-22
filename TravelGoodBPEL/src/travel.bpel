@@ -285,6 +285,14 @@
                                                 <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo[$i]/stayPrice</from>
                                                     <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo[$i]/ns1:stayPrice</to>
                                             </copy>
+                                            <copy>
+                                                <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo[$i]/startDate</from>
+                                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo[$i]/ns1:startDate</to>
+                                            </copy>
+                                            <copy>
+                                                <from>$GetHotelsOperationOut1.getHotelsOutput/hotelInfo[$i]/endDate</from>
+                                                    <to>$GetHotelsOperationOut.hotelsInfoArray/ns1:hotelInfo[$i]/ns1:endDate</to>
+                                            </copy>
                                     </assign>
                                 </scope>
                             </forEach>
