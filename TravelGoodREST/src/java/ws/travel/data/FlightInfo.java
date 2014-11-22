@@ -18,7 +18,10 @@ public class FlightInfo {
     private String nameOfReservService;
     private Flight flight;
     private String status;
-  
+
+    public FlightInfo() {
+    }
+ 
     public FlightInfo(int bookingNr, int price, String nameOfReservService, Flight flight, String status) {
         this.bookingNr = bookingNr;
         this.price = price;

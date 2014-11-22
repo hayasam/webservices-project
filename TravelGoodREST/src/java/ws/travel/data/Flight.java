@@ -20,6 +20,9 @@ public class Flight {
     private XMLGregorianCalendar dateArrival;
     private String carrier;
 
+    public Flight() {
+    }
+    
     public Flight(String startAirport, String destinationAirport, XMLGregorianCalendar dateDeparture, XMLGregorianCalendar dateArrival, String carrier) {
         this.startAirport = startAirport;
         this.destinationAirport = destinationAirport;
