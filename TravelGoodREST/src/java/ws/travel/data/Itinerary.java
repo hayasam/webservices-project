@@ -16,14 +16,10 @@ public class Itinerary {
  
     private List<FlightInfo> flightInfos; 
 
-    private List<HotelInfo> hotelInfos;
-
-    public Itinerary() {
-    }
-
-    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos) {
+    //private List<HotelInfo> hotelInfo;
+    
+    public Itinerary(List<FlightInfo> flightInfos) {
         this.flightInfos = flightInfos;
-        this.hotelInfos = hotelInfos;
     }
 
     public List<FlightInfo> getFlightInfos() {
@@ -33,12 +29,4 @@ public class Itinerary {
     public void setFlightInfos(List<FlightInfo> flightInfos) {
         this.flightInfos = flightInfos;
     }    
-
-    public List<HotelInfo> getHotelInfos() {
-        return hotelInfos;
-    }
-
-    public void setHotelInfos(List<HotelInfo> hotelInfos) {
-        this.hotelInfos = hotelInfos;
-    }
 }
