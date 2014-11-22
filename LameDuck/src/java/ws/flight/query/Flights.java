@@ -44,20 +44,29 @@ public class Flights {
         FlightType flight1 = Builders.newBuilder(FlightBuilder.class)
                         .withCarrier("Lufthansa")
                         .withDateDeparture(createDate("07-11-2014 08:50"))
-                        .withDateArrival(createDate("14-11-2014 20:50"))
+                        .withDateArrival(createDate("07-11-2014 10:50"))
                         .withStartAirport("Copenhagen Lufthavnen")
                         .withDestinationAirport("Bucharest Otopeni")
                         .create();
         FlightType flight2 = Builders.newBuilder(FlightBuilder.class)
                             .withCarrier("SAS")
-                            .withDateDeparture(createDate("18-12-2014 08:50"))
-                            .withDateArrival(createDate("01-01-2015 20:50"))
-                            .withStartAirport("Copenhagen Lufthavnen")
-                            .withDestinationAirport("Bucharest Otopeni")
+                            .withDateDeparture(createDate("18-12-2014 14:50"))
+                            .withDateArrival(createDate("18-12-2014 16:50"))
+                            .withStartAirport("Warsaw")
+                            .withDestinationAirport("Madrid")
                             .create();
+        FlightType flight3 = Builders.newBuilder(FlightBuilder.class)
+                            .withCarrier("Norwegian")
+                            .withDateDeparture(createDate("21-01-2015 08:50"))
+                            .withDateArrival(createDate("21-01-2015 10:10"))
+                            .withStartAirport("Oslo")
+                            .withDestinationAirport("Malmo")
+                            .create();
+        
         flights = new ArrayList<FlightType>();
         flights.add(flight1);
         flights.add(flight2);
+        flights.add(flight3);
         
         flightInfos = new ArrayList<FlightInfoType>();
         flightInfoCounter = 0;

@@ -499,6 +499,15 @@
                                     </copy>
                                 </assign>
                                 <invoke name="InvokeBookFlight" partnerLink="PartnerLink6" operation="bookFlightOperation" portType="ns2:flightPortType" inputVariable="BookFlightOperationIn" outputVariable="BookFlightOperationOut"/>
+                                <if name="IfCheckFlightWasBooked">
+                                    <condition>$BookFlightOperationOut.bookFlightOutput</condition>
+                                    <assign name="AssignConfirmedToCurrentFlight">
+                                        <copy>
+                                            <from>'CONFIRMED'</from>
+                                            <to>$currentFlightInfo/status</to>
+                                        </copy>
+                                    </assign>
+                                </if>
                                 <assign name="AssignBookFlightResult">
                                     <copy>
                                         <from variable="BookFlightOperationOut" part="bookFlightOutput"/>
