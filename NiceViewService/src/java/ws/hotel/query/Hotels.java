@@ -36,6 +36,7 @@ public class Hotels {
     static final List<HotelType> hotels;
     
     static {
+        
         HotelType hotel1 = Builders.newBuilder((HotelBuilder.class))
                 .withReservationServiceName("NiceView") 
                 .withPrice(100) 
@@ -63,11 +64,25 @@ public class Hotels {
                     .withStreet("Strada Gramont")
                     .create())
                 .create();
-        
 
+        HotelType hotel3 = Builders.newBuilder((HotelBuilder.class))
+                .withReservationServiceName("NiceView") 
+                .withPrice(100) 
+                .withName("Grand Hotel 2") 
+                .withGuarantee(true) 
+                .withAddress(Builders.newBuilder(AddressBuilder.class) 
+                    .withCity("Paris")
+                    .withCountry("France")
+                    .withZipCode("75001")
+                    .withNumber("3A")
+                    .withStreet("La Rue Grande")
+                    .create())
+                .create();
+        
         hotels = new ArrayList<HotelType>();
         hotels.add(hotel1);
         hotels.add(hotel2);
+        hotels.add(hotel3);
         
         hotelInfos = new ArrayList<HotelInfoType>();
         hotelInfoCounter = 0;

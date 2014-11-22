@@ -55,8 +55,9 @@ public class TravelServiceTest {
                 getFlightsOperation(
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
         
-        assertEquals(1, actualFlightInfos.getFlightInfo().size());
+        assertEquals(2, actualFlightInfos.getFlightInfo().size());
         assertEquals("UNCONFIRMED", actualFlightInfos.getFlightInfo().get(0).getStatus());
+        assertEquals("UNCONFIRMED", actualFlightInfos.getFlightInfo().get(1).getStatus());
     }
     
     @Test 
@@ -64,8 +65,9 @@ public class TravelServiceTest {
         String itineraryId = createItineraryOperation("123");
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
         
-        assertEquals(1, actualHotelInfos.getHotelInfo().size());
+        assertEquals(2, actualHotelInfos.getHotelInfo().size());
         assertEquals("UNCONFIRMED", actualHotelInfos.getHotelInfo().get(0).getStatus());
+        assertEquals("UNCONFIRMED", actualHotelInfos.getHotelInfo().get(1).getStatus());
     }
     
     @Test
@@ -77,13 +79,20 @@ public class TravelServiceTest {
         FlightInfoArray actualFlightInfos = 
                 getFlightsOperation(
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
         
         // add flight to itinerary
-        ItineraryInfoType itineraryInfo = addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
-    
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
+        
+        ItineraryInfoType itineraryInfo = getItineraryOperation(itineraryId);
+        
         // assert that it is added to itinerary
-        assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
+        assertEquals(2, itineraryInfo.getFlightInfoArray().getFlightInfo().size());
+        for(FlightInfoType flightInfo : itineraryInfo.getFlightInfoArray().getFlightInfo()) {
+            assertEquals("UNCONFIRMED", flightInfo.getStatus());
+        }
     }
     
     
@@ -94,17 +103,26 @@ public class TravelServiceTest {
         
         // search for a hotel
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
-        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
+        
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        HotelInfoType hotelInfo2 = actualHotelInfos.getHotelInfo().get(1);
         
         // add hotel to itinerary
-        ItineraryInfoType itineraryInfo = addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
-    
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo2));
+        
+        ItineraryInfoType itineraryInfo = getItineraryOperation(itineraryId);
+        
         // assert that it is added to itinerary
-        assertEquals(hotelInfo.getBookingNr(), itineraryInfo.getHotelsInfoArray().getHotelInfo().get(0).getBookingNr());
+        assertEquals(2, itineraryInfo.getHotelsInfoArray().getHotelInfo().size());
+        
+        for(HotelInfoType hotelInfo : itineraryInfo.getHotelsInfoArray().getHotelInfo()) {
+            assertEquals("UNCONFIRMED", hotelInfo.getStatus());
+        }
     }
     
     @Test
-    public void testBookItinerary() throws BookItineraryOperationFault {
+    public void testBookItineraryWithFlights() throws BookItineraryOperationFault {
         // create an itinerary
         String itineraryId = createItineraryOperation("444");
         
@@ -112,52 +130,117 @@ public class TravelServiceTest {
         FlightInfoArray actualFlightInfos = 
                 getFlightsOperation(
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+ 
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
         
         // add flight to itinerary
-        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
     
+        
         // assert that booking is successful
         boolean res = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
+        
+        // get itinerary and check status
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        
+        String status1 = itinerary.getFlightInfoArray().getFlightInfo().get(0).getStatus();
+        String status2 = itinerary.getFlightInfoArray().getFlightInfo().get(1).getStatus();
+        
+        assertEquals("CONFIRMED", status1);
+        assertEquals("CONFIRMED", status2);
     }
     
     @Test
-    public void testBookHotelItinerary() throws BookItineraryOperationFault {
+    public void testBookItineraryWithHotels() throws BookItineraryOperationFault {
         String itineraryId = createItineraryOperation("555");
-        
+
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
-        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
-        
-        ItineraryInfoType output = addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+       
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        HotelInfoType hotelInfo2 = actualHotelInfos.getHotelInfo().get(1);
+
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo2));
         
         boolean result = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
         
         assertTrue(result);
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        
+        String status1 = itinerary.getHotelsInfoArray().getHotelInfo().get(0).getStatus();
+        String status2 = itinerary.getHotelsInfoArray().getHotelInfo().get(1).getStatus();
+        
+        assertEquals("CONFIRMED", status1);
+        assertEquals("CONFIRMED", status2);
     }
     
     @Test
-    public void testBookMixedItinerary() throws BookItineraryOperationFault
+    public void testBookItineraryMixed() throws BookItineraryOperationFault
     {
         String itineraryId = createItineraryOperation("666");
         
         FlightInfoArray actualFlightInfos = 
                 getFlightsOperation(
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
-        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
         
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
-        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
-        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
         
         boolean result = bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
        
         assertTrue(result);
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        
+        assertEquals(2, itinerary.getFlightInfoArray().getFlightInfo().size() + 
+                        itinerary.getHotelsInfoArray().getHotelInfo().size());
+        
+        for(FlightInfoType flightInfo : itinerary.getFlightInfoArray().getFlightInfo())
+            assertEquals("CONFIRMED", flightInfo.getStatus());
+        for(HotelInfoType hotelInfo : itinerary.getHotelsInfoArray().getHotelInfo()) {
+            assertEquals("CONFIRMED", hotelInfo.getStatus());
+        }
     }
     
-     @Test
+    /**
+     * First flight should be compensated in this test when second flight booking throws the exception.  
+     */
+    @Test
+    public void testBookItineraryWithInvalidCC() {
+        // create an itinerary
+        String itineraryId = createItineraryOperation("555");
+        
+        // search for a flight
+        FlightInfoArray actualFlightInfos = getFlightsOperation( createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
+        
+        // add flight to itinerary
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
+        
+        // book with invalid credit card
+        try {
+            bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.invalidCCInfo()));
+   
+            fail("Book itinerary should have failed!");
+        } catch(BookItineraryOperationFault ex) {
+            String faultInfo = ex.getFaultInfo();
+            assertEquals("Booking itinerary failed!", faultInfo);
+        }
+        //TODO: Verify that process is terminated. 
+    }
+    
+    @Test
     public void testCancelMixedItineraryBeforeBooking() throws BookItineraryOperationFault
     {
         String itineraryId = createItineraryOperation("666");
@@ -175,6 +258,8 @@ public class TravelServiceTest {
         boolean result = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
        
         assertTrue(result);
+        
+        //TODO: Verify that process is terminated.
     }
      
      @Test
@@ -182,23 +267,36 @@ public class TravelServiceTest {
     {
         String itineraryId = createItineraryOperation("666");
         
-        FlightInfoArray actualFlightInfos = 
-                getFlightsOperation(
-                    createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
-        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        FlightInfoArray actualFlightInfos = getFlightsOperation(
+                createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
         
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
-        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
-        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        HotelInfoType hotelInfo2 = actualHotelInfos.getHotelInfo().get(1);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo2));
+
         
         bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
         
         boolean result = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
        
         assertTrue(result);
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        
+        for(FlightInfoType flightInfo : itinerary.getFlightInfoArray().getFlightInfo()) {
+            assertEquals("CANCELLED", flightInfo.getStatus());
+        }
+        for(HotelInfoType hotelInfo : itinerary.getHotelsInfoArray().getHotelInfo()) {
+            assertEquals("CANCELLED", hotelInfo.getStatus());
+        } 
     }
-     
+  
     @Test
     public void testCancelFlightsBeforeBooking() {
         // create an itinerary
@@ -217,7 +315,6 @@ public class TravelServiceTest {
         boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
-        
     }
     
     @Test
@@ -245,13 +342,15 @@ public class TravelServiceTest {
         String itineraryId = createItineraryOperation("987");
         
         // search for a flight
-        FlightInfoArray actualFlightInfos = 
-                getFlightsOperation(
+
+        FlightInfoArray actualFlightInfos = getFlightsOperation(
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-        FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
         
         // add flight to itinerary
-        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
         
         // book itinerary
         bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
@@ -260,6 +359,13 @@ public class TravelServiceTest {
         boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
         assertTrue(res);
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        String status1 = itinerary.getFlightInfoArray().getFlightInfo().get(0).getStatus();
+        String status2 = itinerary.getFlightInfoArray().getFlightInfo().get(1).getStatus();
+        
+        assertEquals("CANCELLED", status1);
+        assertEquals("CANCELLED", status2);
     }
     
     @Test
@@ -267,25 +373,32 @@ public class TravelServiceTest {
         // create an itinerary
         String itineraryId = createItineraryOperation("987");
         
-        
-        // search for a flight
+        // search for a hotel
         HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
-        HotelInfoType hotelInfo = actualHotelInfos.getHotelInfo().get(0);
-                
-        // add flight to itinerary
-        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
-            
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        HotelInfoType hotelInfo2 = actualHotelInfos.getHotelInfo().get(1);
+        
+        // add hotel to itinerary
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo2));
+        
         // book itinerary
         bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
         
         // cancel itinerary
         boolean res = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.validCCInfo()));
     
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        String status1 = itinerary.getHotelsInfoArray().getHotelInfo().get(0).getStatus();
+        String status2 = itinerary.getHotelsInfoArray().getHotelInfo().get(1).getStatus();
+        
         assertTrue(res);
+        assertEquals("CANCELLED", status1);
+        assertEquals("CANCELLED", status2);
     }
     
     @Test
-    public void testGetItinerary() {
+    public void testGetItineraryMixed() {
         // create an itinerary
         String itineraryId = createItineraryOperation("555");
         
@@ -295,15 +408,59 @@ public class TravelServiceTest {
                     createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
         FlightInfoType flightInfo = actualFlightInfos.getFlightInfo().get(0);
         
-        // add flight to itinerary
+        // search for a hotel
+        HotelInfoType hotelInfo = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ))
+                                    .getHotelInfo()
+                                    .get(0);
+        
+        // add flight & hotel to itinerary
         addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo));
         
         // get itinerary
         ItineraryInfoType itineraryInfo = getItineraryOperation(itineraryId);
         
         // assert that flight with correct status is in the current itinerary
-        assertEquals(flightInfo.getBookingNr(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getBookingNr());
-        assertEquals(flightInfo.getStatus(), itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getStatus());
+        assertEquals(1, itineraryInfo.getFlightInfoArray().getFlightInfo().size());
+        assertEquals("UNCONFIRMED", itineraryInfo.getFlightInfoArray().getFlightInfo().get(0).getStatus());
+        
+        assertEquals(1, itineraryInfo.getHotelsInfoArray().getHotelInfo().size());
+        assertEquals("UNCONFIRMED", itineraryInfo.getHotelsInfoArray().getHotelInfo().get(0).getStatus());
+    }
+    
+    @Test
+    public void testCancelItineraryWithInvalidCC() throws BookItineraryOperationFault {
+        String itineraryId = createItineraryOperation("666");
+        
+        FlightInfoArray actualFlightInfos = getFlightsOperation( 
+                createGetFlightsInput(itineraryId, "07-11-2014 00:00", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+        FlightInfoType flightInfo1 = actualFlightInfos.getFlightInfo().get(0);
+        FlightInfoType flightInfo2 = actualFlightInfos.getFlightInfo().get(1);
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo1));
+        addFlightToItineraryOperation(createAddFlightToItineraryInput(itineraryId, flightInfo2));
+        
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(createGetTravelHotelsInput(itineraryId, "Paris", "07-11-2014 00:00", "10-11-2014 00:00" ));
+        HotelInfoType hotelInfo1 = actualHotelInfos.getHotelInfo().get(0);
+        HotelInfoType hotelInfo2 = actualHotelInfos.getHotelInfo().get(1);
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo1));
+        addHotelToItineraryOperation(createAddHotelToItineraryInput(itineraryId, hotelInfo2));
+        
+        bookItineraryOperation(createBookItineraryInput(itineraryId, TestUtils.validCCInfo()));
+        
+        boolean result = cancelItineraryOperation(createCancelItineraryInput(itineraryId, TestUtils.stupidCCInfo()));
+       
+        assertFalse(result);
+        
+        ItineraryInfoType itinerary = getItineraryOperation(itineraryId);
+        
+        // only flights should be in confirmed state
+        for(FlightInfoType flightInfo : itinerary.getFlightInfoArray().getFlightInfo()) {
+            assertEquals("CONFIRMED", flightInfo.getStatus());
+        }
+        // hotels should be cancelled
+        for(HotelInfoType hotelInfo : itinerary.getHotelsInfoArray().getHotelInfo()) {
+            assertEquals("CANCELLED", hotelInfo.getStatus());
+        } 
     }
     
     /**
