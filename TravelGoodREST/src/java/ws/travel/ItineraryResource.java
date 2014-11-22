@@ -41,4 +41,9 @@ public class ItineraryResource {
      * @Path("cancel")
      * Implement cancel itinerary.
      */
+    
+    /**
+     * @PUT
+     * Implement create itinerary.
+     */
 }
