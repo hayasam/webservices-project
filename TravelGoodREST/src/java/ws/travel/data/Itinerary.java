@@ -16,10 +16,11 @@ public class Itinerary {
  
     private List<FlightInfo> flightInfos; 
 
-    //private List<HotelInfo> hotelInfo;
-    
-    public Itinerary(List<FlightInfo> flightInfos) {
+    private List<HotelInfo> hotelInfos;
+
+    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos) {
         this.flightInfos = flightInfos;
+        this.hotelInfos = hotelInfos;
     }
 
     public List<FlightInfo> getFlightInfos() {
@@ -29,4 +30,18 @@ public class Itinerary {
     public void setFlightInfos(List<FlightInfo> flightInfos) {
         this.flightInfos = flightInfos;
     }    
+
+    /**
+     * @return the hotelInfos
+     */
+    public List<HotelInfo> getHotelInfos() {
+        return hotelInfos;
+    }
+
+    /**
+     * @param hotelInfos the hotelInfos to set
+     */
+    public void setHotelInfos(List<HotelInfo> hotelInfos) {
+        this.hotelInfos = hotelInfos;
+    }
 }
