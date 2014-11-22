@@ -4,6 +4,7 @@
  */
 package ws.hotel.builder;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.AddressType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
 import ws.hotel.query.HotelType;
@@ -68,6 +69,16 @@ public class HotelInfoBuilder {
         hotelInfo.setPrice(hotel.getPrice());
         hotelInfo.setAddress(hotel.getAddress());
         
+        return this;
+    }
+    
+    public HotelInfoBuilder withStartDate(XMLGregorianCalendar startDate) {
+        hotelInfo.setStartDate(startDate);
+        return this;
+    }
+    
+    public HotelInfoBuilder withEndDate(XMLGregorianCalendar endDate) {
+        hotelInfo.setEndDate(endDate);
         return this;
     }
     
