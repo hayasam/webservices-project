@@ -20,6 +20,10 @@ public class Address {
     private String zipcode;
     private String number;
 
+    public Address() {
+        
+    }
+    
     public Address(String country, String city, String street, String zipcode, String number) {
         this.country = country;
         this.city = city;

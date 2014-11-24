@@ -4,7 +4,15 @@
  */
 package ws.travel.services;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightInputType;
@@ -14,8 +22,12 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.CreditCardInfoType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.ExpirationDateType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
+import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.GetFlightInputType;
 import ws.travel.data.CreditCard;
+import ws.travel.data.Flight;
+import ws.travel.data.FlightInfo;
+
 
 /**
  *
@@ -31,12 +43,25 @@ public class FlightService {
         return cancelFlight(bookingNum, price, createCreditCardInfoType(ccInfo));
     }
     
-    public static List<FlightInfoType> getFlights(XMLGregorianCalendar date, String startAirport, String endAirport) {
+    public static List<FlightInfo> getFlights(String date, String startAirport, String endAirport) {
+        return getFlights(toXMLGregorianCalendar(date), startAirport, endAirport);
+    }
+    
+    private static List<FlightInfo> getFlights(XMLGregorianCalendar date, String startAirport, String endAirport) {
         GetFlightInputType getFlightsInput = new GetFlightInputType();
         getFlightsInput.setDate(date);
         getFlightsInput.setStartAirport(startAirport);
         getFlightsInput.setEndAirport(endAirport);
-        return getFlightsOperation(getFlightsInput).getFlightInfo();
+        List<FlightInfoType> flightInfos = getFlightsOperation(getFlightsInput).getFlightInfo();
+        List<FlightInfo> output = new ArrayList<FlightInfo>();
+        for(FlightInfoType flightInfo : flightInfos) {
+            output.add(new FlightInfo(flightInfo.getBookingNr(),
+                                      flightInfo.getPrice(),
+                                      flightInfo.getNameOfReservService(),
+                                      createFlight(flightInfo.getFlight()),
+                                      flightInfo.getStatus())); 
+        }
+        return output;
     }
     
     private static boolean bookFlight(int bookingNum, CreditCardInfoType ccInfo) throws BookFlightFault {
@@ -52,6 +77,14 @@ public class FlightService {
         cancelFlightInput.setPrice(price);
         cancelFlightInput.setCreditCardInfo(ccInfo);
         return cancelFlightOperation(cancelFlightInput);
+    }
+    
+    private static Flight createFlight(FlightType flight) {
+        return new Flight(flight.getStartAirport(), 
+                          flight.getDestinationAirport(),
+                          flight.getDateDeparture(),
+                          flight.getDateArrival(),
+                          flight.getCarrier());
     }
     
     private static CreditCardInfoType createCreditCardInfoType(CreditCard cc) {
@@ -87,4 +120,22 @@ public class FlightService {
         return port.getFlightsOperation(getFlightsInput);
     }
     
+    private static XMLGregorianCalendar toXMLGregorianCalendar (String strDate) {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
+        Date date = null; 
+        try {
+            date = (Date)formatter.parse(strDate);
+        } catch (ParseException ex) {
+            
+        }
+        GregorianCalendar gregDate = new GregorianCalendar();
+        gregDate.setTime(date);
+        XMLGregorianCalendar xmlDate = null;
+        try {
+            xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregDate);
+        } catch (DatatypeConfigurationException ex) {
+            
+        }
+        return xmlDate;
+    }
 }

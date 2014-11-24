@@ -4,8 +4,19 @@
  */
 package ws.travel.services;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.AddressType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookHotelInputType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookOperationFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelFault;
@@ -16,6 +27,7 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray;
 import ws.travel.data.CreditCard;
+
 
 /**
  *
@@ -36,11 +48,57 @@ public class HotelService {
         return cancelHotelsOperation(cancelInput);
     }
     
-    public static List<HotelInfoType> getHotels(String city, XMLGregorianCalendar arrivalDate, XMLGregorianCalendar departureDate) {
+    public static List<HotelInfo> getHotels(String city, String arrival, String departure) {
+        return getHotels(city, toXMLGregorianCalendar(arrival), toXMLGregorianCalendar(departure));
+    }
+    
+    private static List<HotelInfo> getHotels(String city, XMLGregorianCalendar arrivalDate, XMLGregorianCalendar departureDate) {
         GetHotelsInputType getInput = new GetHotelsInputType();
         getInput.setArrival(arrivalDate);
         getInput.setDeparture(departureDate);
-        return getHotelsOperation(getInput).getHotelInfo();
+        List<HotelInfoType> hotels = getHotelsOperation(getInput).getHotelInfo();
+        List<HotelInfo> output = new ArrayList<HotelInfo>();
+        for(HotelInfoType hotel : hotels) {
+            output.add(new HotelInfo(hotel.getNameOfReservService(), 
+                                     hotel.getName(),
+                                     createAddress(hotel.getAddress()),
+                                     hotel.getBookingNr(),
+                                     hotel.getPrice(),
+                                     hotel.isGuarantee(),
+                                     hotel.getStatus(),
+                                     hotel.getStartDate(),
+                                     hotel.getEndDate()));
+        }
+        return output;
+    }
+    
+    private static XMLGregorianCalendar toXMLGregorianCalendar (String strDate) {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy"); 
+        Date date = null; 
+        try {
+            date = (Date)formatter.parse(strDate);
+        } catch (ParseException ex) {
+            
+        }
+        GregorianCalendar gregDate = new GregorianCalendar();
+        gregDate.setTime(date);
+        XMLGregorianCalendar xmlDate = null;
+        try {
+            xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregDate);
+        } catch (DatatypeConfigurationException ex) {
+            
+        }
+        return xmlDate;
+    }
+    
+    private static Address createAddress(AddressType address) {
+        Address a = new Address();
+        a.setCity(address.getCity());
+        a.setCountry(address.getCountry());
+        a.setNumber(address.getNumber());
+        a.setStreet(address.getStreet());
+        a.setZipcode(address.getZipcode());
+        return a;
     }
     
     private static CreditCardInfoType createCreditCardInfoType(CreditCard cc) {
