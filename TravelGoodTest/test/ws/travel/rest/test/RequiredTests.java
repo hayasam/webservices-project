@@ -437,4 +437,19 @@ public class RequiredTests {
         
         return cc;
     }
+    /*
+     * Fails for expensive flights
+     */
+     private CreditCard createInvalidCreditCard () {
+        CreditCardInfoType ccInfo = TestUtils.invalidCCInfo();
+        
+        CreditCard cc = new CreditCard();
+        cc.setCardnumber(ccInfo.getCardNumber());
+        cc.setMonth(ccInfo.getExpirationDate().getMonth());
+        cc.setYear(ccInfo.getExpirationDate().getYear());
+        cc.setName(ccInfo.getHolderName());
+        
+        return cc;
+    }
 }
+
