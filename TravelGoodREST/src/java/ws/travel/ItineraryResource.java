@@ -50,6 +50,7 @@ public class ItineraryResource {
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
 
     private static final String CANNOT_CANCEL_ITINERAY = "Can't cancel an unbooked itinerary";
+    private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
     
     /**
@@ -211,10 +212,10 @@ public class ItineraryResource {
              else return Response.ok(itinerary, ITINERARY_NOT_FULLY_CANCELLED).build();
                        
         }
-        else return Response.
-                       status(Response.Status.BAD_REQUEST).
-                       entity(CANNOT_CANCEL_ITINERAY).
-                       build();
+        else {
+            ItineraryPool.deleteItinerary(userId, itineraryId);
+            return Response.ok(ITINERARY_TERMINATED).build();
+        }
      }
     /**
      * @PUT

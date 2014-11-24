@@ -31,7 +31,7 @@ public class ItineraryPool {
     private static void addItinerary(String itineraryKey, Itinerary itinerary) {
         itineraries.put(itineraryKey, itinerary);
     }
-    
+ 
     public static void deleteItinerary(String userid, String itineraryid) {
         deleteItinerary(encrypt(userid, itineraryid));
     }

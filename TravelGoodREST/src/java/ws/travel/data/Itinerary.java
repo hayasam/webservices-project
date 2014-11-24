@@ -18,8 +18,7 @@ public class Itinerary {
     private List<FlightInfo> flightInfos; 
 
     private List<HotelInfo> hotelInfos;
-    
-    
+  
     public Itinerary() {
         
     }
@@ -55,6 +54,11 @@ public class Itinerary {
     public void addHotelToItinerary(HotelInfo hotelInfo)
     {
         this.hotelInfos.add(hotelInfo);
+    }
+    
+    public void addFlightToItinerary(FlightInfo flightInfo)
+    {
+        this.flightInfos.add(flightInfo);
     }
 
     public String getStatus() {
