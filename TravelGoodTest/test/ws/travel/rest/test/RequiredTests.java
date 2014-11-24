@@ -19,6 +19,7 @@ import ws.travel.rest.representation.FlightsRepresentation;
 import ws.travel.rest.representation.HotelsRepresentation;
 import ws.travel.rest.representation.ItineraryRepresentation;
 import ws.travel.rest.representation.Link;
+import ws.travel.rest.representation.Representation;
 import ws.travel.rest.representation.StatusRepresentation;
 
 /**
@@ -41,7 +42,7 @@ public class RequiredTests {
     private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
     private static final String STATUS_RELATION = RELATION_BASE + "status";
     private static final String BOOK_RELATION = RELATION_BASE + "book";
-    private static final String GET_FLGHTS_RELATION = RELATION_BASE + "getFlights";
+    private static final String GET_FLIGHTS_RELATION = RELATION_BASE + "getFlights";
     private static final String GET_HOTELS_RELATION = RELATION_BASE + "getHotels";
     private static final String ADD_FLIGHT_RELATION = RELATION_BASE + "addFlight";
     private static final String ADD_HOTEL_RELATION = RELATION_BASE + "addHotel";
@@ -57,11 +58,8 @@ public class RequiredTests {
         String userid       = "userP1";
         String itineraryid  = "itineraryP1";
         
-        // create itinerary
-        StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
-                                                .accept(MediaType.APPLICATION_XML)
-                                                .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
+        // create an itinerary
+        assertCreateItinerary(userid, itineraryid);
         
         // get possible flights
         FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
@@ -106,7 +104,8 @@ public class RequiredTests {
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .get(HotelsRepresentation.class);
         assertTrue(hotelsRep.getHotelInfo().size() > 0);
-        assertNotNull(hotelsRep.getLinkByRelation(ADD_HOTEL_RELATION));
+        assertHaveLinks(hotelsRep, ADD_HOTEL_RELATION, CANCEL_RELATION, BOOK_RELATION, 
+                                GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
         return hotelsRep.getHotelInfo().get(0);
     }
     
@@ -119,7 +118,16 @@ public class RequiredTests {
                                              .accept(MediaType.APPLICATION_XML)
                                              .get(FlightsRepresentation.class);
         assertTrue(flightsRep.getFlightInfo().size() > 0);
+        assertHaveLinks(flightsRep, ADD_FLIGHT_RELATION, CANCEL_RELATION, BOOK_RELATION, 
+                                GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
         return flightsRep.getFlightInfo().get(0);
+    }
+    
+    private void assertCreateItinerary(String userid, String itineraryid) {
+        StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                .accept(MediaType.APPLICATION_XML)
+                                                .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
     }
     
     private void assertGetItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
@@ -129,6 +137,8 @@ public class RequiredTests {
         assertEquals(expectedCount, itineraryRep.getItinerary().getFlightInfos().size()
                                         + itineraryRep.getItinerary().getHotelInfos().size());
         assertEquals(expectedStatus, itineraryRep.getItinerary().getStatus());
+        assertHaveLinks(itineraryRep, BOOK_RELATION, CANCEL_RELATION, GET_FLIGHTS_RELATION, 
+                                            GET_HOTELS_RELATION);
     }
     
     private void assertBookItinerary(String userid, String itineraryid, CreditCard ccInfo) {
@@ -137,6 +147,7 @@ public class RequiredTests {
                                                    .entity(ccInfo)
                                                    .post(StatusRepresentation.class);
         assertEquals(ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
+        assertHaveLinks(bookingStatus, STATUS_RELATION, CANCEL_RELATION);
     }
     
     private void assertAddHotel(String userid, String itineraryid, HotelInfo hotelInfo) {
@@ -146,6 +157,8 @@ public class RequiredTests {
                                                     .entity(hotelInfo)
                                                     .post(StatusRepresentation.class);
         assertEquals(HOTEL_ADDED, addHotelStatus.getStatus());
+        assertHaveLinks(addHotelStatus, BOOK_RELATION, CANCEL_RELATION, GET_HOTELS_RELATION, 
+                                        GET_FLIGHTS_RELATION, STATUS_RELATION);
     } 
     
     private void assertAddFlight(String userid, String itineraryid, FlightInfo flightInfo) {
@@ -156,6 +169,17 @@ public class RequiredTests {
                                                 .entity(flightInfo)
                                                 .post(StatusRepresentation.class);
         assertEquals(FLIGHT_ADDED, statusRep.getStatus());
+        assertHaveLinks(statusRep, BOOK_RELATION, CANCEL_RELATION, GET_HOTELS_RELATION, 
+                                        GET_FLIGHTS_RELATION, STATUS_RELATION);
+    }
+    
+    private void assertHaveLinks(Representation rep, String... relations) {
+        if(relations == null || relations.length == 0) {
+            fail("There should be at least one relation to assert!");
+        }
+        for(String relation : relations) {
+            assertNotNull(rep.getLinkByRelation(relation));
+        }
     }
     
     @Test
