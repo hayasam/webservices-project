@@ -18,49 +18,45 @@ public class Creditcard {
     private int expYear;
     private int expMonth;
     
-    @XmlAttribute()
+    public Creditcard() {
+        
+    }
+    
     public String getName()
     {
         return this.name;
     }
     
-    @XmlAttribute()
     public void setName(String name)
     {
         this.name = name;
     }
     
-    @XmlAttribute()
     public String getCardnumber()
     {
         return this.cardNumber;
     }
     
-    @XmlAttribute()
     public void setCardnumber(String cardNumber)
     {
         this.cardNumber = cardNumber;
     }
     
-    @XmlAttribute()
     public int getYear()
     {
         return this.expYear;
     }
     
-    @XmlAttribute()
     public void setYear(int expYear)
     {
         this.expYear = expYear;
     }
     
-    @XmlAttribute()
     public int getMonth()
     {
         return this.expMonth;
     }
     
-    @XmlAttribute()
     public void setMonth(int expMonth)
     {
         this.expMonth = expMonth;
