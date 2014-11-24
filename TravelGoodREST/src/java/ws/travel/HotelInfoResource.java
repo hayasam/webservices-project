@@ -8,6 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,10 +35,11 @@ public class HotelInfoResource {
     @Path("add")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response addHotelToItinerary(String itineraryKey, HotelInfo hotel)
+    public Response addHotelToItinerary(@PathParam("userid") String userid, 
+                                        @PathParam("itineraryid") String itineraryid, HotelInfo hotel)
     {
         StatusRepresentation statusRep = new StatusRepresentation();
-        Itinerary itinerary = ItineraryPool.getItinerary(itineraryKey);
+        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
         //if itinerary is booked or cancelled
         itinerary.addHotelToItinerary(hotel);
         return Response.ok(statusRep).build();

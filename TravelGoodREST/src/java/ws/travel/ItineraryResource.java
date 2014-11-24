@@ -173,7 +173,7 @@ public class ItineraryResource {
      public Response cancelItinerary (@PathParam("userid") String userId,
      @PathParam("itineraryid") String itineraryId, CreditCard creditCard) {
          
-         Itinerary itinerary = ItineraryPool.getItinerary(itineraryId);
+         Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
          
          if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
               for(FlightInfo flightInfo : itinerary.getFlightInfos())

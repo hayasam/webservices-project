@@ -6,7 +6,6 @@ package ws.travel;
 
 import java.util.HashMap;
 import java.util.Map;
-import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
 
 /**
@@ -21,7 +20,7 @@ public class ItineraryPool {
         return getItinerary(encrypt(userid, itineraryid));
     }
     
-    public static Itinerary getItinerary(String itineraryKey) {
+    private static Itinerary getItinerary(String itineraryKey) {
         return itineraries.get(itineraryKey);
     }
     
@@ -29,11 +28,15 @@ public class ItineraryPool {
         addItinerary(encrypt(userid, itineraryid), itinerary);
     }
     
-    public static void addItinerary(String itineraryKey, Itinerary itinerary) {
+    private static void addItinerary(String itineraryKey, Itinerary itinerary) {
         itineraries.put(itineraryKey, itinerary);
     }
     
-    public static void deleteItinerary(String itineraryKey) {
+    public static void deleteItinerary(String userid, String itineraryid) {
+        deleteItinerary(encrypt(userid, itineraryid));
+    }
+    
+    private static void deleteItinerary(String itineraryKey) {
         itineraries.remove(itineraryKey);
     }
     
