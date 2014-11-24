@@ -6,10 +6,13 @@ package ws.travel.rest.test;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.junit.Test;
 import ws.travel.rest.data.Itinerary;
 import static org.junit.Assert.*;
+import ws.travel.rest.data.HotelInfo;
+import ws.travel.rest.data.HotelInfos;
 
 
 /**
@@ -54,5 +57,29 @@ public class TravelGoodRESTTest {
         
         
         assertEquals("UNCONFIRMED", result.getStatus());
+    }
+    
+    @Test
+    public void getPossibleHotels() {
+        String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "user1", "itinerary1");
+        
+        // create itinerary first
+        String result = client.resource(itineraryURI)
+                              .accept(MediaType.APPLICATION_XML)
+                              .put(String.class);
+        assertEquals("OK", result);
+        
+        String possibleHotelsURI = String.format("%s/hotels", itineraryURI);
+        
+        // get possible hotels
+        List<HotelInfo> hotelInfos = client.resource(possibleHotelsURI)
+                                      .queryParam("city", "Paris")
+                                      .queryParam("arrival", "07-11-2014")
+                                      .queryParam("departure", "10-11-2014")
+                                      .accept(MediaType.APPLICATION_XML)
+                                      .get(HotelInfos.class).getHotelInfo();
+        assertEquals(2, hotelInfos.size());
+        assertEquals("UNCONFIRMED", hotelInfos.get(0).getStatus());
+        assertEquals("UNCONFIRMED", hotelInfos.get(1).getStatus());
     }
 }
