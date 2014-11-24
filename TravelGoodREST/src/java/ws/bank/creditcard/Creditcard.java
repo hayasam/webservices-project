@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Audrius
  */
 @XmlRootElement()
-public class Creditcard {
+public class CreditCard {
     private String name;
     private String cardNumber;
     private int expYear;
