@@ -16,6 +16,7 @@ import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
 import ws.travel.representation.Link;
 import ws.travel.representation.Representation;
+import ws.travel.representation.StatusRepresentation;
 
 /**
  *
@@ -24,7 +25,12 @@ import ws.travel.representation.Representation;
 
 @Path("users/{userid}/itinerary/{itineraryid}/hotels")
 public class HotelInfoResource {
-    //itineraries
+    
+    private static final String ITINERARY_NOT_FOUND = "itinerary not found";
+    private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
+    private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+
+    public static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources/";
     
     /**
      * @GET
@@ -32,7 +38,7 @@ public class HotelInfoResource {
      * Implement get possible hotels with query string.
      */
         
-    public static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources/";
+
 
     /**
      * 
@@ -49,6 +55,7 @@ public class HotelInfoResource {
                                         @PathParam("itineraryId") String itineraryId,
                                         HotelInfo hotel)
     {
+        StatusRepresentation status = new StatusRepresentation();
         Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryId);
         
         //itinerary doesn't exist
@@ -56,21 +63,34 @@ public class HotelInfoResource {
         {
                 return Response.
                     status(Response.Status.NOT_FOUND).
-                    entity("Itinerary not found").
+                    entity(ITINERARY_NOT_FOUND).
                     build();
         }
         
         //itinerary is already booked or cancelled
-        if (itinerary.getStatus().equals(ItineraryStatus.UNCONFIRMED.toString()) == false)
+        if (itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString()))
         {
                 return Response.
-                    status(Response.Status.FORBIDDEN).
-                    entity("Itinerary is already booked or cancelled").
+                    status(Response.Status.NOT_ACCEPTABLE).
+                    entity(ITINERARY_BOOKED_ALREADY).
+                    build();
+        }
+        
+        if (itinerary.getStatus().equals(ItineraryStatus.CANCELLED.toString()))
+        {
+                return Response.
+                    status(Response.Status.NOT_ACCEPTABLE).
+                    entity(ITINERARY_CANCELLED_ALREADY).
                     build();
         }
         
         itinerary.addHotelToItinerary(hotel);
-        return Response.ok("OK").build();
+        
+        addCancelLink(userid, itineraryId, status);
+        addBookLink(userid, itineraryId, status);
+        addGetItineraryLink(userid, itineraryId, status);
+        
+        return Response.ok(status).build();
     }
     
     
@@ -89,10 +109,16 @@ public class HotelInfoResource {
         //link.setRel(CANCEL_RELATION);
         response.getLinks().add(link);
     }
+   
+    //add get itinerary link
+    static void addGetItineraryLink(String userId, String itineraryId, Representation response) {
+        Link link = new Link();
+        link.setUri(String.format("users/%s/itinerary/%s", BASE_URI, userId, itineraryId));
+        //link.setRel(CANCEL_RELATION);
+        response.getLinks().add(link);
+    }
     
     //get flights
     //get hotels
-    //getitinerary
-    
     
 }
