@@ -18,6 +18,7 @@ import ws.travel.rest.data.FlightInfos;
 import ws.travel.rest.data.HotelInfo;
 import ws.travel.rest.data.HotelInfos;
 import ws.travel.rest.representation.FlightsRepresentation;
+import ws.travel.rest.representation.HotelsRepresentation;
 import ws.travel.rest.representation.Link;
 import ws.travel.rest.representation.StatusRepresentation;
 
@@ -33,6 +34,7 @@ public class RequiredTests {
     
     private static final String ITINERARY_CREATED = "itinerary successfully created";
     private static final String FLIGHT_ADDED = "flight added to itinerary";
+    private static final String HOTEL_ADDED = "hotel added to itinerary";
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
      
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
@@ -153,6 +155,66 @@ public class RequiredTests {
         assertEquals(itineraryUrl(userid, itineraryid), createLink.getUri());
         
     }
+    
+    @Test
+    public void testC2 () {
+        String userid       = "userC2";
+        String itineraryid  = "itineraryC2";
+        
+         // create itinerary
+        StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
+                              .accept(MediaType.APPLICATION_XML)
+                              .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, result.getStatus());
+        
+         // get possible flights
+        List<FlightInfo> flightInfos = client.resource(flightsUrl(userid, itineraryid))
+                                             .queryParam("date", "07-11-2014")
+                                             .queryParam("startAirport", "Copenhagen Lufthavnen")
+                                             .queryParam("endAirport", "Bucharest Otopeni")
+                                             .accept(MediaType.APPLICATION_XML)
+                                             .get(FlightsRepresentation.class)
+                                             .getFlightInfo();
+                
+        // add a flight
+        StatusRepresentation statusFlight1 = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(flightInfos.get(0))
+              .post(StatusRepresentation.class);
+        assertEquals(FLIGHT_ADDED, statusFlight1.getStatus());
+        
+        // add a second flight
+        StatusRepresentation statusFlight2 = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(flightInfos.get(1))
+              .post(StatusRepresentation.class);
+        assertEquals(FLIGHT_ADDED, statusFlight2.getStatus());
+                
+        // get possible hotels
+        List<HotelInfo> hotelInfos = client.resource(hotelsUrl(userid, itineraryid))
+                                      .queryParam("city", "Paris")
+                                      .queryParam("arrival", "07-11-2014")
+                                      .queryParam("departure", "10-11-2014")
+                                      .accept(MediaType.APPLICATION_XML)
+                                      .get(HotelsRepresentation.class).getHotelInfo();
+        
+        // add a hotel
+        StatusRepresentation statusHotel = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(hotelInfos.get(0))
+              .post(StatusRepresentation.class);
+        assertEquals(HOTEL_ADDED, statusHotel.getStatus());
+        
+        // book itinerary
+        //StatusRepresentation bookItinerary = client.resource()
+        /**
+         * IN PROGRESS
+         */
+        
+    }
     private String itineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
@@ -178,7 +240,7 @@ public class RequiredTests {
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
     
-     private String cancelItineraryUrl(String userid, String itineraryid) {
+    private String cancelItineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/cancel", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
