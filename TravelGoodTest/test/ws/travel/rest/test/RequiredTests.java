@@ -17,6 +17,7 @@ import ws.travel.rest.data.FlightInfo;
 import ws.travel.rest.data.HotelInfo;
 import ws.travel.rest.representation.*;
 
+
 /**
  *
  * @author VAIO
@@ -83,8 +84,14 @@ public class RequiredTests {
         // add and assert
         assertAddHotel(userid, itineraryid, hotelInfo2);
         
-        // assert itinerary is in expected status and have 5 items in.
-        assertItinerary(userid, itineraryid, "UNCONFIRMED", 5);
+        // assert itinerary is in unconfirmed status and have 5 items in.
+        assertGetItinerary(userid, itineraryid, "UNCONFIRMED", 5);
+        
+        // book itinerary
+        assertBookItinerary(userid, itineraryid, createValidCreditCard());
+        
+        // assert itinerary is in confirmed status and have 5 items in.
+        assertGetItinerary(userid, itineraryid, "CONFIRMED", 5);
     }
     
     private HotelInfo getAHotel(String userid, String itineraryid, String city, String arrival, String departure) {
@@ -95,6 +102,7 @@ public class RequiredTests {
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .get(HotelsRepresentation.class);
         assertTrue(hotelsRep.getHotelInfo().size() > 0);
+        assertNotNull(hotelsRep.getLinkByRelation(ADD_HOTEL_RELATION));
         return hotelsRep.getHotelInfo().get(0);
     }
     
@@ -110,13 +118,21 @@ public class RequiredTests {
         return flightsRep.getFlightInfo().get(0);
     }
     
-    private void assertItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
+    private void assertGetItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
                                                     .accept(MediaType.APPLICATION_XML)
                                                     .get(ItineraryRepresentation.class);
         assertEquals(expectedCount, itineraryRep.getItinerary().getFlightInfos().size()
                                         + itineraryRep.getItinerary().getHotelInfos().size());
         assertEquals(expectedStatus, itineraryRep.getItinerary().getStatus());
+    }
+    
+    private void assertBookItinerary(String userid, String itineraryid, CreditCard ccInfo) {
+        StatusRepresentation bookingStatus = client.resource(bookItineraryUrl(userid, itineraryid))
+                                                   .accept(MediaType.APPLICATION_XML)
+                                                   .entity(ccInfo)
+                                                   .post(StatusRepresentation.class);
+        assertEquals(ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
     }
     
     private void assertAddHotel(String userid, String itineraryid, HotelInfo hotelInfo) {
@@ -185,8 +201,41 @@ public class RequiredTests {
         assertEquals(itineraryUrl(userid, itineraryid), createLink.getUri());
         
     }
+
+    @Test
+    public void testB() {
+        String userid       = "userB";
+        String itineraryid  = "itineraryB";
+        
+        // create itinerary
+        StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                .accept(MediaType.APPLICATION_XML)
+                                                .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
+        
+        // get possible flights
+        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
+        // add and assert
+        assertAddFlight(userid, itineraryid, flightInfo1);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());
+        
+        // get a hotel
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014");
+        // add and assert
+        assertAddHotel(userid, itineraryid, hotelInfo1);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());
+        
+        // get other possible flights
+        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "18-12-2014", "Warsaw", "Madrid");
+        // add and assert
+        assertAddFlight(userid, itineraryid, flightInfo2);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());  
+        
+        //To be cotinued
+    }
     
     @Test
+<<<<<<< HEAD
     public void testC1()
     {
         String userid       = "userC1";
@@ -260,6 +309,65 @@ public class RequiredTests {
         //cancel trip and chceck that booking status is cancelled for each entry
     }
     
+    public void testC2 () {
+        String userid       = "userC2";
+        String itineraryid  = "itineraryC2";
+        
+         // create itinerary
+        StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
+                              .accept(MediaType.APPLICATION_XML)
+                              .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, result.getStatus());
+        
+         // get possible flights
+        List<FlightInfo> flightInfos = client.resource(flightsUrl(userid, itineraryid))
+                                             .queryParam("date", "07-11-2014")
+                                             .queryParam("startAirport", "Copenhagen Lufthavnen")
+                                             .queryParam("endAirport", "Bucharest Otopeni")
+                                             .accept(MediaType.APPLICATION_XML)
+                                             .get(FlightsRepresentation.class)
+                                             .getFlightInfo();
+                
+        // add a flight
+        StatusRepresentation statusFlight1 = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(flightInfos.get(0))
+              .post(StatusRepresentation.class);
+        assertEquals(FLIGHT_ADDED, statusFlight1.getStatus());
+        
+        // add a second flight
+        StatusRepresentation statusFlight2 = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(flightInfos.get(1))
+              .post(StatusRepresentation.class);
+        assertEquals(FLIGHT_ADDED, statusFlight2.getStatus());
+                
+        // get possible hotels
+        List<HotelInfo> hotelInfos = client.resource(hotelsUrl(userid, itineraryid))
+                                      .queryParam("city", "Paris")
+                                      .queryParam("arrival", "07-11-2014")
+                                      .queryParam("departure", "10-11-2014")
+                                      .accept(MediaType.APPLICATION_XML)
+                                      .get(HotelsRepresentation.class).getHotelInfo();
+        
+        // add a hotel
+        StatusRepresentation statusHotel = client.resource(addFlightUrl(userid, itineraryid))
+              .type(MediaType.APPLICATION_XML)
+              .accept(MediaType.APPLICATION_XML)
+              .entity(hotelInfos.get(0))
+              .post(StatusRepresentation.class);
+        assertEquals(HOTEL_ADDED, statusHotel.getStatus());
+        
+        // book itinerary
+        //StatusRepresentation bookItinerary = client.resource()
+        /**
+         * IN PROGRESS
+         */
+        
+    }
+
     private String itineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
@@ -290,10 +398,12 @@ public class RequiredTests {
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
 
-     private String cancelItineraryUrl(String userid, String itineraryid) {
+    private String cancelItineraryUrl(String userid, String itineraryid) {
+
         return String.format("%s/users/%s/itinerary/%s/cancel", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
+
      
     private CreditCard createValidCreditCard () {
         CreditCardInfoType ccInfo = TestUtils.validCCInfo();
