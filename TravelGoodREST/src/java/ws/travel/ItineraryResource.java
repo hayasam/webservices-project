@@ -4,8 +4,12 @@
  */
 package ws.travel;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookOperationFault;
@@ -32,7 +37,17 @@ import ws.travel.services.HotelService;
 @Path("users/{userid}/itinerary/{itineraryid}")
 public class ItineraryResource {
     
+
+     public static enum ItineraryStatus {
+       CONFIRMED ,
+       UNCONFIRMED,
+       CANCELLED
+    }
+
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
+    private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
+    private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+
     
     /**
      * @GET
@@ -73,6 +88,17 @@ public class ItineraryResource {
                            .entity(ITINERARY_NOT_FOUND)
                            .build();
         }
+        if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                           .entity(ITINERARY_BOOKED_ALREADY)
+                           .build();
+        }
+        if(itinerary.getStatus().equals(ItineraryStatus.CANCELLED.toString())) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                           .entity(ITINERARY_CANCELLED_ALREADY)
+                           .build();
+        }
+        
         List<FlightInfo> confirmedFlights = new ArrayList<FlightInfo>();
         for(FlightInfo flight : itinerary.getFlightInfos()) {
             try {
@@ -125,18 +151,57 @@ public class ItineraryResource {
                         
                     }
                 }
+                return Response.ok(itinerary).build();
            }
        }
-       return Response.ok("OK").build();
+       
+       // all went pretty well
+       itinerary.setStatus(ItineraryStatus.CONFIRMED.toString());
+       
+       return Response.ok(itinerary).build();
    }
     
     /**
-     * @POST
      * [Monica]
      * @Path("cancel")
      * Implement cancel itinerary.
      */
-    
+     @POST
+     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_XML})
+     @Produces(MediaType.APPLICATION_XML)
+     public Response cancelItinerary (@PathParam("userid") String userId,
+     @PathParam("itineraryid") String itineraryId, CreditCard creditCard) {
+         
+         Itinerary itinerary = ItineraryPool.getItinerary(itineraryId);
+         
+         if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
+              for(FlightInfo flightInfo : itinerary.getFlightInfos())
+                  if(flightInfo.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
+                  try {
+                      FlightService.cancelFlight(flightInfo.getBookingNr(), flightInfo.getPrice(), creditCard);
+                      flightInfo.setStatus(ItineraryStatus.CANCELLED.toString());
+                  } catch (CancelFlightFault ex) {
+                      Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
+                  }     
+                 }
+              for(HotelInfo hotelInfo : itinerary.getHotelInfos())
+                  if(hotelInfo.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
+                     
+                  try { 
+                      HotelService.cancelHotel(hotelInfo.getBookingNr());
+                      hotelInfo.setStatus(ItineraryStatus.CANCELLED.toString());
+                  } catch (CancelHotelFault ex) {
+                      Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
+                  }  
+                }
+              itinerary.setStatus(ItineraryStatus.CANCELLED.toString());
+              return Response.ok(itinerary).build();
+         }
+         else return Response.
+                        status(Response.Status.BAD_REQUEST).
+                        entity("Can't cancel an unbooked itinerary").
+                        build();
+     }
     /**
      * @PUT
      * [Caecilie]
