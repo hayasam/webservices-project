@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement()
 public class Itinerary {
  
+    private String status;
     private List<FlightInfo> flightInfos; 
 
     private List<HotelInfo> hotelInfos;
@@ -23,9 +24,10 @@ public class Itinerary {
         
     }
 
-    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos) {
+    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos, String status) {
         this.flightInfos = flightInfos;
         this.hotelInfos = hotelInfos;
+        this.status = status;
     }
 
     public List<FlightInfo> getFlightInfos() {
@@ -53,5 +55,13 @@ public class Itinerary {
     public void addHotelToItinerary(HotelInfo hotelInfo)
     {
         this.hotelInfos.add(hotelInfo);
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
