@@ -4,16 +4,21 @@
  */
 package ws.travel;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.FlightInfo;
+import ws.travel.data.FlightInfos;
 import ws.travel.data.Itinerary;
+import ws.travel.services.FlightService;
 
 /**
  *
@@ -24,9 +29,20 @@ public class FlightInfoResource {
     
     /**
      * @GET
-     * [Audrius]
+     * [Caecilie]
      * Implement get possible flights with query string.
      */
+    @GET
+    @Produces(MediaType.APPLICATION_XML) 
+    public Response getFlights(@PathParam("userid") String userid,
+                               @PathParam("itineraryid") String itineraryid,
+                               @QueryParam("date") String date,
+                               @QueryParam("startAirport") String startAirport,
+                               @QueryParam("endAirport") String endAirport) {
+        
+        List<FlightInfo> flights = FlightService.getFlights(date, startAirport, endAirport);
+        return Response.ok(new FlightInfos(flights)).build();
+    }
     
     /**
      * @POST
