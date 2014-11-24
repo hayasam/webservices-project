@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
@@ -42,46 +43,41 @@ public class HotelInfoResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getHotels(@PathParam("userid") String userid, 
-                              @PathParam("itineraryid") String itineraryId,
+                              @PathParam("itineraryid") String itineraryid,
                               @QueryParam("city") String city,
                               @QueryParam("arrival") String arrival,
                               @QueryParam("departure") String departure) {
-//        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
-//        if(itinerary == null) {
-//            return Response.status(Status.NOT_FOUND)
-//                           .entity(ITINERARY_NOT_FOUND)
-//                           .build();
-//        }
-//        if(itinerary.getStatus().equals("CONFIRMED")) {
-//            return Response.status(Status.NOT_ACCEPTABLE)
-//                            .entity(ITINERARY_BOOKED_ALREADY)
-//                            .build();
-//        }
-//        if(itinerary.getStatus().equals("CANCELLED")) {
-//            return Response.status(Status.NOT_ACCEPTABLE)
-//                            .entity(ITINERARY_CANCELLED_ALREADY)
-//                            .build();
-//        }
+        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
+        if(itinerary == null) {
+            return Response.status(Status.NOT_FOUND)
+                           .entity(ITINERARY_NOT_FOUND)
+                           .build();
+        }
+        if(itinerary.getStatus().equals("CONFIRMED")) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_BOOKED_ALREADY)
+                            .build();
+        }
+        if(itinerary.getStatus().equals("CANCELLED")) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_CANCELLED_ALREADY)
+                            .build();
+        }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
+        
         HotelsRepresentation hotelsRepresentation = new HotelsRepresentation();
         
         hotelsRepresentation.setHotelInfo(hotels);
         
-        ItineraryResource.addCancelLink(userid, itineraryId, hotelsRepresentation);
-        ItineraryResource.addBookLink(userid, itineraryId, hotelsRepresentation);
-        ItineraryResource.addGetItineraryLink(userid, itineraryId, hotelsRepresentation);
-        ItineraryResource.addGetFlightsLink(userid, itineraryId, hotelsRepresentation);
-        ItineraryResource.addGetHotelsLink(userid, itineraryId, hotelsRepresentation);
-        ItineraryResource.addAddHotelLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addCancelLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addBookLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetItineraryLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetFlightsLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetHotelsLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addAddHotelLink(userid, itineraryid, hotelsRepresentation);
         
         return Response.ok(hotelsRepresentation).build();
     }
-
-    /**
-     * @GET
-     * [Audrius]
-     * Implement get possible hotels with query string.
-     */
     
     /**
      * 

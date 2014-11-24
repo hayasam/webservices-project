@@ -74,7 +74,7 @@ public class FlightInfoResource {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response addFlightToItinerary(@PathParam("userid") String userid,
-                                    @PathParam("itineraryId") String itineraryId,
+                                    @PathParam("itineraryid") String itineraryId,
                                     FlightInfo flight)
     {
         StatusRepresentation status = new StatusRepresentation();
