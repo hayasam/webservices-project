@@ -14,11 +14,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.HotelInfo;
-import ws.travel.data.HotelInfos;
 import ws.travel.data.Itinerary;
+import ws.travel.representation.HotelsRepresentation;
 import ws.travel.services.HotelService;
 import ws.travel.representation.StatusRepresentation;
 
@@ -33,6 +32,7 @@ public class HotelInfoResource {
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+    private static final String HOTEL_ADDED = "hotel added to itinerary";
     
     /**
      * @GET
@@ -42,7 +42,7 @@ public class HotelInfoResource {
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getHotels(@PathParam("userid") String userid, 
-                              @PathParam("itineraryid") String itineraryid,
+                              @PathParam("itineraryid") String itineraryId,
                               @QueryParam("city") String city,
                               @QueryParam("arrival") String arrival,
                               @QueryParam("departure") String departure) {
@@ -63,10 +63,19 @@ public class HotelInfoResource {
 //                            .build();
 //        }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
-        return Response.ok(new HotelInfos(hotels)).build();
-    }
+        HotelsRepresentation hotelsRepresentation = new HotelsRepresentation();
         
-
+        hotelsRepresentation.setHotelInfo(hotels);
+        
+        ItineraryResource.addCancelLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addBookLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addGetItineraryLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addGetFlightsLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addGetHotelsLink(userid, itineraryId, hotelsRepresentation);
+        ItineraryResource.addAddHotelLink(userid, itineraryId, hotelsRepresentation);
+        
+        return Response.ok(hotelsRepresentation).build();
+    }
 
     /**
      * @GET
@@ -120,6 +129,7 @@ public class HotelInfoResource {
         
         itinerary.addHotelToItinerary(hotel);
         
+        status.setStatus(HOTEL_ADDED);
         ItineraryResource.addCancelLink(userid, itineraryId, status);
         ItineraryResource.addBookLink(userid, itineraryId, status);
         ItineraryResource.addGetItineraryLink(userid, itineraryId, status);

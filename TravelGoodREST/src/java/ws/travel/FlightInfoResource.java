@@ -18,6 +18,7 @@ import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.FlightInfo;
 import ws.travel.data.FlightInfos;
 import ws.travel.data.Itinerary;
+import ws.travel.representation.FlightsRepresentation;
 import ws.travel.representation.StatusRepresentation;
 import ws.travel.services.FlightService;
 
@@ -31,6 +32,7 @@ public class FlightInfoResource {
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+    private static final String FLIGHT_ADDED = "flight added to itinerary";
     
     
     /**
@@ -41,13 +43,25 @@ public class FlightInfoResource {
     @GET
     @Produces(MediaType.APPLICATION_XML) 
     public Response getFlights(@PathParam("userid") String userid,
-                               @PathParam("itineraryid") String itineraryid,
+                               @PathParam("itineraryid") String itineraryId,
                                @QueryParam("date") String date,
                                @QueryParam("startAirport") String startAirport,
                                @QueryParam("endAirport") String endAirport) {
         
         List<FlightInfo> flights = FlightService.getFlights(date, startAirport, endAirport);
-        return Response.ok(new FlightInfos(flights)).build();
+        
+        FlightsRepresentation flightsRepresentation = new FlightsRepresentation();
+        
+        flightsRepresentation.setFlightInfo(flights);
+        
+        ItineraryResource.addCancelLink(userid, itineraryId, flightsRepresentation);
+        ItineraryResource.addBookLink(userid, itineraryId, flightsRepresentation);
+        ItineraryResource.addGetItineraryLink(userid, itineraryId, flightsRepresentation);
+        ItineraryResource.addGetFlightsLink(userid, itineraryId, flightsRepresentation);
+        ItineraryResource.addGetHotelsLink(userid, itineraryId, flightsRepresentation);
+        ItineraryResource.addAddFlightLink(userid, itineraryId, flightsRepresentation);
+        
+        return Response.ok(flightsRepresentation).build();
     }
     
     /**
@@ -95,6 +109,7 @@ public class FlightInfoResource {
         
         itinerary.addFlightToItinerary(flight);
         
+        status.setStatus(FLIGHT_ADDED);
         ItineraryResource.addCancelLink(userid, itineraryId, status);
         ItineraryResource.addBookLink(userid, itineraryId, status);
         ItineraryResource.addGetItineraryLink(userid, itineraryId, status);
