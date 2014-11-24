@@ -5,10 +5,12 @@
 package ws.travel;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import ws.travel.ItineraryResource.ItineraryStatus;
@@ -16,6 +18,7 @@ import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
 import ws.travel.representation.Link;
 import ws.travel.representation.Representation;
+import ws.travel.services.HotelService;
 
 /**
  *
@@ -31,6 +34,16 @@ public class HotelInfoResource {
      * [Audrius]
      * Implement get possible hotels with query string.
      */
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getHotels(@PathParam("userid") String userid, 
+                              @PathParam("itineraryid") String itineraryid,
+                              @QueryParam("city") String city,
+                              @QueryParam("arrival") String arrival,
+                              @QueryParam("departure") String departure) {
+        List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
+        return Response.ok
+    }
         
     public static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources/";
 
