@@ -56,7 +56,9 @@ public class ItineraryResource {
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
-    private static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources/";
+    private static final String ITINERARY_NOT_FULLY_BOOKED = "Not all bookings were booked";
+    private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
+    private static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources";
     
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
     private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
@@ -112,7 +114,7 @@ public class ItineraryResource {
                                    @PathParam("itineraryid") String itineraryid,
                                    CreditCard ccInfo) {
         Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
-        ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
+        StatusRepresentation statusRep = new StatusRepresentation();
         
         if(itinerary == null) {
             return Response.status(Status.NOT_FOUND)
@@ -151,13 +153,13 @@ public class ItineraryResource {
                     }
                 }
                 
-                itineraryRep.setItinerary(itinerary);
-                addGetItineraryLink(userid, itineraryid, itineraryRep);
-                addGetFlightsLink(userid, itineraryid, itineraryRep);
-                addGetHotelsLink(userid, itineraryid, itineraryRep);
-                addCancelLink(userid, itineraryid, itineraryRep);
+                statusRep.setStatus(ITINERARY_NOT_FULLY_BOOKED);
+                addGetItineraryLink(userid, itineraryid, statusRep);
+                addGetFlightsLink(userid, itineraryid, statusRep);
+                addGetHotelsLink(userid, itineraryid, statusRep);
+                addCancelLink(userid, itineraryid, statusRep);
                 
-                return Response.ok(itineraryRep).build();
+                return Response.ok(statusRep).build();
             }
        }
 
@@ -190,22 +192,22 @@ public class ItineraryResource {
                         
                     }
                 }
-                itineraryRep.setItinerary(itinerary);
-                addGetItineraryLink(userid, itineraryid, itineraryRep);
-                addGetFlightsLink(userid, itineraryid, itineraryRep);
-                addGetHotelsLink(userid, itineraryid, itineraryRep);
-                addCancelLink(userid, itineraryid, itineraryRep);
+                statusRep.setStatus(ITINERARY_NOT_FULLY_BOOKED);
+                addGetItineraryLink(userid, itineraryid, statusRep);
+                addGetFlightsLink(userid, itineraryid, statusRep);
+                addGetHotelsLink(userid, itineraryid, statusRep);
+                addCancelLink(userid, itineraryid, statusRep);
                 
-                return Response.ok(itineraryRep).build();
+                return Response.ok(statusRep).build();
            }
        }
        
        // all went pretty well
        itinerary.setStatus(ItineraryStatus.CONFIRMED.toString());
        
-       itineraryRep.setItinerary(itinerary);
-       addCancelLink(userid, itineraryid, itineraryRep);
-       addGetItineraryLink(userid, itineraryid, itineraryRep);
+       statusRep.setStatus(ITINERARY_SUCCESSFULLY_BOOKED);
+       addCancelLink(userid, itineraryid, statusRep);
+       addGetItineraryLink(userid, itineraryid, statusRep);
        
        return Response.ok(itinerary).build();
    }
@@ -322,7 +324,7 @@ public class ItineraryResource {
         //add cancel link
     static void addCancelLink(String userId, String itineraryId, Representation response) {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/cancel", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/cancel", BASE_URI, userId, itineraryId));
         link.setRel(CANCEL_RELATION);
         response.getLinks().add(link);
     }
@@ -330,7 +332,7 @@ public class ItineraryResource {
     //add book link
     static void addBookLink(String userId, String itineraryId, Representation response) {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/book", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/book", BASE_URI, userId, itineraryId));
         link.setRel(BOOK_RELATION);
         response.getLinks().add(link);
     }
@@ -338,7 +340,7 @@ public class ItineraryResource {
     //add get itinerary link
     static void addGetItineraryLink(String userId, String itineraryId, Representation response) {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s", BASE_URI, userId, itineraryId));
         link.setRel(STATUS_RELATION);
         response.getLinks().add(link);
     }
@@ -347,7 +349,7 @@ public class ItineraryResource {
     static void addGetFlightsLink(String userId, String itineraryId, Representation response)
     {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/flights", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/flights", BASE_URI, userId, itineraryId));
         link.setRel(GET_FLGHTS_RELATION);
         response.getLinks().add(link);
     }
@@ -356,7 +358,7 @@ public class ItineraryResource {
     static void addGetHotelsLink(String userId, String itineraryId, Representation response)
     {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/hotels", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/hotels", BASE_URI, userId, itineraryId));
         link.setRel(GET_HOTELS_RELATION);
         response.getLinks().add(link);
     }
@@ -365,7 +367,7 @@ public class ItineraryResource {
     static void addAddHotelLink(String userId, String itineraryId, Representation response)
     {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/hotels/add", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/hotels/add", BASE_URI, userId, itineraryId));
         link.setRel(ADD_HOTEL_RELATION);
         response.getLinks().add(link);
     }
@@ -374,7 +376,7 @@ public class ItineraryResource {
     static void addAddFlightLink(String userId, String itineraryId, Representation response)
     {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s/flights/add", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s/flights/add", BASE_URI, userId, itineraryId));
         link.setRel(ADD_FLIGHT_RELATION);
         response.getLinks().add(link);
     }
@@ -382,7 +384,7 @@ public class ItineraryResource {
     static void addCreateItinerary(String userId, String itineraryId, Representation response)
     {
         Link link = new Link();
-        link.setUri(String.format("users/%s/itinerary/%s", BASE_URI, userId, itineraryId));
+        link.setUri(String.format("%s/users/%s/itinerary/%s", BASE_URI, userId, itineraryId));
         link.setRel(CREATE_ITINERARY);
         response.getLinks().add(link);
     }
