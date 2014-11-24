@@ -221,38 +221,50 @@ public class ItineraryResource {
      @Produces(MediaType.APPLICATION_XML)
      public Response cancelItinerary (@PathParam("userid") String userId,
      @PathParam("itineraryid") String itineraryId, CreditCard creditCard) {
-         
+         /*
+          * Get requested itinerary
+          */
         Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
         
-        if(itinerary == null) {
+        if(itinerary == null) { // itinerary not found
             return Response.status(Status.NOT_FOUND)
                            .entity(ITINERARY_NOT_FOUND)
                            .build();
         }
-        boolean success = true;
-        if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
+        
+        boolean success = true; // assume the cancellation will work
+        
+        if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) { // itinerary previously booked
+            /*
+             * Cancel all flights
+             */
              for(FlightInfo flightInfo : itinerary.getFlightInfos())
                  if(flightInfo.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
-                 try {
-                     FlightService.cancelFlight(flightInfo.getBookingNr(), flightInfo.getPrice(), creditCard);
-                     flightInfo.setStatus(ItineraryStatus.CANCELLED.toString());
-                 } catch (CancelFlightFault ex) {
-                     success = false;
-                     Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
-                 }     
+                    try {
+                        FlightService.cancelFlight(flightInfo.getBookingNr(), flightInfo.getPrice(), creditCard);
+                        flightInfo.setStatus(ItineraryStatus.CANCELLED.toString());
+                    } catch (CancelFlightFault ex) {
+                        success = false;
+                        Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
+                    }     
                 }
+             /*
+              * Cancel all hotels
+              */
              for(HotelInfo hotelInfo : itinerary.getHotelInfos())
                  if(hotelInfo.getStatus().equals(ItineraryStatus.CONFIRMED.toString())) {
-
-                 try { 
-                     HotelService.cancelHotel(hotelInfo.getBookingNr());
-                     hotelInfo.setStatus(ItineraryStatus.CANCELLED.toString());
-                 } catch (CancelHotelFault ex) {
-                     success = false;
-                     Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
-                 }  
+                    try { 
+                        HotelService.cancelHotel(hotelInfo.getBookingNr());
+                        hotelInfo.setStatus(ItineraryStatus.CANCELLED.toString());
+                    } catch (CancelHotelFault ex) {
+                        success = false;
+                        Logger.getLogger(ItineraryResource.class.getName()).log(Level.SEVERE, null, ex);
+                    }  
                }
-             if(success) {
+             if(success) { // all cancelations succeded
+                 /*
+                  * Set itinerary status to cancelled
+                  */
                  itinerary.setStatus(ItineraryStatus.CANCELLED.toString());
                  
                  ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
@@ -261,7 +273,7 @@ public class ItineraryResource {
                  
                  return Response.ok(itineraryRep).build();
              }
-             else
+             else // some cancelations did not succeed 
              {
                  ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
                  itineraryRep.setItinerary(itinerary);
@@ -269,9 +281,11 @@ public class ItineraryResource {
                  
                  return Response.ok(itineraryRep, ITINERARY_NOT_FULLY_CANCELLED).build();
              }
-                       
         }
-        else {
+        else { // itinerary in planning phase
+            /*
+             * Remove itinerary from the pool
+             */
             ItineraryPool.deleteItinerary(userId, itineraryId);
             StatusRepresentation statusRep = new StatusRepresentation();
             statusRep.setStatus(ITINERARY_TERMINATED);
