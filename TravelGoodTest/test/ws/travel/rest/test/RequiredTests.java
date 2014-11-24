@@ -32,7 +32,8 @@ public class RequiredTests {
     private static final String HOTEL_ADDED         = "hotel added to itinerary";
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
-     
+    private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
+    
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
     private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
     private static final String STATUS_RELATION = RELATION_BASE + "status";
@@ -177,6 +178,9 @@ public class RequiredTests {
         }
     }
     
+    /*
+     * Monica
+     */
     @Test
     public void testP2 () {
         String userid       = "userP2";
@@ -348,7 +352,10 @@ public class RequiredTests {
         }
     }
     
-    public void testC2 () {
+    /*
+     * Monica
+     */
+    public void testC2() {
         String userid       = "userC2";
         String itineraryid  = "itineraryC2";
         
@@ -372,9 +379,47 @@ public class RequiredTests {
                 
         // check booking status for each flight
         assertBookingsConfirmed(userid, itineraryid);
-                            
+        
+        // cancel itinerary
+        StatusRepresentation cancelStatus = client.resource(cancelItineraryUrl(userid, itineraryid))
+                .type(MediaType.APPLICATION_XML)
+                .accept(MediaType.APPLICATION_XML)
+                .entity(createInvalidCreditCard())
+                .post(StatusRepresentation.class);
+        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelStatus.getStatus());
+        
+        // check status of bookings
+        assertSomeBookingsCanceled(userid, itineraryid);
     }
 
+    /**
+     * Helper for test C2, checking the status of bookings after failed cancelation
+     * @param userid
+     * @param itineraryid 
+     *  Monica
+     */
+    private void assertSomeBookingsCanceled (String userid, String itineraryid) {
+        ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                    .accept(MediaType.APPLICATION_XML)
+                                                    .get(ItineraryRepresentation.class);
+        Itinerary itinerary = itineraryRep.getItinerary();
+        
+        // check first booking is cancelled
+        assertEquals("CANCELLED", itinerary.getFlightInfos().get(0).getStatus());
+        
+        // check second booking still confirmed
+        assertEquals("CONFIRMED", itinerary.getFlightInfos().get(1).getStatus());
+        
+        // check third booking is cancelled
+        assertEquals("CANCELLED", itinerary.getHotelInfos().get(0).getStatus());
+    }
+    
+    /**
+     * Helper for test C2, checks all bookings are confirmed after booking itinerary
+     * @param userid
+     * @param itineraryid 
+     *  Monica
+     */
     private void assertBookingsConfirmed (String userid, String itineraryid) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
                                                     .accept(MediaType.APPLICATION_XML)
@@ -425,7 +470,7 @@ public class RequiredTests {
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
 
-     
+
     private CreditCard createValidCreditCard () {
         CreditCardInfoType ccInfo = TestUtils.validCCInfo();
         
