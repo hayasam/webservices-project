@@ -15,6 +15,7 @@ import ws.travel.bpel.test.TestUtils;
 import ws.travel.rest.data.CreditCard;
 import ws.travel.rest.data.FlightInfo;
 import ws.travel.rest.data.HotelInfo;
+import ws.travel.rest.data.Itinerary;
 import ws.travel.rest.representation.FlightsRepresentation;
 import ws.travel.rest.representation.HotelsRepresentation;
 import ws.travel.rest.representation.ItineraryRepresentation;
@@ -168,24 +169,9 @@ public class RequiredTests {
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
         assertEquals(ITINERARY_CREATED, result.getStatus());
-        
-        // get possible flights
-        List<FlightInfo> flightInfos = client.resource(flightsUrl(userid, itineraryid))
-                                             .queryParam("date", "07-11-2014")
-                                             .queryParam("startAirport", "Copenhagen Lufthavnen")
-                                             .queryParam("endAirport", "Bucharest Otopeni")
-                                             .accept(MediaType.APPLICATION_XML)
-                                             .get(FlightsRepresentation.class)
-                                             .getFlightInfo();
-                
+                        
         // add a flight
-        StatusRepresentation status = client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(flightInfos.get(0))
-              .post(StatusRepresentation.class);
-        
-        assertEquals(FLIGHT_ADDED, status.getStatus());
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
         
         // cancel planning
         StatusRepresentation cancelStatus = client.resource(cancelItineraryUrl(userid, itineraryid))
@@ -217,55 +203,37 @@ public class RequiredTests {
                               .put(StatusRepresentation.class);
         assertEquals(ITINERARY_CREATED, result.getStatus());
         
-         // get possible flights
-        List<FlightInfo> flightInfos = client.resource(flightsUrl(userid, itineraryid))
-                                             .queryParam("date", "07-11-2014")
-                                             .queryParam("startAirport", "Copenhagen Lufthavnen")
-                                             .queryParam("endAirport", "Bucharest Otopeni")
-                                             .accept(MediaType.APPLICATION_XML)
-                                             .get(FlightsRepresentation.class)
-                                             .getFlightInfo();
-                
         // add a flight
-        StatusRepresentation statusFlight1 = client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(flightInfos.get(0))
-              .post(StatusRepresentation.class);
-        assertEquals(FLIGHT_ADDED, statusFlight1.getStatus());
-        
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+               
         // add a second flight
-        StatusRepresentation statusFlight2 = client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(flightInfos.get(1))
-              .post(StatusRepresentation.class);
-        assertEquals(FLIGHT_ADDED, statusFlight2.getStatus());
-                
-        // get possible hotels
-        List<HotelInfo> hotelInfos = client.resource(hotelsUrl(userid, itineraryid))
-                                      .queryParam("city", "Paris")
-                                      .queryParam("arrival", "07-11-2014")
-                                      .queryParam("departure", "10-11-2014")
-                                      .accept(MediaType.APPLICATION_XML)
-                                      .get(HotelsRepresentation.class).getHotelInfo();
-        
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "21-01-2015", "Oslo", "Malmo"));
+                        
         // add a hotel
-        StatusRepresentation statusHotel = client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(hotelInfos.get(0))
-              .post(StatusRepresentation.class);
-        assertEquals(HOTEL_ADDED, statusHotel.getStatus());
+        assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014"));
         
         // book itinerary
-        //StatusRepresentation bookItinerary = client.resource()
-        /**
-         * IN PROGRESS
-         */
-        
+        assertBookItinerary(userid, itineraryid, createValidCreditCard());
+                
+        // check booking status for each flight
+        assertBookingsConfirmed(userid, itineraryid);
+                            
     }
 
+    private void assertBookingsConfirmed (String userid, String itineraryid) {
+        ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                    .accept(MediaType.APPLICATION_XML)
+                                                    .get(ItineraryRepresentation.class);
+        Itinerary itinerary = itineraryRep.getItinerary();
+        
+        for(FlightInfo flightInfo : itinerary.getFlightInfos())
+            assertEquals("CONFIRMED", flightInfo.getStatus());
+        
+        for(HotelInfo hotelInfo : itinerary.getHotelInfos())
+            assertEquals("CONFIRMED", hotelInfo.getStatus());
+    }
+    
+    
     private String itineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
