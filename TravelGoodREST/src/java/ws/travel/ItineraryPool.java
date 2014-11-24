@@ -21,7 +21,7 @@ public class ItineraryPool {
         return getItinerary(encrypt(userid, itineraryid));
     }
     
-    public static Itinerary getItinerary(String itineraryKey) {
+    private static Itinerary getItinerary(String itineraryKey) {
         return itineraries.get(itineraryKey);
     }
     
@@ -33,7 +33,10 @@ public class ItineraryPool {
         itineraries.put(itineraryKey, itinerary);
     }
     
-    public static void deleteItinerary(String itineraryKey) {
+    public static void deleteItinerary (String userid, String itineraryid) {
+        deleteItinerary(encrypt(userid, itineraryid));
+    }
+    private static void deleteItinerary(String itineraryKey) {
         itineraries.remove(itineraryKey);
     }
     
