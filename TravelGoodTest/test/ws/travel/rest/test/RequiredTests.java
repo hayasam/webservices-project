@@ -207,6 +207,38 @@ public class RequiredTests {
     }
 
     @Test
+    public void testB() {
+        String userid       = "userB";
+        String itineraryid  = "itineraryB";
+        
+        // create itinerary
+        StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                .accept(MediaType.APPLICATION_XML)
+                                                .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
+        
+        // get possible flights
+        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
+        // add and assert
+        assertAddFlight(userid, itineraryid, flightInfo1);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());
+        
+        // get a hotel
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014");
+        // add and assert
+        assertAddHotel(userid, itineraryid, hotelInfo1);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());
+        
+        // get other possible flights
+        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "18-12-2014", "Warsaw", "Madrid");
+        // add and assert
+        assertAddFlight(userid, itineraryid, flightInfo2);
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus());  
+        
+        //To be cotinued
+    }
+    
+    @Test
     public void testC2 () {
         String userid       = "userC2";
         String itineraryid  = "itineraryC2";
