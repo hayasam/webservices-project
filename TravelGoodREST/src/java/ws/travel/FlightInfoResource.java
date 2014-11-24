@@ -94,7 +94,7 @@ public class FlightInfoResource {
         }
         
         itinerary.addFlightToItinerary(flight);
-        
+        status.setStatus("FLIGHT ADDED");
         ItineraryResource.addCancelLink(userid, itineraryId, status);
         ItineraryResource.addBookLink(userid, itineraryId, status);
         ItineraryResource.addGetItineraryLink(userid, itineraryId, status);
