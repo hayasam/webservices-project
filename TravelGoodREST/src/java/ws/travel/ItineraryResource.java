@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -48,30 +49,28 @@ public class ItineraryResource {
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
-
-    private static final String CANNOT_CANCEL_ITINERAY = "Can't cancel an unbooked itinerary";
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
     
     /**
-     * @GET
      * Implement get current itinerary.
      * [Johannes]
      */
+     @GET
+     @Produces(MediaType.APPLICATION_XML)
+     public Response getItinerary (@PathParam("userid") String userId,
+                        @PathParam("itineraryid") String itineraryId) {
+         Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
+         if(itinerary == null) {
+            return Response.status(Status.NOT_FOUND)
+                           .entity(ITINERARY_NOT_FOUND)
+                           .build();
+        }
+         return Response.ok(itinerary).build();
+     }
     
-    /**
-     * @GET
-     * @Path("flights")
-     * [Audrius]
-     * Implement get possible flights with query string.
-     */
     
-    /**
-     * @GET
-     * [Audrius]
-     * @Path("hotels")
-     * Implement get possible hotels with query string.
-     */
+    
     
     /**
      * @POST

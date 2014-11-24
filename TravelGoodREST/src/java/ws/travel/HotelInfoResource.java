@@ -41,6 +41,12 @@ public class HotelInfoResource {
 
 
     /**
+     * @GET
+     * [Audrius]
+     * Implement get possible hotels with query string.
+     */
+    
+    /**
      * 
      * @Path("add")
      * [Paulina]
