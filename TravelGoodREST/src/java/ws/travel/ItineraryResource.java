@@ -209,7 +209,7 @@ public class ItineraryResource {
        addCancelLink(userid, itineraryid, statusRep);
        addGetItineraryLink(userid, itineraryid, statusRep);
        
-       return Response.ok(itinerary).build();
+       return Response.ok(statusRep).build();
    }
     
     /**
