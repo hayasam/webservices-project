@@ -18,6 +18,7 @@ import ws.travel.rest.data.FlightInfos;
 import ws.travel.rest.data.HotelInfo;
 import ws.travel.rest.data.HotelInfos;
 import ws.travel.rest.representation.FlightsRepresentation;
+import ws.travel.rest.representation.Link;
 import ws.travel.rest.representation.StatusRepresentation;
 
 /**
@@ -34,6 +35,15 @@ public class RequiredTests {
     private static final String FLIGHT_ADDED = "flight added to itinerary";
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
      
+    private static final String RELATION_BASE = "http://travelgood.ws/relations/";
+    private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
+    private static final String STATUS_RELATION = RELATION_BASE + "status";
+    private static final String BOOK_RELATION = RELATION_BASE + "book";
+    private static final String GET_FLGHTS_RELATION = RELATION_BASE + "getFlights";
+    private static final String GET_HOTELS_RELATION = RELATION_BASE + "getHotels";
+    private static final String ADD_FLIGHT_RELATION = RELATION_BASE + "addFlight";
+    private static final String ADD_HOTEL_RELATION = RELATION_BASE + "addHotel";
+    private static final String CREATE_ITINERARY = RELATION_BASE + "createItinerary";
     @Before
     public void reset() {
         client = Client.create();
@@ -133,6 +143,14 @@ public class RequiredTests {
                 .post(StatusRepresentation.class);
         
         assertEquals(ITINERARY_TERMINATED, cancelStatus.getStatus());
+        
+        /*
+         * Test links, next possible actions are:
+         * -create itinerary
+         */
+        Link createLink = cancelStatus.getLinkByRelation(CREATE_ITINERARY);
+        assertNotNull(createLink);
+        assertEquals(itineraryUrl(userid, itineraryid), createLink.getUri());
         
     }
     private String itineraryUrl(String userid, String itineraryid) {
