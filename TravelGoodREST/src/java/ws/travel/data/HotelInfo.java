@@ -13,6 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author Paulina
  */
 
+@XmlRootElement()
 public class HotelInfo {
     
     
