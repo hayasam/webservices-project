@@ -10,8 +10,14 @@ import javax.ws.rs.Path;
  *
  * @author VAIO
  */
-@Path("users/{userid}/itinerary/{itineraryid}/flights/{bookingnum}")
+@Path("users/{userid}/itinerary/{itineraryid}/flights")
 public class FlightInfoResource {
+    
+    /**
+     * @GET
+     * [Audrius]
+     * Implement get possible flights with query string.
+     */
     
     /**
      * @POST

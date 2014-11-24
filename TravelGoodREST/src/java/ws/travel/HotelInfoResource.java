@@ -21,9 +21,17 @@ import ws.travel.representation.StatusRepresentation;
  * @author VAIO
  */
 
-@Path("users/{userid}/itinerary/{itineraryid}/hotels/{bookingnum}")
+@Path("users/{userid}/itinerary/{itineraryid}/hotels")
 public class HotelInfoResource {
     //itineraries
+    
+    /**
+     * @GET
+     * [Audrius]
+     * Implement get possible hotels with query string.
+     */
+    
+    
     /**
      * 
      * @Path("add")
