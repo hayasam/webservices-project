@@ -18,7 +18,7 @@ public class CreditCard {
     private int expYear;
     private int expMonth;
     
-    public Creditcard() {
+    public CreditCard() {
         
     }
     

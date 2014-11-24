@@ -15,7 +15,7 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.ExpirationDateType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray;
-import ws.bank.creditcard.Creditcard;
+import ws.bank.creditcard.CreditCard;
 
 /**
  *
@@ -23,7 +23,7 @@ import ws.bank.creditcard.Creditcard;
  */
 public class HotelService {
 
-    public static boolean bookHotel(int bookingNum, Creditcard ccInfo) throws BookOperationFault {
+    public static boolean bookHotel(int bookingNum, CreditCard ccInfo) throws BookOperationFault {
         BookHotelInputType bookInput = new BookHotelInputType();
         bookInput.setBookingNr(bookingNum);
         bookInput.setCreditCardInfo(createCreditCardInfoType(ccInfo));
@@ -43,7 +43,7 @@ public class HotelService {
         return getHotelsOperation(getInput).getHotelInfo();
     }
     
-    private static CreditCardInfoType createCreditCardInfoType(Creditcard cc) {
+    private static CreditCardInfoType createCreditCardInfoType(CreditCard cc) {
         CreditCardInfoType ccInfo = new CreditCardInfoType();
         ccInfo.setCardNumber(cc.getCardnumber());
         ccInfo.setHolderName(cc.getName());
