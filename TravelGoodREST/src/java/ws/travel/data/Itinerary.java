@@ -23,7 +23,7 @@ public class Itinerary {
         
     }
 
-    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelsInfos, String status) {
+    public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos, String status) {
         this.flightInfos = flightInfos;
         this.hotelInfos = hotelInfos;
         this.status = status;
