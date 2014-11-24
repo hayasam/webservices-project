@@ -35,6 +35,12 @@ public class HotelInfoResource {
     public static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources/";
 
     /**
+     * @GET
+     * [Audrius]
+     * Implement get possible hotels with query string.
+     */
+    
+    /**
      * 
      * @Path("add")
      * [Paulina]

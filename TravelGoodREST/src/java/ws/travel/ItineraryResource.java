@@ -59,19 +59,8 @@ public class ItineraryResource {
      * [Johannes]
      */
     
-    /**
-     * @GET
-     * @Path("flights")
-     * [Audrius]
-     * Implement get possible flights with query string.
-     */
     
-    /**
-     * @GET
-     * [Audrius]
-     * @Path("hotels")
-     * Implement get possible hotels with query string.
-     */
+    
     
     /**
      * @POST
