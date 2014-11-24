@@ -16,11 +16,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightFault;
+import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookOperationFault;
+import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelFault;
 import ws.bank.creditcard.CreditCard;
 import ws.travel.data.FlightInfo;
 import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
 import ws.travel.services.FlightService;
+import ws.travel.services.HotelService;
 
 /**
  *
@@ -78,12 +81,12 @@ public class ItineraryResource {
                     flight.setStatus("CONFIRMED");
                     confirmedFlights.add(flight);
                 }
-            } catch (BookFlightFault ex) {
+            } catch (BookFlightFault ex) { // rollback
                 for(FlightInfo confirmedFlight : confirmedFlights) {
                     try {
                         boolean cancelled = FlightService.cancelFlight(confirmedFlight.getBookingNr(), confirmedFlight.getPrice() * 2, ccInfo);
                         if(cancelled) {
-                            flight.setStatus("CANCELLED");
+                            confirmedFlight.setStatus("CANCELLED");
                         }
                     } catch (CancelFlightFault ex1) {
 
@@ -93,15 +96,39 @@ public class ItineraryResource {
             }
        }
 
-        for(HotelInfo hotel : itinerary.getHotelInfos()) {
-            try {
-                
-            } catch (BookOperationFault ex) {
-                
-            }
-        }
-        return Response.ok("OK").build();
-    }
+       List<HotelInfo> confirmedHotels = new ArrayList<HotelInfo>(); 
+       for(HotelInfo hotel : itinerary.getHotelInfos()) {
+           try {
+               boolean booked = HotelService.bookHotel(hotel.getBookingNr(), ccInfo);
+               if(booked) {
+                   hotel.setStatus("CONFIRMED");
+                   confirmedHotels.add(hotel);
+               }
+           } catch (BookOperationFault ex) { // rollback
+                for(FlightInfo confirmedFlight : confirmedFlights) {
+                    try {
+                        boolean cancelled = FlightService.cancelFlight(confirmedFlight.getBookingNr(), confirmedFlight.getPrice() * 2, ccInfo);
+                        if(cancelled) {
+                            confirmedFlight.setStatus("CANCELLED");
+                        }
+                    } catch (CancelFlightFault ex1) {
+
+                    }
+                }
+                for(HotelInfo confirmedHotel : confirmedHotels) {
+                    try {
+                        boolean cancelled = HotelService.cancelHotel(confirmedHotel.getBookingNr());
+                        if(cancelled) {
+                            confirmedHotel.setStatus("CANCELLED");
+                        }
+                    } catch (CancelHotelFault ex1) {
+                        
+                    }
+                }
+           }
+       }
+       return Response.ok("OK").build();
+   }
     
     /**
      * @POST
