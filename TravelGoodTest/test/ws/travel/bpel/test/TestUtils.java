@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ws.travel.test;
+package ws.travel.bpel.test;
 
 import java.text.DateFormat;
 import java.text.ParseException;

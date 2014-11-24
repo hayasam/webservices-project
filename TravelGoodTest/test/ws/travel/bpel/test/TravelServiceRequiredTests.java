@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ws.travel.test;
+package ws.travel.bpel.test;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
