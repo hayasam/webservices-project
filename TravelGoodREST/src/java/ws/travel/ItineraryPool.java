@@ -25,6 +25,10 @@ public class ItineraryPool {
         return itineraries.get(itineraryKey);
     }
     
+    public static void addItinerary(String userid, String itineraryid, Itinerary itinerary) {
+        addItinerary(encrypt(userid, itineraryid), itinerary);
+    }
+    
     public static void addItinerary(String itineraryKey, Itinerary itinerary) {
         itineraries.put(itineraryKey, itinerary);
     }

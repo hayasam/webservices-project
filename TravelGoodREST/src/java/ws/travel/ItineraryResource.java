@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -180,4 +181,16 @@ public class ItineraryResource {
      * [Caecilie]
      * Implement create itinerary.
      */
+    @PUT
+    @Produces(MediaType.APPLICATION_XML)
+    public Response createItinerary(@PathParam("userid") String userid,
+                                   @PathParam("itineraryid") String itineraryid) {
+        
+        Itinerary itinerary = new Itinerary();
+        itinerary.setStatus(ItineraryStatus.UNCONFIRMED.toString());
+        
+        ItineraryPool.addItinerary(userid, itineraryid, itinerary);
+        
+        return Response.ok("OK").build();
+    } 
 }
