@@ -282,72 +282,36 @@ public class RequiredTests {
         String itineraryid  = "itineraryC1";
         
         /* Create itinerary with three bookings and book it */
-        StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
-                              .accept(MediaType.APPLICATION_XML)
-                              .put(StatusRepresentation.class);
-        
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertCreateItinerary(userid, itineraryid);
         
         // get possible flights
-        List<FlightInfo> flightInfos1 = client.resource(flightsUrl(userid, itineraryid))
-                                                .queryParam("date", "07-11-2014")
-                                                .queryParam("startAirport", "Copenhagen Lufthavnen")
-                                                .queryParam("endAirport", "Bucharest Otopeni")
-                                                .accept(MediaType.APPLICATION_XML)
-                                                .get(FlightsRepresentation.class)
-                                                .getFlightInfo();
+        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
+        assertAddFlight(userid, itineraryid, flightInfo1);
         
-        FlightInfo flightInfo1 = flightInfos1.get(0);
-        client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(flightInfo1)
-              .post();
-        
-        List<FlightInfo> flightInfos2 = client.resource(flightsUrl(userid, itineraryid))
-                                        .queryParam("date", "10-11-2014")
-                                        .queryParam("startAirport", "Bucharest Otopeni")
-                                        .queryParam("endAirport", "Copenhagen Lufthavnen")
-                                        .accept(MediaType.APPLICATION_XML)
-                                        .get(FlightsRepresentation.class)
-                                        .getFlightInfo();
-        
-        FlightInfo flightInfo2 = flightInfos2.get(0);
-        client.resource(addFlightUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(flightInfo2)
-              .post();
+        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "10-11-2014", "Bucharest Otopeni", "Copenhagen Lufthavnen");
+        assertAddFlight(userid, itineraryid, flightInfo2);
         
         // get possible hotels
-        List<HotelInfo> hotelInfos = client.resource(hotelsUrl(userid, itineraryid))
-                                            .queryParam("city", "Bucharest")
-                                            .queryParam("arrival", "07-11-2014")
-                                            .queryParam("departure", "10-11-2014")
-                                            .accept(MediaType.APPLICATION_XML)
-                                            .get(HotelsRepresentation.class)
-                                            .getHotelInfo();
-        HotelInfo hotelInfo1 = hotelInfos.get(0);
-        
-        // add a hotel
-        client.resource(addHotelUrl(userid, itineraryid))
-              .type(MediaType.APPLICATION_XML)
-              .accept(MediaType.APPLICATION_XML)
-              .entity(hotelInfo1)
-              .post();
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Bucharest", "07-11-2014", "10-11-2014");
+        assertAddHotel(userid, itineraryid, hotelInfo1);
         
         //book itinerary
-        StatusRepresentation bookResult = client.resource(bookItineraryUrl(userid, itineraryid))
-                .type(MediaType.APPLICATION_XML)
-                .accept(MediaType.APPLICATION_XML)
-                .post(StatusRepresentation.class, createValidCreditCard());
-        
-        assertEquals(bookResult.getStatus(), ITINERARY_SUCCESSFULLY_BOOKED);
+        assertBookItinerary(userid, itineraryid, createValidCreditCard());
         
         /* get itinerary and make sure that status is confirmed for each entry */
+        assertAllBooked(userid, itineraryid);
+
+        /* cancel trip and chceck that booking status is cancelled for each entry */
+        assertItineraryCancelled(userid, itineraryid);
+        assertBookingCancelled(userid, itineraryid);
+    }
+    
+    /* Helpers for C1 */
+    private void assertAllBooked(String userid, String itineraryid)
+    {
         ItineraryRepresentation itineraryResult = client.resource(itineraryUrl(userid, itineraryid))
-                      .accept(MediaType.APPLICATION_XML)
-                      .get(ItineraryRepresentation.class);
+              .accept(MediaType.APPLICATION_XML)
+              .get(ItineraryRepresentation.class);
         
         for(FlightInfo flight : itineraryResult.getItinerary().getFlightInfos())
         {
@@ -358,14 +322,19 @@ public class RequiredTests {
         {
             assertEquals(hotel.getStatus(), "CONFIRMED");
         }
-
-        /* cancel trip and chceck that booking status is cancelled for each entry */
+    }
+    
+    private void assertItineraryCancelled(String userid, String itineraryid)
+    {
         ItineraryRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
                 .type(MediaType.APPLICATION_XML)
                 .post(ItineraryRepresentation.class, createValidCreditCard());
         
         assertEquals(cancelResult.getItinerary().getStatus(), "CANCELLED");
-        
+    }
+    
+    private void assertBookingCancelled(String userid, String itineraryid)
+    {
         ItineraryRepresentation cancelledItineraryResult = client.resource(itineraryUrl(userid, itineraryid))
               .accept(MediaType.APPLICATION_XML)
               .get(ItineraryRepresentation.class);
@@ -379,6 +348,7 @@ public class RequiredTests {
         {
             assertEquals(hotel.getStatus(), "CANCELLED");
         }
+        
     }
     
     /*
