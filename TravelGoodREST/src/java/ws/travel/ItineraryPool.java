@@ -17,6 +17,10 @@ public class ItineraryPool {
     
     private static Map<String, Itinerary> itineraries = new HashMap<String, Itinerary>();
     
+    public static Itinerary getItinerary(String userid, String itineraryid) {
+        return getItinerary(encrypt(userid, itineraryid));
+    }
+    
     public static Itinerary getItinerary(String itineraryKey) {
         return itineraries.get(itineraryKey);
     }
@@ -27,5 +31,9 @@ public class ItineraryPool {
     
     public static void deleteItinerary(String itineraryKey) {
         itineraries.remove(itineraryKey);
+    }
+    
+    private static String encrypt(String userid, String itineraryid) {
+        return userid + "-" + itineraryid;
     }
 }
