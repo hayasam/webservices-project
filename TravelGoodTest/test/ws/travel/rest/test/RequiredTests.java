@@ -240,7 +240,7 @@ public class RequiredTests {
         String userid       = "userC1";
         String itineraryid  = "itineraryC1";
         
-        // create itinerary
+        /* Create itinerary with three bookings and book it */
         StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
@@ -303,9 +303,41 @@ public class RequiredTests {
         
         assertEquals(bookResult.getStatus(), ITINERARY_SUCCESSFULLY_BOOKED);
         
-        //itinerary with three bookings - flights + hotels and book it
-        //get itinerary and make sure that status is confirmed for each entry
-        //cancel trip and chceck that booking status is cancelled for each entry
+        /* get itinerary and make sure that status is confirmed for each entry */
+        ItineraryRepresentation itineraryResult = client.resource(itineraryUrl(userid, itineraryid))
+                      .accept(MediaType.APPLICATION_XML)
+                      .get(ItineraryRepresentation.class);
+        
+        for(FlightInfo flight : itineraryResult.getItinerary().getFlightInfos())
+        {
+            assertEquals(flight.getStatus(), "CONFIRMED");
+        }
+        
+        for(HotelInfo hotel : itineraryResult.getItinerary().getHotelInfos())
+        {
+            assertEquals(hotel.getStatus(), "CONFIRMED");
+        }
+
+        /* cancel trip and chceck that booking status is cancelled for each entry */
+        ItineraryRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
+                .type(MediaType.APPLICATION_XML)
+                .post(ItineraryRepresentation.class, createValidCreditCard());
+        
+        assertEquals(cancelResult.getItinerary().getStatus(), "CANCELLED");
+        
+        ItineraryRepresentation cancelledItineraryResult = client.resource(itineraryUrl(userid, itineraryid))
+              .accept(MediaType.APPLICATION_XML)
+              .get(ItineraryRepresentation.class);
+        
+        for(FlightInfo flight : cancelledItineraryResult.getItinerary().getFlightInfos())
+        {
+            assertEquals(flight.getStatus(), "CANCELLED");
+        }
+        
+        for(HotelInfo hotel : cancelledItineraryResult.getItinerary().getHotelInfos())
+        {
+            assertEquals(hotel.getStatus(), "CANCELLED");
+        }
     }
     
     public void testC2 () {
