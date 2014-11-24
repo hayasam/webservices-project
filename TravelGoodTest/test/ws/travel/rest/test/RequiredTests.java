@@ -227,25 +227,52 @@ public class RequiredTests {
                                                 .put(StatusRepresentation.class);
         assertEquals(ITINERARY_CREATED, statusRep.getStatus());
         
-        // get possible flights
-        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
-        // add and assert
+        //get flights
+        FlightsRepresentation flightsRep = client.resource(flightsUrl(userid, itineraryid))
+                                             .queryParam("date", "07-11-2014")
+                                             .queryParam("startAirport", "Copenhagen Lufthavnen")
+                                             .queryParam("endAirport", "Bucharest Otopeni")
+                                             .accept(MediaType.APPLICATION_XML)
+                                             .get(FlightsRepresentation.class);
+        
+        //add flight 1 and assert that status is unconfirmed        
+        FlightInfo flightInfo1 = flightsRep.getFlightInfo().get(0);
         assertAddFlight(userid, itineraryid, flightInfo1);
         assertEquals("UNCONFIRMED", flightInfo1.getStatus());
         
+        //add flight 2 and assert that status is unconfirmed  
+        FlightInfo flightInfo2 = flightsRep.getFlightInfo().get(1);
+        assertAddFlight(userid, itineraryid, flightInfo2);
+        assertEquals("UNCONFIRMED", flightInfo2.getStatus());
+        
         // get a hotel
         HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014");
-        // add and assert
+        // add hotel and assert that status is unconfirmed  
         assertAddHotel(userid, itineraryid, hotelInfo1);
-        assertEquals("UNCONFIRMED", flightInfo1.getStatus());
+        assertEquals("UNCONFIRMED", flightInfo1.getStatus()); 
         
-        // get other possible flights
-        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "18-12-2014", "Warsaw", "Madrid");
-        // add and assert
-        assertAddFlight(userid, itineraryid, flightInfo2);
-        assertEquals("UNCONFIRMED", flightInfo1.getStatus());  
+        CreditCard ccInfo = createInvalidCreditCard(); 
         
-        //To be cotinued
+        //book itinerary (second bokking operation should fail
+        client.resource(bookItineraryUrl(userid, itineraryid))
+                .accept(MediaType.APPLICATION_XML)
+                .entity(ccInfo)
+                .post(StatusRepresentation.class);
+        
+        //get itinerary
+        ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
+                                                    .accept(MediaType.APPLICATION_XML)
+                                                    .get(ItineraryRepresentation.class);
+        
+        //get status of three 'bookings'
+        String status1 = itineraryRep.getItinerary().getFlightInfos().get(0).getStatus();
+        String status2 = itineraryRep.getItinerary().getFlightInfos().get(1).getStatus();
+        String status3 = itineraryRep.getItinerary().getHotelInfos().get(0).getStatus();
+        
+        //first should be cancelled, second and third should be unconfirmed
+        assertEquals("CANCELLED", status1);
+        assertEquals("UNCONFIRMED", status2);
+        assertEquals("UNCONFIRMED", status3);
     }
     
     @Test
