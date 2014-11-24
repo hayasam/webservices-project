@@ -91,7 +91,7 @@ public class HotelInfoResource {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response addHotelToItinerary(@PathParam("userid") String userid,
-                                        @PathParam("itineraryId") String itineraryId,
+                                        @PathParam("itineraryid") String itineraryId,
                                         HotelInfo hotel)
     {
         StatusRepresentation status = new StatusRepresentation();
