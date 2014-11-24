@@ -25,7 +25,7 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookOperationFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelFault;
-import ws.bank.creditcard.CreditCard;
+import ws.travel.data.CreditCard;
 import ws.travel.data.FlightInfo;
 import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;

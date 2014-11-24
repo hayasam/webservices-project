@@ -15,7 +15,7 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.ExpirationDateType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.GetFlightInputType;
-import ws.bank.creditcard.CreditCard;
+import ws.travel.data.CreditCard;
 
 /**
  *
