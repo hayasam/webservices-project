@@ -61,6 +61,7 @@ public class ItineraryResource {
      public Response getItinerary (@PathParam("userid") String userId,
                         @PathParam("itineraryid") String itineraryId) {
          Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
+         System.out.println(itinerary.getStatus());
          if(itinerary == null) {
             return Response.status(Status.NOT_FOUND)
                            .entity(ITINERARY_NOT_FOUND)
