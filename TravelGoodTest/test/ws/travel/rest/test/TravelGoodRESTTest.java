@@ -99,25 +99,25 @@ public class TravelGoodRESTTest {
     
     @Test
     public void getPossibleFlights() {
-        String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "123", "111");
+        String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "user2", "itinerary2");
         
-        String createItinerary_result = client.resource(itineraryURI)
-                                        .accept(MediaType.APPLICATION_XML)
-                                        .put(String.class);
-        assertEquals("OK", createItinerary_result);
+        StatusRepresentation result = client.resource(itineraryURI)
+                                .accept(MediaType.APPLICATION_XML)
+                                .put(StatusRepresentation.class);
+        assertEquals(ITINERARY_CREATED, result.getStatus());
         
         String possibleFlightsURI = String.format("%s/flights", itineraryURI);
         
         // get possible flights
-        List<FlightInfo> flights = client.resource(possibleFlightsURI)
+        List<FlightInfo> flightinfos = client.resource(possibleFlightsURI)
                                       .queryParam("date", "07-11-2014")
                                       .queryParam("startAirport", "Copenhagen Lufthavnen")
                                       .queryParam("endAirport", "Bucharest Otopeni")
                                       .accept(MediaType.APPLICATION_XML)
-                                      .get(FlightInfos.class).getFlightInfo();
-        
-        assertEquals("UNCONFIRMED", flights.get(0).getStatus());
-        assertEquals("UNCONFIRMED", flights.get(1).getStatus());
+                                      .get(FlightsRepresentation.class).getFlightInfo();
+        assertEquals(2, flightinfos.size());
+        assertEquals("UNCONFIRMED", flightinfos.get(0).getStatus());
+        assertEquals("UNCONFIRMED", flightinfos.get(1).getStatus());
     }
     
      @Test
