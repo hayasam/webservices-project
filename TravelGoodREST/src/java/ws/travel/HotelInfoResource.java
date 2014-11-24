@@ -46,33 +46,25 @@ public class HotelInfoResource {
                               @QueryParam("city") String city,
                               @QueryParam("arrival") String arrival,
                               @QueryParam("departure") String departure) {
-//        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
-//        if(itinerary == null) {
-//            return Response.status(Status.NOT_FOUND)
-//                           .entity(ITINERARY_NOT_FOUND)
-//                           .build();
-//        }
-//        if(itinerary.getStatus().equals("CONFIRMED")) {
-//            return Response.status(Status.NOT_ACCEPTABLE)
-//                            .entity(ITINERARY_BOOKED_ALREADY)
-//                            .build();
-//        }
-//        if(itinerary.getStatus().equals("CANCELLED")) {
-//            return Response.status(Status.NOT_ACCEPTABLE)
-//                            .entity(ITINERARY_CANCELLED_ALREADY)
-//                            .build();
-//        }
+        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
+        if(itinerary == null) {
+            return Response.status(Status.NOT_FOUND)
+                           .entity(ITINERARY_NOT_FOUND)
+                           .build();
+        }
+        if(itinerary.getStatus().equals("CONFIRMED")) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_BOOKED_ALREADY)
+                            .build();
+        }
+        if(itinerary.getStatus().equals("CANCELLED")) {
+            return Response.status(Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_CANCELLED_ALREADY)
+                            .build();
+        }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
         return Response.ok(new HotelInfos(hotels)).build();
     }
-        
-
-
-    /**
-     * @GET
-     * [Audrius]
-     * Implement get possible hotels with query string.
-     */
     
     /**
      * 

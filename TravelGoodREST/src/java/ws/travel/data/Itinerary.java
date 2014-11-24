@@ -4,6 +4,7 @@
  */
 package ws.travel.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,7 +21,8 @@ public class Itinerary {
     private List<HotelInfo> hotelInfos;
   
     public Itinerary() {
-        
+        flightInfos = new ArrayList<FlightInfo>();
+        hotelInfos = new ArrayList<HotelInfo>();
     }
 
     public Itinerary(List<FlightInfo> flightInfos, List<HotelInfo> hotelInfos, String status) {
