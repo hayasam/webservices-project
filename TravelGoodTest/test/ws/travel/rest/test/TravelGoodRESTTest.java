@@ -30,7 +30,7 @@ public class TravelGoodRESTTest {
     WebResource itineraries;
     
     private static final String FLIGHT_ADDED = "flight added to itinerary";
-     private static final String ITINERARY_CREATED = "itinerary successfully created";
+    private static final String ITINERARY_CREATED = "itinerary successfully created";
      
     public TravelGoodRESTTest() {
         client = Client.create();
