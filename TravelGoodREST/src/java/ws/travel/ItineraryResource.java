@@ -79,7 +79,6 @@ public class ItineraryResource {
          Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
          ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
          
-         System.out.println(itinerary.getStatus());
          if(itinerary == null) {
             return Response.status(Status.NOT_FOUND)
                            .entity(ITINERARY_NOT_FOUND)
