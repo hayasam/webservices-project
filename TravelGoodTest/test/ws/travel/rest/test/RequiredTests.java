@@ -235,7 +235,6 @@ public class RequiredTests {
     }
     
     @Test
-<<<<<<< HEAD
     public void testC1()
     {
         String userid       = "userC1";
