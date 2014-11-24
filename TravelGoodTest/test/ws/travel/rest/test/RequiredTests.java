@@ -37,6 +37,7 @@ public class RequiredTests {
     private static final String FLIGHT_ADDED        = "flight added to itinerary";
     private static final String HOTEL_ADDED         = "hotel added to itinerary";
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
+    private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
      
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
     private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
@@ -89,8 +90,14 @@ public class RequiredTests {
         // add and assert
         assertAddHotel(userid, itineraryid, hotelInfo2);
         
-        // assert itinerary is in expected status and have 5 items in.
-        assertItinerary(userid, itineraryid, "UNCONFIRMED", 5);
+        // assert itinerary is in unconfirmed status and have 5 items in.
+        assertGetItinerary(userid, itineraryid, "UNCONFIRMED", 5);
+        
+        // book itinerary
+        assertBookItinerary(userid, itineraryid, createValidCreditCard());
+        
+        // assert itinerary is in confirmed status and have 5 items in.
+        assertGetItinerary(userid, itineraryid, "CONFIRMED", 5);
     }
     
     private HotelInfo getAHotel(String userid, String itineraryid, String city, String arrival, String departure) {
@@ -101,6 +108,7 @@ public class RequiredTests {
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .get(HotelsRepresentation.class);
         assertTrue(hotelsRep.getHotelInfo().size() > 0);
+        assertNotNull(hotelsRep.getLinkByRelation(ADD_HOTEL_RELATION));
         return hotelsRep.getHotelInfo().get(0);
     }
     
@@ -116,13 +124,21 @@ public class RequiredTests {
         return flightsRep.getFlightInfo().get(0);
     }
     
-    private void assertItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
+    private void assertGetItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
                                                     .accept(MediaType.APPLICATION_XML)
                                                     .get(ItineraryRepresentation.class);
         assertEquals(expectedCount, itineraryRep.getItinerary().getFlightInfos().size()
                                         + itineraryRep.getItinerary().getHotelInfos().size());
         assertEquals(expectedStatus, itineraryRep.getItinerary().getStatus());
+    }
+    
+    private void assertBookItinerary(String userid, String itineraryid, CreditCard ccInfo) {
+        StatusRepresentation bookingStatus = client.resource(bookItineraryUrl(userid, itineraryid))
+                                                   .accept(MediaType.APPLICATION_XML)
+                                                   .entity(ccInfo)
+                                                   .post(StatusRepresentation.class);
+        assertEquals(ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
     }
     
     private void assertAddHotel(String userid, String itineraryid, HotelInfo hotelInfo) {
@@ -217,8 +233,13 @@ public class RequiredTests {
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
     
-     private String cancelItineraryUrl(String userid, String itineraryid) {
+    private String cancelItineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/cancel", 
+                             TRAVELGOOD_ENDPOINT, userid, itineraryid);
+    }
+    
+    private String bookItineraryUrl(String userid, String itineraryid) {
+        return String.format("%s/users/%s/itinerary/%s/book", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
      
