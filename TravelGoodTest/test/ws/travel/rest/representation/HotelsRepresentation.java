@@ -2,16 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ws.travel.representation;
+package ws.travel.rest.representation;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import ws.travel.data.HotelInfo;
+import ws.travel.rest.data.HotelInfo;
 
 /**
  *
  * @author Paulina
  */
+
 @XmlRootElement()
 public class HotelsRepresentation extends Representation {
     

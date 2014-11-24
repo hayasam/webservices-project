@@ -43,4 +43,10 @@ public class ItineraryPool {
     private static String encrypt(String userid, String itineraryid) {
         return userid + "-" + itineraryid;
     }
+    
+    public static int size() {
+        if(itineraries.isEmpty())
+            return 0;
+        else return itineraries.size();
+    }
 }

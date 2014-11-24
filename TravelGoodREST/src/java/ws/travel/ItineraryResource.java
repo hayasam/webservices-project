@@ -93,7 +93,7 @@ public class ItineraryResource {
          addGetFlightsLink(userId, itineraryId, itineraryRep);
          addGetHotelsLink(userId, itineraryId, itineraryRep);
          
-         return Response.ok(itinerary).build();
+         return Response.ok(itineraryRep).build();
      }
     
     
