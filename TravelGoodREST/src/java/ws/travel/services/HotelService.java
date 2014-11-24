@@ -26,7 +26,9 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.ExpirationDateType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray;
+import ws.travel.data.Address;
 import ws.travel.data.CreditCard;
+import ws.travel.data.HotelInfo;
 
 
 /**
