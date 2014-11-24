@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.HotelInfo;
 import ws.travel.data.HotelInfos;
@@ -45,6 +46,22 @@ public class HotelInfoResource {
                               @QueryParam("city") String city,
                               @QueryParam("arrival") String arrival,
                               @QueryParam("departure") String departure) {
+//        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
+//        if(itinerary == null) {
+//            return Response.status(Status.NOT_FOUND)
+//                           .entity(ITINERARY_NOT_FOUND)
+//                           .build();
+//        }
+//        if(itinerary.getStatus().equals("CONFIRMED")) {
+//            return Response.status(Status.NOT_ACCEPTABLE)
+//                            .entity(ITINERARY_BOOKED_ALREADY)
+//                            .build();
+//        }
+//        if(itinerary.getStatus().equals("CANCELLED")) {
+//            return Response.status(Status.NOT_ACCEPTABLE)
+//                            .entity(ITINERARY_CANCELLED_ALREADY)
+//                            .build();
+//        }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
         return Response.ok(new HotelInfos(hotels)).build();
     }

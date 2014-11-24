@@ -54,6 +54,7 @@ public class HotelService {
     
     private static List<HotelInfo> getHotels(String city, XMLGregorianCalendar arrivalDate, XMLGregorianCalendar departureDate) {
         GetHotelsInputType getInput = new GetHotelsInputType();
+        getInput.setCity(city);
         getInput.setArrival(arrivalDate);
         getInput.setDeparture(departureDate);
         List<HotelInfoType> hotels = getHotelsOperation(getInput).getHotelInfo();

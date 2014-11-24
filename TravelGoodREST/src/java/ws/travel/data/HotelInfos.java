@@ -5,28 +5,31 @@
 package ws.travel.data;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author VAIO
  */
+@XmlRootElement()
 public class HotelInfos {
     
-    private List<HotelInfo> hotelInfos;
+    private List<HotelInfo> hotelInfo;
     
-    public HotelInfos(List<HotelInfo> hotelInfos) {
-        this.hotelInfos = hotelInfos;
+    public HotelInfos(List<HotelInfo> hotelInfo) {
+        this.hotelInfo = hotelInfo;
     }
     
     public HotelInfos() {
         
     }
     
-    public void setHotelInfos(List<HotelInfo> hotelInfos) {
-        this.hotelInfos = hotelInfos;
+    public void setHotelInfo(List<HotelInfo> hotelInfo) {
+        this.hotelInfo = hotelInfo;
     }
     
-    public List<HotelInfo> getHotelInfos() {
-        return this.hotelInfos;
+    public List<HotelInfo> getHotelInfo() {
+        return this.hotelInfo;
     }
 }

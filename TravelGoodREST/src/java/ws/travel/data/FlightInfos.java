@@ -14,21 +14,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement()
 public class FlightInfos {
     
-    private List<FlightInfo> flightInfos;
+    private List<FlightInfo> flightInfo;
     
     public FlightInfos() {
         
     }
     
-    public FlightInfos(List<FlightInfo> flightInfos) {
-        this.flightInfos = flightInfos;
+    public FlightInfos(List<FlightInfo> flightInfo) {
+        this.flightInfo = flightInfo;
     }
     
-    public List<FlightInfo> getFlightInfos() {
-        return flightInfos;
+    public List<FlightInfo> getFlightInfo() {
+        return flightInfo;
     }
     
-    public void setFlightInfos(List<FlightInfo> flightInfos) {
-        this.flightInfos = flightInfos;
+    public void setFlightInfo(List<FlightInfo> flightInfo) {
+        this.flightInfo = flightInfo;
     }
 }
