@@ -89,11 +89,16 @@ public class ItineraryResource {
 
                     }
                 }
+                return Response.ok(itinerary).build();
             }
        }
 
         for(HotelInfo hotel : itinerary.getHotelInfos()) {
-
+            try {
+                
+            } catch (BookOperationFault ex) {
+                
+            }
         }
         return Response.ok("OK").build();
     }
