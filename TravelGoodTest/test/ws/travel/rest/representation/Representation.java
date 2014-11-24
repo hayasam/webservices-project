@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ws.travel.representation;
+package ws.travel.rest.representation;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
-import ws.travel.data.Itinerary;
 
 /**
  *

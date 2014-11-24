@@ -17,8 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.HotelInfo;
-import ws.travel.data.HotelInfos;
 import ws.travel.data.Itinerary;
+import ws.travel.representation.HotelsRepresentation;
 import ws.travel.services.HotelService;
 import ws.travel.representation.StatusRepresentation;
 
@@ -33,6 +33,7 @@ public class HotelInfoResource {
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+    private static final String HOTEL_ADDED = "hotel added to itinerary";
     
     /**
      * @GET
@@ -63,7 +64,19 @@ public class HotelInfoResource {
                             .build();
         }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
-        return Response.ok(new HotelInfos(hotels)).build();
+        
+        HotelsRepresentation hotelsRepresentation = new HotelsRepresentation();
+        
+        hotelsRepresentation.setHotelInfo(hotels);
+        
+        ItineraryResource.addCancelLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addBookLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetItineraryLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetFlightsLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addGetHotelsLink(userid, itineraryid, hotelsRepresentation);
+        ItineraryResource.addAddHotelLink(userid, itineraryid, hotelsRepresentation);
+        
+        return Response.ok(hotelsRepresentation).build();
     }
     
     /**
@@ -112,6 +125,7 @@ public class HotelInfoResource {
         
         itinerary.addHotelToItinerary(hotel);
         
+        status.setStatus(HOTEL_ADDED);
         ItineraryResource.addCancelLink(userid, itineraryId, status);
         ItineraryResource.addBookLink(userid, itineraryId, status);
         ItineraryResource.addGetItineraryLink(userid, itineraryId, status);

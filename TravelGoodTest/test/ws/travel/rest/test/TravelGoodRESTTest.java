@@ -15,6 +15,7 @@ import ws.travel.rest.data.FlightInfo;
 import ws.travel.rest.data.FlightInfos;
 import ws.travel.rest.data.HotelInfo;
 import ws.travel.rest.data.HotelInfos;
+import ws.travel.rest.representation.StatusRepresentation;
 
 
 /**
@@ -106,5 +107,37 @@ public class TravelGoodRESTTest {
         
         assertEquals("UNCONFIRMED", flights.get(0).getStatus());
         assertEquals("UNCONFIRMED", flights.get(1).getStatus());
+    }
+    
+     @Test
+    public void addFlightToItinerary () {
+        String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "123", "111");
+        
+        // create itinerary first
+        String result = client.resource(itineraryURI)
+                              .accept(MediaType.APPLICATION_XML)
+                              .put(String.class);
+        assertEquals("OK", result);
+        
+        String possibleFlightsURI = String.format("%s/flights", itineraryURI);
+        
+        // get possible flights
+        List<FlightInfo> flights = client.resource(possibleFlightsURI)
+                                      .queryParam("date", "07-11-2014")
+                                      .queryParam("startAirport", "Copenhagen Lufthavnen")
+                                      .queryParam("endAirport", "Bucharest Otopeni")
+                                      .accept(MediaType.APPLICATION_XML)
+                                      .get(FlightInfos.class).getFlightInfo();
+        
+        String addFlightURI = String.format("%s/add", possibleFlightsURI);
+        StatusRepresentation status;
+        status = client.resource(addFlightURI)
+                       .accept(MediaType.APPLICATION_XML)
+                       .type(MediaType.APPLICATION_XML)
+                       .post(StatusRepresentation.class, flights.get(0));
+        
+        assertEquals("FLIGHT ADDED", status.getStatus());
+        
+                
     }
 }
