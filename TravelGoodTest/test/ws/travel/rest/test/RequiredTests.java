@@ -100,6 +100,7 @@ public class RequiredTests {
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .get(HotelsRepresentation.class);
         assertTrue(hotelsRep.getHotelInfo().size() > 0);
+        assertEquals("UNCONFIRMED", hotelsRep.getHotelInfo().get(0).getStatus());
         assertHaveLinks(hotelsRep, ADD_HOTEL_RELATION, CANCEL_RELATION, BOOK_RELATION, 
                                 GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
         return hotelsRep.getHotelInfo().get(0);
@@ -114,6 +115,7 @@ public class RequiredTests {
                                              .accept(MediaType.APPLICATION_XML)
                                              .get(FlightsRepresentation.class);
         assertTrue(flightsRep.getFlightInfo().size() > 0);
+        assertEquals("UNCONFIRMED", flightsRep.getFlightInfo().get(0).getStatus());
         assertHaveLinks(flightsRep, ADD_FLIGHT_RELATION, CANCEL_RELATION, BOOK_RELATION, 
                                 GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
         return flightsRep.getFlightInfo().get(0);
