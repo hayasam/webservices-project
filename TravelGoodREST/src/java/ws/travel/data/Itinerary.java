@@ -18,6 +18,7 @@ public class Itinerary {
 
     private List<HotelInfo> hotelInfos;
     
+    
     public Itinerary() {
         
     }
@@ -47,5 +48,10 @@ public class Itinerary {
      */
     public void setHotelInfos(List<HotelInfo> hotelInfos) {
         this.hotelInfos = hotelInfos;
+    }
+    
+    public void addHotelToItinerary(HotelInfo hotelInfo)
+    {
+        this.hotelInfos.add(hotelInfo);
     }
 }

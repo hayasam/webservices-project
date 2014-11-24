@@ -4,7 +4,16 @@
  */
 package ws.travel;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import ws.travel.data.HotelInfo;
+import ws.travel.data.Itinerary;
+import ws.travel.representation.StatusRepresentation;
 
 /**
  *
@@ -13,13 +22,26 @@ import javax.ws.rs.Path;
 
 @Path("users/{userid}/itinerary/{itineraryid}/hotels/{bookingnum}")
 public class HotelInfoResource {
-    
+    //itineraries
     /**
-     * @POST
+     * 
      * @Path("add")
      * [Paulina]
      * Implement add to itinerary.
      */
+    
+    @POST
+    @Path("add")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response addHotelToItinerary(String itineraryKey, HotelInfo hotel)
+    {
+        StatusRepresentation statusRep = new StatusRepresentation();
+        Itinerary itinerary = ItineraryPool.getItinerary(itineraryKey);
+        //if itinerary is booked or cancelled
+        itinerary.addHotelToItinerary(hotel);
+        return Response.ok(statusRep).build();
+    }
     
     
 }

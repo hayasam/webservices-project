@@ -6,6 +6,7 @@ package ws.travel;
 
 import java.util.HashMap;
 import java.util.Map;
+import ws.travel.data.HotelInfo;
 import ws.travel.data.Itinerary;
 
 /**
@@ -27,5 +28,4 @@ public class ItineraryPool {
     public static void deleteItinerary(String itineraryKey) {
         itineraries.remove(itineraryKey);
     }
-    
 }
