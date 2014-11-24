@@ -4,21 +4,18 @@
  */
 package ws.bank.creditcard;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author Audrius
  */
-@XmlRootElement()
+
 public class CreditCard {
     private String name;
     private String cardNumber;
     private int expYear;
     private int expMonth;
     
-    public Creditcard() {
+    public CreditCard() {
         
     }
     

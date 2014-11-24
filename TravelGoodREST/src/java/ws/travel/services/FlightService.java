@@ -15,7 +15,7 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.ExpirationDateType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoArray;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.GetFlightInputType;
-import ws.bank.creditcard.Creditcard;
+import ws.bank.creditcard.CreditCard;
 
 /**
  *
@@ -23,11 +23,11 @@ import ws.bank.creditcard.Creditcard;
  */
 public class FlightService {
 
-    public static boolean bookFlight(int bookingNum, Creditcard ccInfo) throws BookFlightFault {
+    public static boolean bookFlight(int bookingNum, CreditCard ccInfo) throws BookFlightFault {
         return bookFlight(bookingNum, createCreditCardInfoType(ccInfo));
     }
     
-    public static boolean cancelFlight(int bookingNum, int price, Creditcard ccInfo) throws CancelFlightFault {
+    public static boolean cancelFlight(int bookingNum, int price, CreditCard ccInfo) throws CancelFlightFault {
         return cancelFlight(bookingNum, price, createCreditCardInfoType(ccInfo));
     }
     
@@ -54,7 +54,7 @@ public class FlightService {
         return cancelFlightOperation(cancelFlightInput);
     }
     
-    private static CreditCardInfoType createCreditCardInfoType(Creditcard cc) {
+    private static CreditCardInfoType createCreditCardInfoType(CreditCard cc) {
         CreditCardInfoType ccInfo = new CreditCardInfoType();
         ccInfo.setCardNumber(cc.getCardnumber());
         ccInfo.setHolderName(cc.getName());
