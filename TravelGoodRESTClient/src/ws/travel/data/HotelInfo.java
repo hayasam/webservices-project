@@ -27,9 +27,6 @@ public class HotelInfo {
     private XMLGregorianCalendar startDate;
     private XMLGregorianCalendar endDate;
 
-    public HotelInfo () {
-        
-    }
     public HotelInfo(String reservationService, String name, Address address, int bookingNr, int price, boolean guarantee, String status, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
         this.reservationService = reservationService;
         this.name = name;
@@ -40,6 +37,10 @@ public class HotelInfo {
         this.status = status;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+    
+    public HotelInfo() {
+        
     }
 
     /**
