@@ -18,6 +18,7 @@ import ws.travel.ItineraryResource.ItineraryStatus;
 import ws.travel.data.FlightInfo;
 import ws.travel.data.FlightInfos;
 import ws.travel.data.Itinerary;
+import ws.travel.representation.StatusRepresentation;
 import ws.travel.services.FlightService;
 
 /**
@@ -26,6 +27,11 @@ import ws.travel.services.FlightService;
  */
 @Path("users/{userid}/itinerary/{itineraryid}/flights")
 public class FlightInfoResource {
+    
+    private static final String ITINERARY_NOT_FOUND = "itinerary not found";
+    private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
+    private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
+    
     
     /**
      * @GET
@@ -47,7 +53,7 @@ public class FlightInfoResource {
     /**
      * @POST
      * @Path("add")
-     * [Oguz]
+     * [Paulina]
      * Implement add to itinerary.
      */
     @POST
@@ -58,6 +64,7 @@ public class FlightInfoResource {
                                     @PathParam("itineraryId") String itineraryId,
                                     FlightInfo flight)
     {
+        StatusRepresentation status = new StatusRepresentation();
         Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryId);
         
         //itinerary doesn't exist
@@ -68,17 +75,33 @@ public class FlightInfoResource {
                     entity("Itinerary not found").
                     build();
         }
-        
+       
         //itinerary is already booked or cancelled
-        if (itinerary.getStatus().equals(ItineraryStatus.UNCONFIRMED.toString()) == false)
+        if (itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString()))
         {
                 return Response.
-                    status(Response.Status.FORBIDDEN).
-                    entity("Itinerary is already booked or cancelled").
+                    status(Response.Status.NOT_ACCEPTABLE).
+                    entity(ITINERARY_BOOKED_ALREADY).
+                    build();
+        }
+        
+        if (itinerary.getStatus().equals(ItineraryStatus.CANCELLED.toString()))
+        {
+                return Response.
+                    status(Response.Status.NOT_ACCEPTABLE).
+                    entity(ITINERARY_CANCELLED_ALREADY).
                     build();
         }
         
         itinerary.addFlightToItinerary(flight);
-        return Response.ok("OK").build();
+        
+        ItineraryResource.addCancelLink(userid, itineraryId, status);
+        ItineraryResource.addBookLink(userid, itineraryId, status);
+        ItineraryResource.addGetItineraryLink(userid, itineraryId, status);
+        ItineraryResource.addGetFlightsLink(userid, itineraryId, status);
+        ItineraryResource.addGetHotelsLink(userid, itineraryId, status);
+        
+        return Response.ok(status).build();
     }
+   
 }
