@@ -8,6 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +22,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.BookFlightFault;
 import org.netbeans.j2ee.wsdl.lameduck.java.flight.CancelFlightFault;
@@ -83,7 +89,7 @@ public class ItineraryResource {
      @GET
      @Produces(MediaType.APPLICATION_XML)
      public Response getItinerary (@PathParam("userid") String userId,
-                        @PathParam("itineraryid") String itineraryId) {
+                        @PathParam("itineraryid") String itineraryId) throws DatatypeConfigurationException {
          Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
          ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
          
@@ -91,6 +97,36 @@ public class ItineraryResource {
             return Response.status(Status.NOT_FOUND)
                            .entity(ITINERARY_NOT_FOUND)
                            .build();
+        }
+         XMLGregorianCalendar xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+        GregorianCalendar now = new GregorianCalendar();
+        xgc.setYear(now.get(Calendar.YEAR));
+        xgc.setMonth(now.get(Calendar.MONTH) + 1);
+        xgc.setDay(now.get(Calendar.DAY_OF_MONTH));  
+        if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString()) 
+            || itinerary.getStatus().equals(ItineraryStatus.UNCONFIRMED.toString())) { 
+            for(FlightInfo flight : itinerary.getFlightInfos()) {
+               try {
+                    if (flight.getFlight().getDateDeparture().compare(xgc) == DatatypeConstants.GREATER)
+                    {
+                        StatusRepresentation statusRep = new StatusRepresentation();
+                        statusRep.setStatus(ITINERARY_BOOKED_ALREADY);
+                        return Response.ok(itineraryRep).build();
+                    }                    
+                } catch (Error ex) {
+                }
+            }
+            for(HotelInfo hotel : itinerary.getHotelInfos()) {
+                try {                  
+                    if (hotel.getStartDate().compare(xgc) == DatatypeConstants.GREATER)
+                    {
+                        StatusRepresentation statusRep = new StatusRepresentation();
+                        statusRep.setStatus(ITINERARY_BOOKED_ALREADY);
+                        return Response.ok(itineraryRep).build();
+                    }                    
+                } catch (Error ex) { 
+                }
+            }
         }
          
          itineraryRep.setItinerary(itinerary);
