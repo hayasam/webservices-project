@@ -27,8 +27,18 @@
         <partnerLink name="PartnerLink4" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" partnerLinkType="tns:travel" myRole="travelPortTypeRole"/>
     </partnerLinks>
     <variables>
+        <variable name="currentDate" type="xsd:dateTime"/>
+        <variable name="closestDateBoolean" type="xsd:boolean"/>
+        <variable name="closestDateHotel" type="xsd:dateTime"/>
+        <variable name="closestDateFlight" type="xsd:dateTime"/>
+        <variable name="closestDate" type="xsd:dateTime"/>
         <variable name="booked" type="xsd:boolean"/>
-        <variable name="itineraryInfo" type="ns1:itineraryInfoType"/>
+        <variable name="itineraryInfo" type="ns1:itineraryInfoType">
+            <sxed:editor>
+                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture[$i]" source="from"/>
+                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo/ns1:startDate[$j]" source="from"/>
+            </sxed:editor>
+        </variable>
         <variable name="CreateItineraryOperationIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationRequest"/>
         <variable name="CreateItineraryOperationOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/travel" messageType="tns:createItineraryOperationResponse"/>
     </variables>
@@ -911,8 +921,94 @@
                         </assign>
                         <reply name="ReplyBookItinerary" partnerLink="PartnerLink4" operation="bookItineraryOperation" portType="ns0:travelPortType" variable="BookItineraryOperationOut"/>
                 </sequence>
+                <assign name="Assign5">
+                    <copy>
+                        <from>sxxf:current-date()</from>
+                        <to variable="closestDate"/>
+                    </copy>
+                </assign>
+                <flow name="Flow3">
+                    <forEach name="ForEach1" parallel="no" counterName="i">
+                        <startCounterValue>1</startCounterValue>
+                        <finalCounterValue>count($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo)</finalCounterValue>
+                        <scope name="Scope2">
+                            <if name="If1">
+                                <condition>sxxf:dateTime-less-than($itineraryInfo/ns1:flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture[$i], $closestDate)
+                                    <sxed:editor>
+                                        <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture[$i]" source="from"/>
+                                    </sxed:editor>
+                                </condition>
+                                <assign name="Assign6">
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture[$i]
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:flightInfoArray/ns1:flightInfo/ns1:flight/ns1:dateDeparture[$i]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to variable="closestDateFlight"/>
+                                    </copy>
+                                </assign>
+                            </if>
+                        </scope>
+                    </forEach>
+                    <forEach name="ForEach2" parallel="no" counterName="j">
+                        <startCounterValue>1</startCounterValue>
+                        <finalCounterValue>count($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo)</finalCounterValue>
+                        <scope name="Scope3">
+                            <if name="If2">
+                                <condition>sxxf:dateTime-less-than($itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo/ns1:startDate[$j], $closestDate)
+                                    <sxed:editor>
+                                        <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo/ns1:startDate[$j]" source="from"/>
+                                    </sxed:editor>
+                                </condition>
+                                <assign name="Assign7">
+                                    <copy>
+                                        <from>$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo/ns1:startDate[$j]
+                                            <sxed:editor>
+                                                <sxed:predicate path="$itineraryInfo/ns1:hotelsInfoArray/ns1:hotelInfo/ns1:startDate[$j]" source="from"/>
+                                            </sxed:editor>
+                                        </from>
+                                        <to variable="closestDateHotel"/>
+                                    </copy>
+                                </assign>
+                            </if>
+                        </scope>
+                    </forEach>
+                </flow>
+                <assign name="Assign11">
+                    <copy>
+                        <from>sxxf:current-dateTime()</from>
+                        <to variable="currentDate"/>
+                    </copy>
+                </assign>
+                <if name="If3">
+                    <condition>sxxf:dateTime-less-than($closestDateHotel, $closestDateFlight)</condition>
+                    <assign name="Assign8">
+                        <copy>
+                            <from variable="closestDateHotel"/>
+                                <to variable="closestDate"/>
+                        </copy>
+                    </assign>
+                    <else>
+                        <assign name="Assign13">
+                            <copy>
+                                <from variable="closestDateFlight"/>
+                                <to variable="closestDate"/>
+                            </copy>
+                        </assign>
+                    </else>
+                </if>
+                <if name="If5">
+                    <condition>sxxf:dateTime-less-than($closestDate, $currentDate)</condition>
+                    <assign name="Assign12">
+                        <copy>
+                            <from variable="currentDate"/>
+                            <to variable="closestDate"/>
+                        </copy>
+                    </assign>
+                </if>
                 <wait name="Wait1H">
-                    <for>'P0Y0M0DT1H0M0.0S'</for>
+                    <for>$closestDate</for>
                 </wait>
             </sequence>
         </scope>
