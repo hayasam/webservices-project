@@ -167,9 +167,9 @@ public class TravelGoodRESTTest {
         String possibleFlightsURI = String.format("%s/flights", itineraryURI);
         // get possible flights
         List<FlightInfo> flights = client.resource(possibleFlightsURI)
-                                      .queryParam("date", "07-11-2014")
+                                      .queryParam("date", "21-11-2014")
                                       .queryParam("startAirport", "Copenhagen Lufthavnen")
-                                      .queryParam("endAirport", "Bucharest Otopeni")
+                                      .queryParam("endAirport", "Amsterdam Schiphol")
                                       .accept(MediaType.APPLICATION_XML)
                                       .get(FlightsRepresentation.class).getFlightInfo();
         
