@@ -59,6 +59,7 @@ public class ItineraryResource {
     private static final String ITINERARY_CREATED = "itinerary successfully created";
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
+    private static final String ITINERARY_ITINERARY_INVALID = "itinerary is not valid";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
@@ -110,7 +111,7 @@ public class ItineraryResource {
                     if (flight.getFlight().getDateDeparture().compare(xgc) == DatatypeConstants.GREATER)
                     {
                         StatusRepresentation statusRep = new StatusRepresentation();
-                        statusRep.setStatus(ITINERARY_BOOKED_ALREADY);
+                        statusRep.setStatus(ITINERARY_ITINERARY_INVALID);
                         return Response.ok(itineraryRep).build();
                     }                    
                 } catch (Error ex) {
@@ -121,7 +122,7 @@ public class ItineraryResource {
                     if (hotel.getStartDate().compare(xgc) == DatatypeConstants.GREATER)
                     {
                         StatusRepresentation statusRep = new StatusRepresentation();
-                        statusRep.setStatus(ITINERARY_BOOKED_ALREADY);
+                        statusRep.setStatus(ITINERARY_ITINERARY_INVALID);
                         return Response.ok(itineraryRep).build();
                     }                    
                 } catch (Error ex) { 
