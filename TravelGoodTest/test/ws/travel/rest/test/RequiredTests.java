@@ -58,12 +58,12 @@ public class RequiredTests {
         assertCreateItinerary(userid, itineraryid);
         
         // get possible flights
-        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
+        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
         // add and assert
         assertAddFlight(userid, itineraryid, flightInfo1);
         
         // get a hotel
-        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014");
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-12-2014", "10-12-2014");
         // add and assert
         assertAddHotel(userid, itineraryid, hotelInfo1);
         
@@ -78,7 +78,7 @@ public class RequiredTests {
         assertAddFlight(userid, itineraryid, flightInfo3);
         
         // get another hotel
-        HotelInfo hotelInfo2 = getAHotel(userid, itineraryid, "Bucharest", "07-11-2014", "10-11-2014");
+        HotelInfo hotelInfo2 = getAHotel(userid, itineraryid, "Bucharest", "07-12-2014", "10-12-2014");
         // add and assert
         assertAddHotel(userid, itineraryid, hotelInfo2);
         
@@ -195,7 +195,7 @@ public class RequiredTests {
         assertEquals(ITINERARY_CREATED, result.getStatus());
                         
         // add a flight
-        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
         
         // cancel planning
         StatusRepresentation cancelStatus = client.resource(cancelItineraryUrl(userid, itineraryid))
@@ -229,7 +229,7 @@ public class RequiredTests {
         
         //get flights
         FlightsRepresentation flightsRep = client.resource(flightsUrl(userid, itineraryid))
-                                             .queryParam("date", "07-11-2014")
+                                             .queryParam("date", "07-12-2014")
                                              .queryParam("startAirport", "Copenhagen Lufthavnen")
                                              .queryParam("endAirport", "Bucharest Otopeni")
                                              .accept(MediaType.APPLICATION_XML)
@@ -246,7 +246,7 @@ public class RequiredTests {
         assertEquals("UNCONFIRMED", flightInfo2.getStatus());
         
         // get a hotel
-        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014");
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Paris", "07-12-2014", "10-12-2014");
         // add hotel and assert that status is unconfirmed  
         assertAddHotel(userid, itineraryid, hotelInfo1);
         assertEquals("UNCONFIRMED", flightInfo1.getStatus()); 
@@ -285,14 +285,14 @@ public class RequiredTests {
         assertCreateItinerary(userid, itineraryid);
         
         // get possible flights
-        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
+        FlightInfo flightInfo1 = getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni");
         assertAddFlight(userid, itineraryid, flightInfo1);
         
-        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "10-11-2014", "Bucharest Otopeni", "Copenhagen Lufthavnen");
+        FlightInfo flightInfo2 = getAFlight(userid, itineraryid, "10-12-2014", "Bucharest Otopeni", "Copenhagen Lufthavnen");
         assertAddFlight(userid, itineraryid, flightInfo2);
         
         // get possible hotels
-        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Bucharest", "07-11-2014", "10-11-2014");
+        HotelInfo hotelInfo1 = getAHotel(userid, itineraryid, "Bucharest", "07-12-2014", "10-12-2014");
         assertAddHotel(userid, itineraryid, hotelInfo1);
         
         //book itinerary
@@ -365,13 +365,13 @@ public class RequiredTests {
         assertEquals(ITINERARY_CREATED, result.getStatus());
         
         // add a flight
-        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-11-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
                
         // add a second flight
         assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "21-01-2015", "Oslo", "Malmo"));
                         
         // add a hotel
-        assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Paris", "07-11-2014", "10-11-2014"));
+        assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Paris", "07-12-2014", "10-12-2014"));
         
         // book itinerary
         assertBookItinerary(userid, itineraryid, createValidCreditCard());
