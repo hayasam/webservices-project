@@ -43,8 +43,8 @@ public class Flights {
     static {
         FlightType flight1 = Builders.newBuilder(FlightBuilder.class)
                         .withCarrier("Lufthansa")
-                        .withDateDeparture(createDate("07-11-2014 08:50"))
-                        .withDateArrival(createDate("07-11-2014 10:50"))
+                        .withDateDeparture(createDate("07-12-2014 08:50"))
+                        .withDateArrival(createDate("07-12-2014 10:50"))
                         .withStartAirport("Copenhagen Lufthavnen")
                         .withDestinationAirport("Bucharest Otopeni")
                         .create();
@@ -64,16 +64,16 @@ public class Flights {
                             .create();
         FlightType flight4 = Builders.newBuilder(FlightBuilder.class)
                         .withCarrier("Turkish Airlines")
-                        .withDateDeparture(createDate("07-11-2014 08:50"))
-                        .withDateArrival(createDate("07-11-2014 20:50"))
+                        .withDateDeparture(createDate("07-12-2014 08:50"))
+                        .withDateArrival(createDate("07-12-2014 20:50"))
                         .withStartAirport("Copenhagen Lufthavnen")
                         .withDestinationAirport("Bucharest Otopeni")
                         .create();
        
         FlightType flight5 = Builders.newBuilder(FlightBuilder.class)
                         .withCarrier("SAS")
-                        .withDateDeparture(createDate("10-11-2014 08:50"))
-                        .withDateArrival(createDate("10-11-2014 20:50"))
+                        .withDateDeparture(createDate("10-12-2014 08:50"))
+                        .withDateArrival(createDate("10-12-2014 20:50"))
                         .withStartAirport("Bucharest Otopeni")
                         .withDestinationAirport("Copenhagen Lufthavnen")
                         .create();
