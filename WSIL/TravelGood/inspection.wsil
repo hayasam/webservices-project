@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<inspection xmlns="http://schemas.xmlsoap.org/ws/2001/10/inspection/">
+    <service>
+        <name>TravelGood</name>
+        <abstract>The travel planning services TraveGood</abstract>
+        <description referencedNamespace="http://schemas.xmlsoap.org/wsdl/"
+          location="http://localhost:9080/service?wsdl"/>
+    </service>
+    
+    <link referencedNamespace="http://schemas.xmlsoap.org/ws/2001/10/inspection/" 
+        location="http://localhost:8080/NiceViewService/inspection.wsil" >
+      <abstract>The hotel booking services NiceView</abstract>
+    </link>    
+	<link referencedNamespace="http://schemas.xmlsoap.org/ws/2001/10/inspection/" 
+        location="http://localhost:8080/NiceViewService/inspection.wsilL" >
+      <abstract>The flight booking services LameDuck</abstract>
+    </link>
+</inspection>
