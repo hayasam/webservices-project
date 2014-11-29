@@ -149,4 +149,5 @@ public class TravelGoodRESTTest {
         
         assertEquals(FLIGHT_ADDED, status.getStatus());            
     }
+     
 }
