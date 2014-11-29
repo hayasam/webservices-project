@@ -59,11 +59,13 @@ public class ItineraryResource {
 
     private static final String ITINERARY_CREATED = "itinerary successfully created";
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
+    private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
     private static final String ITINERARY_NOT_FULLY_BOOKED = "Not all bookings were booked";
     private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
+    private static final String ITINERARY_SUCCESSFULLY_CANCELLED = "itinerary successfully cancelled";
     private static final String BASE_URI = "http://localhost:8080/TravelGoodREST/webresources";
     
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
@@ -262,6 +264,7 @@ public class ItineraryResource {
           * Get requested itinerary
           */
         Itinerary itinerary = ItineraryPool.getItinerary(userId, itineraryId);
+        StatusRepresentation status = new StatusRepresentation();
         
         if(itinerary == null) { // itinerary not found
             return Response.status(Status.NOT_FOUND)
@@ -304,35 +307,37 @@ public class ItineraryResource {
                   */
                  itinerary.setStatus(ItineraryStatus.CANCELLED.toString());
                  
-                 ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
-                 itineraryRep.setItinerary(itinerary);
-                 addGetItineraryLink(userId, itineraryId, itineraryRep);
+                 status.setStatus(ITINERARY_SUCCESSFULLY_CANCELLED);
+                 addGetItineraryLink(userId, itineraryId, status);
                  
-                 return Response.ok(itineraryRep).build();
+                 return Response.ok(status).build();
              }
              else // some cancelations did not succeed 
              {
-                 ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
-                 itineraryRep.setItinerary(itinerary);
-                 itinerary.setStatus(ITINERARY_NOT_FULLY_CANCELLED);
                  
-                 addGetItineraryLink(userId, itineraryId, itineraryRep);
+                 status.setStatus(ITINERARY_NOT_FULLY_CANCELLED);
                  
-                 return Response.ok(itineraryRep).build();
+                 addGetItineraryLink(userId, itineraryId, status);
+                 
+                 return Response.ok(status).build();
              }
+        }
+        else if(itinerary.getStatus().equals(ItineraryStatus.CANCELLED.toString())) {
+                      
+            return Response.status(Status.NOT_ACCEPTABLE)
+                           .entity(ITINERARY_CANCELLED_ALREADY)
+                           .build();
         }
         else { // itinerary in planning phase
             /*
              * Remove itinerary from the pool
              */
             ItineraryPool.deleteItinerary(userId, itineraryId);
-            ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
             
-            addCreateItinerary(userId, itineraryId, itineraryRep);
+            status.setStatus(ITINERARY_TERMINATED);
+            addCreateItinerary(userId, itineraryId, status);
             
-            return Response.status(Status.NO_CONTENT)
-                           .entity(itineraryRep)
-                           .build();
+            return Response.ok(status).build();
         }
      }
     /**

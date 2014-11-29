@@ -33,6 +33,7 @@ public class RequiredTests {
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
+     private static final String ITINERARY_SUCCESSFULLY_CANCELLED = "itinerary successfully cancelled";
     
     private static final String RELATION_BASE = "http://travelgood.ws/relations/";
     private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
@@ -326,11 +327,11 @@ public class RequiredTests {
     
     private void assertItineraryCancelled(String userid, String itineraryid)
     {
-        ItineraryRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
+        StatusRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
                 .type(MediaType.APPLICATION_XML)
-                .post(ItineraryRepresentation.class, createValidCreditCard());
+                .post(StatusRepresentation.class, createValidCreditCard());
         
-        assertEquals(cancelResult.getItinerary().getStatus(), "CANCELLED");
+        assertEquals(cancelResult.getStatus(), ITINERARY_SUCCESSFULLY_CANCELLED);
     }
     
     private void assertBookingCancelled(String userid, String itineraryid)
@@ -381,10 +382,10 @@ public class RequiredTests {
         assertBookingsConfirmed(userid, itineraryid);
         
         // cancel itinerary
-         ItineraryRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
+        StatusRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
                 .type(MediaType.APPLICATION_XML)
-                .post(ItineraryRepresentation.class, createStupidCreditCard());
-        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelResult.getItinerary().getStatus());
+                .post(StatusRepresentation.class, createStupidCreditCard());
+        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelResult.getStatus());
         
         // check status of bookings
         assertSomeBookingsCanceled(userid, itineraryid);
