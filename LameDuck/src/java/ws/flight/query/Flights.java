@@ -77,6 +77,13 @@ public class Flights {
                         .withStartAirport("Bucharest Otopeni")
                         .withDestinationAirport("Copenhagen Lufthavnen")
                         .create();
+        FlightType flight6 = Builders.newBuilder(FlightBuilder.class)
+                        .withCarrier("KLM")
+                        .withDateDeparture(createDate("21-11-2014 19:40"))
+                        .withDateArrival(createDate("21-11-2014 21:10"))
+                        .withStartAirport("Copenhagen Lufthavnen")
+                        .withDestinationAirport("Amsterdam Schiphol")
+                        .create();
 
         flights = new ArrayList<FlightType>();
         flights.add(flight1);
@@ -84,6 +91,7 @@ public class Flights {
         flights.add(flight3);
         flights.add(flight4);
         flights.add(flight5);
+        flights.add(flight6);
         
         flightInfos = new ArrayList<FlightInfoType>();
         flightInfoCounter = 0;

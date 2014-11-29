@@ -260,4 +260,7 @@ A partner link type characterizes the conversational relationship between two se
     <vprop:propertyAlias propertyName="tns:ItineraryId" messageType="tns:getItineraryOperationRequest" part="getItineraryInput">
     </vprop:propertyAlias>
     <vprop:propertyAlias propertyName="tns:ItineraryId" messageType="tns:createItineraryOperationResponse" part="createItineraryOutput"></vprop:propertyAlias>
+    <vprop:property name="closestDate" type="xsd:dateTime"/>
+    <vprop:property name="closestDateFlight" type="xsd:dateTime"/>
+    <vprop:property name="closestDateHotel" type="xsd:dateTime"/>
 </definitions>
