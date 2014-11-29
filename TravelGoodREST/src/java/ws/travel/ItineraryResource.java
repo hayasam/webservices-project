@@ -53,13 +53,13 @@ public class ItineraryResource {
      public static enum ItineraryStatus {
        CONFIRMED ,
        UNCONFIRMED,
-       CANCELLED
+       CANCELLED,
+       INVALID
     }
 
     private static final String ITINERARY_CREATED = "itinerary successfully created";
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
-    private static final String ITINERARY_ITINERARY_INVALID = "itinerary is not valid";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
     private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
@@ -104,14 +104,14 @@ public class ItineraryResource {
         xgc.setYear(now.get(Calendar.YEAR));
         xgc.setMonth(now.get(Calendar.MONTH) + 1);
         xgc.setDay(now.get(Calendar.DAY_OF_MONTH));  
+        itineraryRep.setItinerary(itinerary);
         if(itinerary.getStatus().equals(ItineraryStatus.CONFIRMED.toString()) 
             || itinerary.getStatus().equals(ItineraryStatus.UNCONFIRMED.toString())) { 
             for(FlightInfo flight : itinerary.getFlightInfos()) {
                try {
-                    if (flight.getFlight().getDateDeparture().compare(xgc) == DatatypeConstants.GREATER)
+                    if (flight.getFlight().getDateDeparture().compare(xgc) == DatatypeConstants.LESSER)
                     {
-                        StatusRepresentation statusRep = new StatusRepresentation();
-                        statusRep.setStatus(ITINERARY_ITINERARY_INVALID);
+                        itinerary.setStatus(ItineraryStatus.INVALID.toString());
                         return Response.ok(itineraryRep).build();
                     }                    
                 } catch (Error ex) {
@@ -119,19 +119,16 @@ public class ItineraryResource {
             }
             for(HotelInfo hotel : itinerary.getHotelInfos()) {
                 try {                  
-                    if (hotel.getStartDate().compare(xgc) == DatatypeConstants.GREATER)
+                    if (hotel.getStartDate().compare(xgc) == DatatypeConstants.LESSER)
                     {
-                        StatusRepresentation statusRep = new StatusRepresentation();
-                        statusRep.setStatus(ITINERARY_ITINERARY_INVALID);
+                        itinerary.setStatus(ItineraryStatus.INVALID.toString());
                         return Response.ok(itineraryRep).build();
                     }                    
                 } catch (Error ex) { 
                 }
             }
         }
-         
-         itineraryRep.setItinerary(itinerary);
-         
+           
          addBookLink(userId, itineraryId, itineraryRep);
          addCancelLink(userId, itineraryId, itineraryRep);
          addGetFlightsLink(userId, itineraryId, itineraryRep);
