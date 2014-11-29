@@ -61,7 +61,6 @@ public class ItineraryResource {
     private static final String ITINERARY_NOT_FOUND = "itinerary not found";
     private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
     private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
-    private static final String ITINERARY_TERMINATED = "itinerary terminated";
     private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
     private static final String ITINERARY_NOT_FULLY_BOOKED = "Not all bookings were booked";
     private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
@@ -315,9 +314,11 @@ public class ItineraryResource {
              {
                  ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
                  itineraryRep.setItinerary(itinerary);
+                 itinerary.setStatus(ITINERARY_NOT_FULLY_CANCELLED);
+                 
                  addGetItineraryLink(userId, itineraryId, itineraryRep);
                  
-                 return Response.ok(itineraryRep, ITINERARY_NOT_FULLY_CANCELLED).build();
+                 return Response.ok(itineraryRep).build();
              }
         }
         else { // itinerary in planning phase
@@ -325,12 +326,13 @@ public class ItineraryResource {
              * Remove itinerary from the pool
              */
             ItineraryPool.deleteItinerary(userId, itineraryId);
-            StatusRepresentation statusRep = new StatusRepresentation();
-            statusRep.setStatus(ITINERARY_TERMINATED);
+            ItineraryRepresentation itineraryRep = new ItineraryRepresentation();
             
-            addCreateItinerary(userId, itineraryId, statusRep);
+            addCreateItinerary(userId, itineraryId, itineraryRep);
             
-            return Response.ok(statusRep).build();
+            return Response.status(Status.NO_CONTENT)
+                           .entity(itineraryRep)
+                           .build();
         }
      }
     /**

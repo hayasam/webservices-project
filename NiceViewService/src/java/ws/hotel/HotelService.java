@@ -9,6 +9,7 @@ import javax.jws.WebService;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookOperationFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelFault;
 import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelInfoType;
+import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray;
 import ws.bank.CreditCardFaultMessage;
 import ws.hotel.builder.BankCCInfoBuilder;
 import ws.hotel.builder.Builders;
@@ -23,7 +24,7 @@ import ws.hotel.query.Hotels;
 @WebService(serviceName = "hotelsService", portName = "hotelsPortTypeBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels", wsdlLocation = "WEB-INF/wsdl/HotelService/hotel.wsdl")
 public class HotelService {
 
-    public org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray getHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType getHotelsInput) {
+    public HotelsInfoArray getHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType getHotelsInput) {
        List<HotelInfoType> hotelInfos = Hotels.newQuery()
                                                 .to(getHotelsInput.getCity())
                                                 .whenArrival(getHotelsInput.getArrival())

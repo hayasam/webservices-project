@@ -354,6 +354,7 @@ public class RequiredTests {
     /*
      * Monica
      */
+    @Test
     public void testC2() {
         String userid       = "userC2";
         String itineraryid  = "itineraryC2";
@@ -364,14 +365,14 @@ public class RequiredTests {
                               .put(StatusRepresentation.class);
         assertEquals(ITINERARY_CREATED, result.getStatus());
         
-        // add a flight
-        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
-               
-        // add a second flight
-        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "21-01-2015", "Oslo", "Malmo"));
-                        
         // add a hotel
         assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Paris", "07-12-2014", "10-12-2014"));
+        
+        // add a flight
+        assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
+                                       
+        // add a hotel
+        assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Bucharest", "07-12-2014", "10-12-2014"));
         
         // book itinerary
         assertBookItinerary(userid, itineraryid, createValidCreditCard());
@@ -380,19 +381,17 @@ public class RequiredTests {
         assertBookingsConfirmed(userid, itineraryid);
         
         // cancel itinerary
-        StatusRepresentation cancelStatus = client.resource(cancelItineraryUrl(userid, itineraryid))
+         ItineraryRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
                 .type(MediaType.APPLICATION_XML)
-                .accept(MediaType.APPLICATION_XML)
-                .entity(createInvalidCreditCard())
-                .post(StatusRepresentation.class);
-        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelStatus.getStatus());
+                .post(ItineraryRepresentation.class, createStupidCreditCard());
+        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelResult.getItinerary().getStatus());
         
         // check status of bookings
         assertSomeBookingsCanceled(userid, itineraryid);
     }
 
     /**
-     * Helper for test C2, checking the status of bookings after failed cancelation
+     * Helper for test C2, checking the status of bookings after failed cancellation
      * @param userid
      * @param itineraryid 
      *  Monica
@@ -404,13 +403,13 @@ public class RequiredTests {
         Itinerary itinerary = itineraryRep.getItinerary();
         
         // check first booking is cancelled
-        assertEquals("CANCELLED", itinerary.getFlightInfos().get(0).getStatus());
+        assertEquals("CANCELLED", itinerary.getHotelInfos().get(0).getStatus());
         
         // check second booking still confirmed
-        assertEquals("CONFIRMED", itinerary.getFlightInfos().get(1).getStatus());
+        assertEquals("CONFIRMED", itinerary.getFlightInfos().get(0).getStatus());
         
         // check third booking is cancelled
-        assertEquals("CANCELLED", itinerary.getHotelInfos().get(0).getStatus());
+        assertEquals("CANCELLED", itinerary.getHotelInfos().get(1).getStatus());
     }
     
     /**
@@ -481,6 +480,23 @@ public class RequiredTests {
         
         return cc;
     }
+    
+    /*
+     *
+     */
+     public static CreditCard createStupidCreditCard() {
+         
+        CreditCardInfoType ccInfo = TestUtils.stupidCCInfo();
+        
+        CreditCard cc = new CreditCard();
+        cc.setCardnumber(ccInfo.getCardNumber());
+        cc.setMonth(ccInfo.getExpirationDate().getMonth());
+        cc.setYear(ccInfo.getExpirationDate().getYear());
+        cc.setName(ccInfo.getHolderName());
+        
+        return cc;
+    }
+     
     /*
      * Fails for expensive flights
      */
