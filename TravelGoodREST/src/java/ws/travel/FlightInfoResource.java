@@ -47,6 +47,23 @@ public class FlightInfoResource {
                                @QueryParam("startAirport") String startAirport,
                                @QueryParam("endAirport") String endAirport) {
         
+        Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryId);
+        if(itinerary == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                           .entity(ITINERARY_NOT_FOUND)
+                           .build();
+        }
+        if(itinerary.getStatus().equals("CONFIRMED")) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_BOOKED_ALREADY)
+                            .build();
+        }
+        if(itinerary.getStatus().equals("CANCELLED")) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                            .entity(ITINERARY_CANCELLED_ALREADY)
+                            .build();
+        }
+        
         List<FlightInfo> flights = FlightService.getFlights(date, startAirport, endAirport);
         
         FlightsRepresentation flightsRepresentation = new FlightsRepresentation();
