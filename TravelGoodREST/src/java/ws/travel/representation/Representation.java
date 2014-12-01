@@ -7,7 +7,6 @@ package ws.travel.representation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
-import ws.travel.data.Itinerary;
 
 /**
  *

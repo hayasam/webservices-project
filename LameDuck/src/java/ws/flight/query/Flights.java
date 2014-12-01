@@ -20,7 +20,7 @@ import ws.flight.builder.*;
 
 /**
  *
- * @author Monica
+ * @author Monica Coman
  */
 public class Flights {
     
