@@ -58,15 +58,8 @@ public class ItineraryResource {
     }
 
    
-    /**
-     * Implement get current itinerary.
-     * 
-     * [Johannes]
-     * Still to be done:
-     * - if the itinerary is booked or unconfirmed, look for the first start 
-     *   date of either a flight or a hotel and check if it is in the past 
-     *    (smaller than the current date)
-     * - if YES, remove the itinerary and send a message back to the user.
+    /*
+     * Author: Johannes Sanders
      */
      @GET
      @Produces(MediaType.APPLICATION_XML)
