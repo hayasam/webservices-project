@@ -12,7 +12,7 @@
       <abstract>The hotel booking services NiceView</abstract>
     </link>    
 	<link referencedNamespace="http://schemas.xmlsoap.org/ws/2001/10/inspection/" 
-        location="http://localhost:8080/NiceViewService/inspection.wsilL" >
+        location="http://localhost:8080/NiceViewService/inspection.wsil" >
       <abstract>The flight booking services LameDuck</abstract>
     </link>
 </inspection>
