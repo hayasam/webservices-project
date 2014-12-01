@@ -10,7 +10,7 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightInfoType;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class FlightQuery {
     

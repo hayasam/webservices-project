@@ -31,7 +31,7 @@ import ws.travel.data.HotelInfo;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class HotelService {
 

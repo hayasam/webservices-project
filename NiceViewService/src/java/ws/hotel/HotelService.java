@@ -17,11 +17,13 @@ import ws.hotel.builder.ExpirationDateBuilder;
 import ws.hotel.builder.HotelInfoArrayBuilder;
 import ws.hotel.query.Hotels;
 
+/**
+ *
+ * @author Paulina
+ */
 @WebService(serviceName = "hotelsService", portName = "hotelsPortTypeBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceViewService/java/hotels", wsdlLocation = "WEB-INF/wsdl/HotelService/hotel.wsdl")
 public class HotelService {
-    /*
-     * Author: Johannes Sanders
-     */
+
     public HotelsInfoArray getHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.GetHotelsInputType getHotelsInput) {
        List<HotelInfoType> hotelInfos = Hotels.newQuery()
                                                 .to(getHotelsInput.getCity())

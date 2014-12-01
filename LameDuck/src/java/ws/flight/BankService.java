@@ -8,7 +8,7 @@ import ws.bank.*;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class BankService {
     

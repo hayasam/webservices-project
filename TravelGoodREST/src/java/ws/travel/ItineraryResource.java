@@ -44,7 +44,7 @@ import ws.travel.services.HotelService;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 @Path("users/{userid}/itinerary/{itineraryid}")
 public class ItineraryResource {
@@ -58,8 +58,15 @@ public class ItineraryResource {
     }
 
    
-    /*
-     * Author: Johannes Sanders
+    /**
+     * Implement get current itinerary.
+     * 
+     * [Johannes]
+     * Still to be done:
+     * - if the itinerary is booked or unconfirmed, look for the first start 
+     *   date of either a flight or a hotel and check if it is in the past 
+     *    (smaller than the current date)
+     * - if YES, remove the itinerary and send a message back to the user.
      */
      @GET
      @Produces(MediaType.APPLICATION_XML)
@@ -117,7 +124,7 @@ public class ItineraryResource {
        
     /**
      * @POST
-     * @author: Oguz Demir
+     * [Oguz]
      * @Path("book")
      * Implement booking itinerary.
      */
@@ -228,7 +235,7 @@ public class ItineraryResource {
    }
     
     /**
-     * @author: Monica Coman
+     * [Monica]
      * Implement cancel itinerary.
      */
      @Path("cancel")
@@ -319,7 +326,7 @@ public class ItineraryResource {
      }
     /**
      * @PUT
-     * @author: : Cæcilie Bach Kjærulf
+     * [Caecilie]
      * Implement create itinerary.
      */
     @PUT

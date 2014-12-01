@@ -19,7 +19,7 @@ import ws.flight.query.Flights;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 @WebService(serviceName = "flightService", portName = "flightPortTypeBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuck/java/flight", wsdlLocation = "WEB-INF/wsdl/FlightService/flight.wsdl")
 public class FlightService {

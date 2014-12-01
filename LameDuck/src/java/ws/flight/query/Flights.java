@@ -38,7 +38,7 @@ public class Flights {
     
     
     /*
-     * Author: Johannes Sanders
+     * Initializes flight info array with hardcoded data. 
      */
     static {
         FlightType flight1 = Builders.newBuilder(FlightBuilder.class)

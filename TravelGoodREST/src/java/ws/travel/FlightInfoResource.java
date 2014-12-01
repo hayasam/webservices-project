@@ -23,7 +23,7 @@ import ws.travel.services.FlightService;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 @Path("users/{userid}/itinerary/{itineraryid}/flights")
 public class FlightInfoResource {

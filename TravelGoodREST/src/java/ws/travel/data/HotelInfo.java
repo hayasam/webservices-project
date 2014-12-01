@@ -10,7 +10,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Paulina Bien
+ * @author Paulina
  */
 
 @XmlRootElement()

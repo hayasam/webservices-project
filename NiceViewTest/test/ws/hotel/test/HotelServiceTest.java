@@ -11,7 +11,7 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.*;
 
 /**
  *
- * @author Paulina Bien
+ * @author Paulina
  */
 public class HotelServiceTest {
     

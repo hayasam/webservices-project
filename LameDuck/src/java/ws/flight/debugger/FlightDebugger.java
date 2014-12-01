@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class FlightDebugger {
     

@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
- * @author Paulina Bien
+ * @author Paulina
  */
 public abstract class Representation {
 

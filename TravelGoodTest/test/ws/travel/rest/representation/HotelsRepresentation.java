@@ -10,7 +10,7 @@ import ws.travel.rest.data.HotelInfo;
 
 /**
  *
- * @author Paulina Bien
+ * @author Paulina
  */
 
 @XmlRootElement()

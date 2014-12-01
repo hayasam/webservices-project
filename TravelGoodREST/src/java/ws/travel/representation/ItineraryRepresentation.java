@@ -9,7 +9,7 @@ import ws.travel.data.Itinerary;
 
 /**
  *
- * @author Paulina Bien
+ * @author Paulina
  */
 @XmlRootElement()
 public class ItineraryRepresentation extends Representation {

@@ -9,7 +9,7 @@ import ws.bank.CreditCardInfoType;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class BankCCInfoBuilder {
     

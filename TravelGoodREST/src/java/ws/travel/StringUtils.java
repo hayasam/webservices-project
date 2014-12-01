@@ -6,7 +6,7 @@ package ws.travel;
 
 /**
  *
- * @author Monica Coman
+ * @author Moni
  */
 public class StringUtils {
     

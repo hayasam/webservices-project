@@ -9,7 +9,7 @@ import org.netbeans.j2ee.wsdl.lameduck.java.flight.FlightType;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 public class FlightInfoBuilder {
     

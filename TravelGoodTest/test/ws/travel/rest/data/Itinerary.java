@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Monica Coman
+ * @author Moni
  */
 @XmlRootElement()
 public class Itinerary {

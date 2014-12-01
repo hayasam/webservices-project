@@ -1,6 +1,1 @@
 \section{Web Service Discovery}
-The Web-Service Inspection Language (WSIL) files are a standard that show where one can find the links to the web services’ WSDL files. It is meant as an entry much like a phone book but then for web services. These WSIL files describe the current web services that you are accessing and also contains links to other web services this services uses to fulfil its tasks. The WSIL specification is based on an XML format developed by IBM and Microsoft. \ref{ws-disc}
-
-The \textit{TravelGood} WSIL file is locally managed on same web server as the BPEL application but has to be deployed separately. The document describes where the WSDL file for the BPEL application can be found in the service part of this file, as a link both the \textit{LameDuck} and the \textit{NiceView} services are also described with their respected WSIL files. 
-
-The WSIL files for both \textit{NiceView} and \textit{LameDuck} are very similar and also locally managed. These files are deployed along with the web services themselves and describe in the service part what the web services are and where their WSDL files can be found. Moreover, they also have a link to the \textit{FastMoney} service since they use this to validate their credit card information and do payments.

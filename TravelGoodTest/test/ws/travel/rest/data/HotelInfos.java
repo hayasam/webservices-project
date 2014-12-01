@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Oguz Demir
+ * @author VAIO
  */
 @XmlRootElement()
 public class HotelInfos {

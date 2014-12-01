@@ -20,7 +20,7 @@ import ws.travel.rest.representation.StatusRepresentation;
 
 /**
  *
- * @author Monica Coman
+ * @author Moni
  */
 public class TravelGoodRESTTest {
     
@@ -34,10 +34,10 @@ public class TravelGoodRESTTest {
        
         
     }
-     
-    /**
-     * @author: Monica Coman
-     */
+    // TODO add test methods here.
+    // The methods must be annotated with annotation @Test. For example:
+    //
+       
     @Test
     public void createItinerary() {        
         String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "123", "111");
