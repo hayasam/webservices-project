@@ -22,99 +22,130 @@ public class HotelServiceTest {
     public void getHotelsTest()
     {
         GetHotelsInputType getHotelsInput = new GetHotelsInputType();
-         
         getHotelsInput.setCity("Paris");
         getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
         getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
-        
-        
         HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
-    
-        assertEquals(1, actualHotelInfos.getHotelInfo().size());
-        //assertEquals(111, actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        assertEquals(2, actualHotelInfos.getHotelInfo().size());
     }
     
     @Test
     public void testBookHotelValid() throws BookOperationFault
     {
+        //get hotels
         GetHotelsInputType getHotelsInput = new GetHotelsInputType();
-         
         getHotelsInput.setCity("Paris");
         getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
         getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
-        
-        
         HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
+        assertEquals(2, actualHotelInfos.getHotelInfo().size());
         
+        //book hotel
         BookHotelInputType bookHotelInput = new BookHotelInputType();
-        
         bookHotelInput.setBookingNr(actualHotelInfos.getHotelInfo().get(0).getBookingNr());
         bookHotelInput.setCreditCardInfo(TestUtils.validCCInfo());
-        
         boolean result = bookHotelsOperation(bookHotelInput);
-        
         assertTrue(result);
     }
     
     @Test
     public void testBookHotelNoGuarantee() throws BookOperationFault
     {
+        //get hotels
         GetHotelsInputType getHotelsInput = new GetHotelsInputType();
-        
         getHotelsInput.setCity("Bucharest");
         getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
         getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
-        
-        
         HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
         
+        
+        //book 
         BookHotelInputType bookHotelInput = new BookHotelInputType();
-        
         bookHotelInput.setBookingNr(actualHotelInfos.getHotelInfo().get(0).getBookingNr());
-        
         boolean result = bookHotelsOperation(bookHotelInput);
-        
         assertTrue(result);
     }
     
-//    @Test
-//    public void testBookHotelInvalid() throws BookOperationFault
-//    {
-//        BookHotelInputType bookHotelInput = new BookHotelInputType();
-//        
-//        bookHotelInput.setBookingNr(222);
-//        bookHotelInput.setCreditCardInfo(TestUtils.invalidCCInfo());
-//        
-//        try {
-//            bookHotelsOperation(bookHotelInput);
-//            fail("bookHotelsOperation should have thrown an exception!");
-//        } catch (BookOperationFault ex) {
-//            assertTrue(true);
-//        }
-//    }
-//    
-//    @Test
-//    public void testCancelHotel() throws CancelHotelFault
-//    {
-//        CancelHotelInputType input = new CancelHotelInputType();
-//        input.setBookingNr(111);
-//
-//        boolean result = cancelHotelsOperation(input);
-//    }
-//    
-//    @Test
-//    public void testCancelHotelFail() throws CancelHotelFault
-//    {
-//        CancelHotelInputType input = new CancelHotelInputType();
-//        input.setBookingNr(123);
-//
-//        try {
-//            cancelHotelsOperation(input);
-//            fail("cancelHotelsOperation should have thrown an exception!");
-//        } catch (CancelHotelFault ex) {
-//            assertTrue(true);
-//        }
-//    }
+    @Test
+    public void testBookHotelInvalid() throws BookOperationFault
+    {
+        //get hotels
+        GetHotelsInputType getHotelsInput = new GetHotelsInputType();
+        getHotelsInput.setCity("Paris");
+        getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
+        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
+        assertEquals(2, actualHotelInfos.getHotelInfo().size());
+        
+        //book hotel with invalid CC
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
+        bookHotelInput.setBookingNr(actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        bookHotelInput.setCreditCardInfo(TestUtils.invalidCCInfo());
+               
+        try {
+            bookHotelsOperation(bookHotelInput);
+            fail("bookHotelsOperation should have thrown an exception!");
+        } catch (BookOperationFault ex) {
+            assertTrue(true);
+        }
+    }
+    
+    @Test
+    public void testCancelHotel() throws CancelHotelFault, BookOperationFault
+    {
+        //get hotels
+        GetHotelsInputType getHotelsInput = new GetHotelsInputType();
+        getHotelsInput.setCity("Bucharest");
+        getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
+        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
+        assertEquals(1, actualHotelInfos.getHotelInfo().size());
+        
+        //book hotel
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
+        bookHotelInput.setBookingNr(actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        boolean result = bookHotelsOperation(bookHotelInput);
+        assertTrue(result);
+        
+        //cancel booking
+        CancelHotelInputType input = new CancelHotelInputType();
+        input.setBookingNr(bookHotelInput.getBookingNr());
+        result = cancelHotelsOperation(input);
+        assertTrue(result);
+    }
+    
+    @Test
+    public void testCancelHotelFail() throws CancelHotelFault, BookOperationFault
+    {
+        //get hotels
+        GetHotelsInputType getHotelsInput = new GetHotelsInputType();
+        getHotelsInput.setCity("Paris");
+        getHotelsInput.setArrival(TestUtils.createDate("07-11-2014 08:50"));
+        getHotelsInput.setDeparture(TestUtils.createDate("10-11-2014 08:50"));
+        HotelsInfoArray actualHotelInfos = getHotelsOperation(getHotelsInput);
+        assertEquals(2, actualHotelInfos.getHotelInfo().size());
+        
+        //book hotel
+        BookHotelInputType bookHotelInput = new BookHotelInputType();
+        bookHotelInput.setBookingNr(actualHotelInfos.getHotelInfo().get(0).getBookingNr());
+        bookHotelInput.setCreditCardInfo(TestUtils.validCCInfo());
+        boolean result = bookHotelsOperation(bookHotelInput);
+        assertTrue(result);
+        
+        //cancel booking
+        CancelHotelInputType input = new CancelHotelInputType();
+        input.setBookingNr(bookHotelInput.getBookingNr());
+        result = cancelHotelsOperation(input);
+        assertTrue(result);
+        
+        //cancel the same booking
+        try {
+            cancelHotelsOperation(input);
+            fail("cancelHotelsOperation should have thrown an exception!");
+        } catch (CancelHotelFault ex) {
+            assertTrue(true);
+        }
+    }
 
     private static boolean bookHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookHotelInputType bookHotelInput) throws BookOperationFault {
         org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService service = new org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsService();
