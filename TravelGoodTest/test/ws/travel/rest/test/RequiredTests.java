@@ -27,23 +27,6 @@ public class RequiredTests {
     Client client;
     
     private static final String TRAVELGOOD_ENDPOINT = "http://localhost:8080/TravelGoodREST/webresources";
-    private static final String ITINERARY_CREATED = "itinerary successfully created";
-    private static final String FLIGHT_ADDED        = "flight added to itinerary";
-    private static final String HOTEL_ADDED         = "hotel added to itinerary";
-    private static final String ITINERARY_TERMINATED = "itinerary terminated";
-    private static final String ITINERARY_SUCCESSFULLY_BOOKED = "itinerary successfully booked";
-    private static final String ITINERARY_NOT_FULLY_CANCELLED = "Not all bookings were canceled";
-     private static final String ITINERARY_SUCCESSFULLY_CANCELLED = "itinerary successfully cancelled";
-    
-    private static final String RELATION_BASE = "http://travelgood.ws/relations/";
-    private static final String CANCEL_RELATION = RELATION_BASE + "cancel";
-    private static final String STATUS_RELATION = RELATION_BASE + "status";
-    private static final String BOOK_RELATION = RELATION_BASE + "book";
-    private static final String GET_FLIGHTS_RELATION = RELATION_BASE + "getFlights";
-    private static final String GET_HOTELS_RELATION = RELATION_BASE + "getHotels";
-    private static final String ADD_FLIGHT_RELATION = RELATION_BASE + "addFlight";
-    private static final String ADD_HOTEL_RELATION = RELATION_BASE + "addHotel";
-    private static final String CREATE_ITINERARY = RELATION_BASE + "createItinerary";
 
     @Before
     public void reset() {
@@ -102,8 +85,8 @@ public class RequiredTests {
                                                 .get(HotelsRepresentation.class);
         assertTrue(hotelsRep.getHotelInfo().size() > 0);
         assertEquals("UNCONFIRMED", hotelsRep.getHotelInfo().get(0).getStatus());
-        assertHaveLinks(hotelsRep, ADD_HOTEL_RELATION, CANCEL_RELATION, BOOK_RELATION, 
-                                GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
+        assertHaveLinks(hotelsRep, StringUtils.ADD_HOTEL_RELATION, StringUtils.CANCEL_RELATION, StringUtils.BOOK_RELATION, 
+                                StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION, StringUtils.GET_HOTELS_RELATION);
         return hotelsRep.getHotelInfo().get(0);
     }
     
@@ -117,8 +100,9 @@ public class RequiredTests {
                                              .get(FlightsRepresentation.class);
         assertTrue(flightsRep.getFlightInfo().size() > 0);
         assertEquals("UNCONFIRMED", flightsRep.getFlightInfo().get(0).getStatus());
-        assertHaveLinks(flightsRep, ADD_FLIGHT_RELATION, CANCEL_RELATION, BOOK_RELATION, 
-                                GET_FLIGHTS_RELATION, STATUS_RELATION, GET_HOTELS_RELATION);
+        assertHaveLinks(flightsRep, StringUtils.ADD_FLIGHT_RELATION, StringUtils.CANCEL_RELATION, StringUtils.BOOK_RELATION, 
+                                StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION, StringUtils.GET_HOTELS_RELATION);
+        
         return flightsRep.getFlightInfo().get(0);
     }
     
@@ -126,7 +110,7 @@ public class RequiredTests {
         StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, statusRep.getStatus());
     }
     
     private void assertGetItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
@@ -136,8 +120,8 @@ public class RequiredTests {
         assertEquals(expectedCount, itineraryRep.getItinerary().getFlightInfos().size()
                                         + itineraryRep.getItinerary().getHotelInfos().size());
         assertEquals(expectedStatus, itineraryRep.getItinerary().getStatus());
-        assertHaveLinks(itineraryRep, BOOK_RELATION, CANCEL_RELATION, GET_FLIGHTS_RELATION, 
-                                            GET_HOTELS_RELATION);
+        assertHaveLinks(itineraryRep, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_FLIGHTS_RELATION, 
+                                            StringUtils.GET_HOTELS_RELATION);
     }
     
     private void assertBookItinerary(String userid, String itineraryid, CreditCard ccInfo) {
@@ -145,8 +129,8 @@ public class RequiredTests {
                                                    .accept(MediaType.APPLICATION_XML)
                                                    .entity(ccInfo)
                                                    .post(StatusRepresentation.class);
-        assertEquals(ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
-        assertHaveLinks(bookingStatus, STATUS_RELATION, CANCEL_RELATION);
+        assertEquals(StringUtils.ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
+        assertHaveLinks(bookingStatus, StringUtils.STATUS_RELATION, StringUtils.CANCEL_RELATION);
     }
     
     private void assertAddHotel(String userid, String itineraryid, HotelInfo hotelInfo) {
@@ -155,9 +139,9 @@ public class RequiredTests {
                                                     .accept(MediaType.APPLICATION_XML)
                                                     .entity(hotelInfo)
                                                     .post(StatusRepresentation.class);
-        assertEquals(HOTEL_ADDED, addHotelStatus.getStatus());
-        assertHaveLinks(addHotelStatus, BOOK_RELATION, CANCEL_RELATION, GET_HOTELS_RELATION, 
-                                        GET_FLIGHTS_RELATION, STATUS_RELATION);
+        assertEquals(StringUtils.HOTEL_ADDED, addHotelStatus.getStatus());
+        assertHaveLinks(addHotelStatus, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_HOTELS_RELATION, 
+                                        StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION);
     } 
     
     private void assertAddFlight(String userid, String itineraryid, FlightInfo flightInfo) {
@@ -167,9 +151,9 @@ public class RequiredTests {
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .entity(flightInfo)
                                                 .post(StatusRepresentation.class);
-        assertEquals(FLIGHT_ADDED, statusRep.getStatus());
-        assertHaveLinks(statusRep, BOOK_RELATION, CANCEL_RELATION, GET_HOTELS_RELATION, 
-                                        GET_FLIGHTS_RELATION, STATUS_RELATION);
+        assertEquals(StringUtils.FLIGHT_ADDED, statusRep.getStatus());
+        assertHaveLinks(statusRep, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_HOTELS_RELATION, 
+                                        StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION);
     }
     
     private void assertHaveLinks(Representation rep, String... relations) {
@@ -193,7 +177,7 @@ public class RequiredTests {
         StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
                         
         // add a flight
         assertAddFlight(userid, itineraryid, getAFlight(userid, itineraryid, "07-12-2014", "Copenhagen Lufthavnen", "Bucharest Otopeni"));
@@ -205,13 +189,13 @@ public class RequiredTests {
                 .entity(createValidCreditCard())
                 .post(StatusRepresentation.class);
         
-        assertEquals(ITINERARY_TERMINATED, cancelStatus.getStatus());
+        assertEquals(StringUtils.ITINERARY_TERMINATED, cancelStatus.getStatus());
         
         /*
          * Test links, next possible actions are:
          * -create itinerary
          */
-        Link createLink = cancelStatus.getLinkByRelation(CREATE_ITINERARY);
+        Link createLink = cancelStatus.getLinkByRelation(StringUtils.CREATE_ITINERARY);
         assertNotNull(createLink);
         assertEquals(itineraryUrl(userid, itineraryid), createLink.getUri());
         
@@ -226,7 +210,7 @@ public class RequiredTests {
         StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, statusRep.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, statusRep.getStatus());
         
         //get flights
         FlightsRepresentation flightsRep = client.resource(flightsUrl(userid, itineraryid))
@@ -331,7 +315,7 @@ public class RequiredTests {
                 .type(MediaType.APPLICATION_XML)
                 .post(StatusRepresentation.class, createValidCreditCard());
         
-        assertEquals(cancelResult.getStatus(), ITINERARY_SUCCESSFULLY_CANCELLED);
+        assertEquals(cancelResult.getStatus(), StringUtils.ITINERARY_SUCCESSFULLY_CANCELLED);
     }
     
     private void assertBookingCancelled(String userid, String itineraryid)
@@ -364,7 +348,7 @@ public class RequiredTests {
         StatusRepresentation result = client.resource(itineraryUrl(userid, itineraryid))
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
         
         // add a hotel
         assertAddHotel(userid, itineraryid, getAHotel(userid, itineraryid, "Paris", "07-12-2014", "10-12-2014"));
@@ -385,7 +369,7 @@ public class RequiredTests {
         StatusRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
                 .type(MediaType.APPLICATION_XML)
                 .post(StatusRepresentation.class, createStupidCreditCard());
-        assertEquals(ITINERARY_NOT_FULLY_CANCELLED, cancelResult.getStatus());
+        assertEquals(StringUtils.ITINERARY_NOT_FULLY_CANCELLED, cancelResult.getStatus());
         
         // check status of bookings
         assertSomeBookingsCanceled(userid, itineraryid);

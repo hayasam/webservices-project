@@ -30,10 +30,8 @@ import ws.travel.representation.StatusRepresentation;
 @Path("users/{userid}/itinerary/{itineraryid}/hotels")
 public class HotelInfoResource {
     
-    private static final String ITINERARY_NOT_FOUND = "itinerary not found";
-    private static final String ITINERARY_BOOKED_ALREADY = "itinerary booked already";
-    private static final String ITINERARY_CANCELLED_ALREADY = "itinerary cancelled already"; 
-    private static final String HOTEL_ADDED = "hotel added to itinerary";
+   
+  
     
     /**
      * @GET
@@ -50,17 +48,17 @@ public class HotelInfoResource {
         Itinerary itinerary = ItineraryPool.getItinerary(userid, itineraryid);
         if(itinerary == null) {
             return Response.status(Status.NOT_FOUND)
-                           .entity(ITINERARY_NOT_FOUND)
+                           .entity(StringUtils.ITINERARY_NOT_FOUND)
                            .build();
         }
         if(itinerary.getStatus().equals("CONFIRMED")) {
             return Response.status(Status.NOT_ACCEPTABLE)
-                            .entity(ITINERARY_BOOKED_ALREADY)
+                            .entity(StringUtils.ITINERARY_BOOKED_ALREADY)
                             .build();
         }
         if(itinerary.getStatus().equals("CANCELLED")) {
             return Response.status(Status.NOT_ACCEPTABLE)
-                            .entity(ITINERARY_CANCELLED_ALREADY)
+                            .entity(StringUtils.ITINERARY_CANCELLED_ALREADY)
                             .build();
         }
         List<HotelInfo> hotels = HotelService.getHotels(city, arrival, departure);
@@ -102,7 +100,7 @@ public class HotelInfoResource {
         {
                 return Response.
                     status(Response.Status.NOT_FOUND).
-                    entity(ITINERARY_NOT_FOUND).
+                    entity(StringUtils.ITINERARY_NOT_FOUND).
                     build();
         }
         
@@ -111,7 +109,7 @@ public class HotelInfoResource {
         {
                 return Response.
                     status(Response.Status.NOT_ACCEPTABLE).
-                    entity(ITINERARY_BOOKED_ALREADY).
+                    entity(StringUtils.ITINERARY_BOOKED_ALREADY).
                     build();
         }
         
@@ -119,13 +117,13 @@ public class HotelInfoResource {
         {
                 return Response.
                     status(Response.Status.NOT_ACCEPTABLE).
-                    entity(ITINERARY_CANCELLED_ALREADY).
+                    entity(StringUtils.ITINERARY_CANCELLED_ALREADY).
                     build();
         }
         
         itinerary.addHotelToItinerary(hotel);
         
-        status.setStatus(HOTEL_ADDED);
+        status.setStatus(StringUtils.HOTEL_ADDED);
         ItineraryResource.addCancelLink(userid, itineraryId, status);
         ItineraryResource.addBookLink(userid, itineraryId, status);
         ItineraryResource.addGetItineraryLink(userid, itineraryId, status);
