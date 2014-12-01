@@ -11,7 +11,7 @@ import ws.travel.data.Itinerary;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
  */
 public abstract class Representation {
 

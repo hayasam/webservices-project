@@ -9,7 +9,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author Moni
+ * @author Monica Coman
  */
 @XmlRootElement()
 public class Flight {

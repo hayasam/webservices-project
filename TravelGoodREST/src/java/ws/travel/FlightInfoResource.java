@@ -23,17 +23,15 @@ import ws.travel.services.FlightService;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 @Path("users/{userid}/itinerary/{itineraryid}/flights")
 public class FlightInfoResource {
     
       
     
-    /**
-     * @GET
-     * [Caecilie]
-     * Implement get possible flights with query string.
+     /**
+     * @author: Cæcilie Bach Kjærulf
      */
     @GET
     @Produces(MediaType.APPLICATION_XML) 
@@ -77,10 +75,11 @@ public class FlightInfoResource {
     }
     
     /**
-     * @POST
-     * @Path("add")
-     * [Paulina]
-     * Implement add to itinerary.
+     * @author: Paulina Bien
+     * @param userid
+     * @param itineraryId
+     * @param flight
+     * @return 
      */
     @POST
     @Path("add")

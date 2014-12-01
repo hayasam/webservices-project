@@ -24,7 +24,7 @@ import ws.travel.representation.StatusRepresentation;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 
 @Path("users/{userid}/itinerary/{itineraryid}/hotels")
@@ -34,9 +34,13 @@ public class HotelInfoResource {
   
     
     /**
-     * @GET
-     * [Audrius]
-     * Implement get possible hotels with query string.
+     * @author: Paulina Bien
+     * @param userid
+     * @param itineraryid
+     * @param city
+     * @param arrival
+     * @param departure
+     * @return 
      */
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -78,10 +82,11 @@ public class HotelInfoResource {
     }
     
     /**
-     * 
-     * @Path("add")
-     * [Paulina]
-     * Implement add to itinerary.
+     * @author: Paulina Bien
+     * @param userid
+     * @param itineraryId
+     * @param hotel
+     * @return 
      */
     
     @POST

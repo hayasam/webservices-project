@@ -10,7 +10,7 @@ import ws.travel.rest.data.FlightInfo;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
  */
 @XmlRootElement()
 public class FlightsRepresentation extends Representation {

@@ -20,7 +20,7 @@ import ws.travel.rest.representation.StatusRepresentation;
 
 /**
  *
- * @author Moni
+ * @author Monica Coman
  */
 public class TravelGoodRESTTest {
     
@@ -34,10 +34,10 @@ public class TravelGoodRESTTest {
        
         
     }
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-       
+    
+    /**
+     * @author: Monica Coman
+     */   
     @Test
     public void createItinerary() {        
         String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "123", "111");
@@ -49,7 +49,9 @@ public class TravelGoodRESTTest {
         
         assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
     }
-    
+    /**
+     * @author: Monica Coman
+     */
     @Test
     public void getItinerary () {
         String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "123", "111");
@@ -69,6 +71,9 @@ public class TravelGoodRESTTest {
         assertEquals("UNCONFIRMED", getResult.getItinerary().getStatus());
     }
     
+    /**
+     * @author: Cæcilie Bach Kjærulf
+     */
     @Test
     public void getPossibleHotels() {
         String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "user1", "itinerary1");
@@ -93,6 +98,9 @@ public class TravelGoodRESTTest {
         assertEquals("UNCONFIRMED", hotelInfos.get(1).getStatus());
     }
     
+    /**
+     * @author: Cæcilie Bach Kjærulf
+     */
     @Test
     public void getPossibleFlights() {
         String itineraryURI = String.format("%s/%s/itinerary/%s", baseURI, "user2", "itinerary2");

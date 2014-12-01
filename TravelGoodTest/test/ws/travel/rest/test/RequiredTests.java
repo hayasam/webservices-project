@@ -20,7 +20,7 @@ import ws.travel.rest.representation.*;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class RequiredTests {
     
@@ -33,6 +33,9 @@ public class RequiredTests {
         client = Client.create();
     }
     
+    /**
+     * @author: Oguz Demir
+     */
     @Test
     public void testP1() {
         String userid       = "userP1";
@@ -76,6 +79,15 @@ public class RequiredTests {
         assertGetItinerary(userid, itineraryid, "CONFIRMED", 5);
     }
     
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param city
+     * @param arrival
+     * @param departure
+     * @return 
+     */
     private HotelInfo getAHotel(String userid, String itineraryid, String city, String arrival, String departure) {
         HotelsRepresentation hotelsRep = client.resource(hotelsUrl(userid, itineraryid))
                                                 .queryParam("city", city)
@@ -90,6 +102,15 @@ public class RequiredTests {
         return hotelsRep.getHotelInfo().get(0);
     }
     
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param date
+     * @param startAirport
+     * @param endAirport
+     * @return 
+     */
     private FlightInfo getAFlight(String userid, String itineraryid, String date, String startAirport, String endAirport) {
         // get possible flights
         FlightsRepresentation flightsRep = client.resource(flightsUrl(userid, itineraryid))
@@ -106,13 +127,24 @@ public class RequiredTests {
         return flightsRep.getFlightInfo().get(0);
     }
     
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid 
+     */
     private void assertCreateItinerary(String userid, String itineraryid) {
         StatusRepresentation statusRep = client.resource(itineraryUrl(userid, itineraryid))
                                                 .accept(MediaType.APPLICATION_XML)
                                                 .put(StatusRepresentation.class);
         assertEquals(StringUtils.ITINERARY_CREATED, statusRep.getStatus());
     }
-    
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param expectedStatus
+     * @param expectedCount 
+     */
     private void assertGetItinerary(String userid, String itineraryid, String expectedStatus, int expectedCount) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
                                                     .accept(MediaType.APPLICATION_XML)
@@ -123,7 +155,12 @@ public class RequiredTests {
         assertHaveLinks(itineraryRep, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_FLIGHTS_RELATION, 
                                             StringUtils.GET_HOTELS_RELATION);
     }
-    
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param ccInfo 
+     */
     private void assertBookItinerary(String userid, String itineraryid, CreditCard ccInfo) {
         StatusRepresentation bookingStatus = client.resource(bookItineraryUrl(userid, itineraryid))
                                                    .accept(MediaType.APPLICATION_XML)
@@ -132,7 +169,12 @@ public class RequiredTests {
         assertEquals(StringUtils.ITINERARY_SUCCESSFULLY_BOOKED, bookingStatus.getStatus());
         assertHaveLinks(bookingStatus, StringUtils.STATUS_RELATION, StringUtils.CANCEL_RELATION);
     }
-    
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param hotelInfo 
+     */
     private void assertAddHotel(String userid, String itineraryid, HotelInfo hotelInfo) {
         StatusRepresentation addHotelStatus = client.resource(addHotelUrl(userid, itineraryid))
                                                     .type(MediaType.APPLICATION_XML)
@@ -143,7 +185,12 @@ public class RequiredTests {
         assertHaveLinks(addHotelStatus, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_HOTELS_RELATION, 
                                         StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION);
     } 
-    
+    /**
+     * @author: Oguz  Demir
+     * @param userid
+     * @param itineraryid
+     * @param flightInfo 
+     */
     private void assertAddFlight(String userid, String itineraryid, FlightInfo flightInfo) {
         // add another flight
         StatusRepresentation statusRep = client.resource(addFlightUrl(userid, itineraryid))
@@ -155,7 +202,11 @@ public class RequiredTests {
         assertHaveLinks(statusRep, StringUtils.BOOK_RELATION, StringUtils.CANCEL_RELATION, StringUtils.GET_HOTELS_RELATION, 
                                         StringUtils.GET_FLIGHTS_RELATION, StringUtils.STATUS_RELATION);
     }
-    
+    /**
+     * @author: Oguz  Demir
+     * @param rep
+     * @param relations 
+     */
     private void assertHaveLinks(Representation rep, String... relations) {
         if(relations == null || relations.length == 0) {
             fail("There should be at least one relation to assert!");
@@ -166,7 +217,7 @@ public class RequiredTests {
     }
     
     /*
-     * Monica
+     * @author: Monica Coman
      */
     @Test
     public void testP2 () {
@@ -200,7 +251,9 @@ public class RequiredTests {
         assertEquals(itineraryUrl(userid, itineraryid), createLink.getUri());
         
     }
-
+    /**
+     * @author: Cæcilie Bach Kjærulf
+     */
     @Test
     public void testB() {
         String userid       = "userB";
@@ -260,6 +313,9 @@ public class RequiredTests {
         assertEquals("UNCONFIRMED", status3);
     }
     
+    /**
+     * @author: Paulina Bien
+     */
     @Test
     public void testC1()
     {
@@ -345,7 +401,7 @@ public class RequiredTests {
     }
     
     /*
-     * Monica
+     * @author: Monica Coman
      */
     @Test
     public void testC2() {
@@ -387,7 +443,7 @@ public class RequiredTests {
      * Helper for test C2, checking the status of bookings after failed cancellation
      * @param userid
      * @param itineraryid 
-     *  Monica
+     * @author : Monica Coman
      */
     private void assertSomeBookingsCanceled (String userid, String itineraryid) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
@@ -409,7 +465,7 @@ public class RequiredTests {
      * Helper for test C2, checks all bookings are confirmed after booking itinerary
      * @param userid
      * @param itineraryid 
-     *  Monica
+     * @author: Monica Coman
      */
     private void assertBookingsConfirmed (String userid, String itineraryid) {
         ItineraryRepresentation itineraryRep = client.resource(itineraryUrl(userid, itineraryid))
@@ -424,37 +480,72 @@ public class RequiredTests {
             assertEquals("CONFIRMED", hotelInfo.getStatus());
     }
     
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String itineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String flightsUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/flights", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String hotelsUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/hotels", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String addFlightUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/flights/add", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String addHotelUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/hotels/add", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-    
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String bookItineraryUrl(String userid, String itineraryid) {
         return String.format("%s/users/%s/itinerary/%s/book", 
                              TRAVELGOOD_ENDPOINT, userid, itineraryid);
     }
-
+    /**
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @return 
+     */
     private String cancelItineraryUrl(String userid, String itineraryid) {
 
         return String.format("%s/users/%s/itinerary/%s/cancel", 
@@ -462,6 +553,10 @@ public class RequiredTests {
     }
 
 
+    /**
+     * @author: Monica Coman
+     * @return 
+     */
     private CreditCard createValidCreditCard () {
         CreditCardInfoType ccInfo = TestUtils.validCCInfo();
         
@@ -475,7 +570,7 @@ public class RequiredTests {
     }
     
     /*
-     *
+     * @author : Monica Coman
      */
      public static CreditCard createStupidCreditCard() {
          
@@ -491,6 +586,7 @@ public class RequiredTests {
     }
      
     /*
+     * @author: Monica Coman
      * Fails for expensive flights
      */
      private CreditCard createInvalidCreditCard () {
