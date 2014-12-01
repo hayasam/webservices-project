@@ -32,7 +32,9 @@ public class RequiredTests {
     public void reset() {
         client = Client.create();
     }
-    
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testP1() {
         String userid       = "userP1";
