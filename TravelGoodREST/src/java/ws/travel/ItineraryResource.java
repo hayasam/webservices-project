@@ -112,8 +112,10 @@ public class ItineraryResource {
                try {
                     if (flight.getFlight().getDateDeparture().compare(xgc) == DatatypeConstants.LESSER)
                     {
-                        itinerary.setStatus(ItineraryStatus.INVALID.toString());
-                        return Response.ok(itineraryRep).build();
+                        ItineraryPool.deleteItinerary(userId, itineraryId);
+                        return Response.status(Status.BAD_REQUEST)
+                           .entity(ITINERARY_TERMINATED)
+                           .build();
                     }                    
                 } catch (Error ex) {
                 }
@@ -122,8 +124,10 @@ public class ItineraryResource {
                 try {                  
                     if (hotel.getStartDate().compare(xgc) == DatatypeConstants.LESSER)
                     {
-                        itinerary.setStatus(ItineraryStatus.INVALID.toString());
-                        return Response.ok(itineraryRep).build();
+                        ItineraryPool.deleteItinerary(userId, itineraryId);
+                        return Response.status(Status.BAD_REQUEST)
+                           .entity(ITINERARY_TERMINATED)
+                           .build();
                     }                    
                 } catch (Error ex) { 
                 }
