@@ -8,12 +8,12 @@ The BPEL process starts when a client requests to create an itinerary using \tex
 After itinerary is created, we step into \textit{planning phase} which contains two different scopes namely \textit{booking scope} and \textit{waiting scope}. In the booking scope, client can get possible flights/hotels according to his/her needs and adds them into his/her itinerary. The scope terminates when the user calls \textit{bookItineraryOperation} with a credit card info. 
 After the itinerary is booked, we enter into waiting scope where the process waits until the first date of the booked flight/hotel in the itinerary and terminates the whole process when the time exceeds.
 
-In the whole planning phase, the client can call \textit{getItineraryOperation} in order to see the current status of the itinerary or the client can call \textit{cancelItineraryOperation} that will terminate the whole process if the itinerary is not booked, or it will wait until the first date of the flight/hotel in the itinerary before it terminates the whole process.
+In the whole planning phase, the client can call \textit{getItineraryOperation} in order to see the current status of the itinerary or the client can call \textit{cancelItineraryOperation} that will terminate the whole process if the itinerary is not booked, or it will wait until the first date of the flight/hotel in the itinerary before it terminates the whole process. The overall abstract representation of TravelGood BPEL implementation is shown in figure~\ref{fig:abstract-representation}.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{images/bpel_abstract_impl.jpg}
-\caption{Abstract representation of TravelGood BPEL implementation.}
+\caption{Abstract representation of TravelGood BPEL implementation.} \label{fig:abstract-representation}
 \label{statediagram}
 \end{figure}
 
@@ -28,7 +28,7 @@ At any time in the planning scope the customer can cancel the itinerary and get 
 
 According to the requirements, clients have the possibility to cancel planning phase as well as booking. A \textit{cancelItineraryOperation} expects the itinerary ID and a credit card information as an input and returns true or false, depending on if the cancellation is successful or not. At the beginning  of a scope associated with \textit{CancelItinerary} event, a variable called \textit{cancelItineraryOutput} is defined with a boolean true value assigned to it. This variable is used to determine if the cancellation was successful or not at the end of the scope.
 
-There are two possible actions - client cancels either during planning or booking - so there are two If activities \textit{IfBooked} and \textit{IfNotBooked}. To determine which activity should be used, the process checks value of the variable \textit{booked} (true or false). Variable \textit{booked} is set to false when the process starts and is set to true after booking phase finished successfully. 
+There are two possible actions - client cancels either during planning or booking - so there are two If activities \textit{IfBooked} and \textit{IfNotBooked}. To determine which activity should be used, the process checks value of the variable \textit{booked} (true or false). Variable \textit{booked} is set to false when the process starts and is set to true after booking phase finished successfully. The abstract representation of TravelGood cancel itinerary event handler is shown in figure~\ref{fig:abstract-cancel}.
 
 \underline{\textit{IfBooked activity}}
 
@@ -52,7 +52,7 @@ In case a client cancels a planning phase, a BPEL process replies with boolean t
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{images/bpel_cancel_abstract_impl.jpg}
-\caption{Abstract representation of TravelGood cancel itinerary event handler.}
+\caption{Abstract representation of TravelGood cancel itinerary event handler.} \label{fig:abstract-cancel}
 \label{statediagram}
 \end{figure}
 
