@@ -5,9 +5,11 @@
 package ws.travel.rest.test;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import ws.travel.rest.data.FlightInfo;
@@ -89,8 +91,8 @@ public class TravelGoodRESTTest {
         // get possible hotels
         List<HotelInfo> hotelInfos = client.resource(possibleHotelsURI)
                                       .queryParam("city", "Paris")
-                                      .queryParam("arrival", "07-11-2014")
-                                      .queryParam("departure", "10-11-2014")
+                                      .queryParam("arrival", "07-12-2014")
+                                      .queryParam("departure", "10-12-2014")
                                       .accept(MediaType.APPLICATION_XML)
                                       .get(HotelsRepresentation.class).getHotelInfo();
         assertEquals(2, hotelInfos.size());
@@ -114,7 +116,7 @@ public class TravelGoodRESTTest {
         
         // get possible flights
         List<FlightInfo> flightinfos = client.resource(possibleFlightsURI)
-                                      .queryParam("date", "07-11-2014")
+                                      .queryParam("date", "07-12-2014")
                                       .queryParam("startAirport", "Copenhagen Lufthavnen")
                                       .queryParam("endAirport", "Bucharest Otopeni")
                                       .accept(MediaType.APPLICATION_XML)
@@ -138,7 +140,7 @@ public class TravelGoodRESTTest {
         
         // get possible flights
         List<FlightInfo> flights = client.resource(possibleFlightsURI)
-                                      .queryParam("date", "07-11-2014")
+                                      .queryParam("date", "07-12-2014")
                                       .queryParam("startAirport", "Copenhagen Lufthavnen")
                                       .queryParam("endAirport", "Bucharest Otopeni")
                                       .accept(MediaType.APPLICATION_XML)
@@ -185,11 +187,11 @@ public class TravelGoodRESTTest {
                        .post(StatusRepresentation.class, flights.get(0));
         assertEquals(StringUtils.FLIGHT_ADDED, status.getStatus()); 
         
-        ItineraryRepresentation getResult = client.resource(itineraryURI).
+        int responseCode = client.resource(itineraryURI).
                 accept(MediaType.APPLICATION_XML).
-                type(MediaType.APPLICATION_XML).get(ItineraryRepresentation.class);
+                type(MediaType.APPLICATION_XML).get(ClientResponse.class).getStatus();
         
         // This itinerary is supposed to be invalid, because the flight is in the passed.
-        assertEquals("INVALID", getResult.getItinerary().getStatus());
+        assertEquals(400, responseCode);
     }
 }
