@@ -27,10 +27,7 @@ public class TravelGoodRESTTest {
     Client client;
     String baseURI;
     WebResource itineraries;
-    
-    private static final String FLIGHT_ADDED = "flight added to itinerary";
-    private static final String ITINERARY_CREATED = "itinerary successfully created";
-     
+         
     public TravelGoodRESTTest() {
         client = Client.create();
         baseURI = "http://localhost:8080/TravelGoodREST/webresources/users";
@@ -50,7 +47,7 @@ public class TravelGoodRESTTest {
                 type(MediaType.APPLICATION_XML).
                 put(StatusRepresentation.class);
         
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
     }
     
     @Test
@@ -62,7 +59,7 @@ public class TravelGoodRESTTest {
                 type(MediaType.APPLICATION_XML).
                 put(StatusRepresentation.class);
         
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
                 
         ItineraryRepresentation getResult = client.resource(itineraryURI).
                 accept(MediaType.APPLICATION_XML).
@@ -80,7 +77,7 @@ public class TravelGoodRESTTest {
         StatusRepresentation result = client.resource(itineraryURI)
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
         
         String possibleHotelsURI = String.format("%s/hotels", itineraryURI);
         
@@ -103,7 +100,7 @@ public class TravelGoodRESTTest {
         StatusRepresentation result = client.resource(itineraryURI)
                                 .accept(MediaType.APPLICATION_XML)
                                 .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
         
         String possibleFlightsURI = String.format("%s/flights", itineraryURI);
         
@@ -127,7 +124,7 @@ public class TravelGoodRESTTest {
         StatusRepresentation result = client.resource(itineraryURI)
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
         
         String possibleFlightsURI = String.format("%s/flights", itineraryURI);
         
@@ -146,7 +143,7 @@ public class TravelGoodRESTTest {
                        .type(MediaType.APPLICATION_XML)
                        .post(StatusRepresentation.class, flights.get(0));
         
-        assertEquals(FLIGHT_ADDED, status.getStatus());            
+        assertEquals(StringUtils.FLIGHT_ADDED, status.getStatus());            
     }
      
     @Test
@@ -160,7 +157,7 @@ public class TravelGoodRESTTest {
         StatusRepresentation result = client.resource(itineraryURI)
                               .accept(MediaType.APPLICATION_XML)
                               .put(StatusRepresentation.class);
-        assertEquals(ITINERARY_CREATED, result.getStatus());
+        assertEquals(StringUtils.ITINERARY_CREATED, result.getStatus());
         
         // Add data from pass.
         String possibleFlightsURI = String.format("%s/flights", itineraryURI);
@@ -178,7 +175,7 @@ public class TravelGoodRESTTest {
                        .accept(MediaType.APPLICATION_XML)
                        .type(MediaType.APPLICATION_XML)
                        .post(StatusRepresentation.class, flights.get(0));
-        assertEquals(FLIGHT_ADDED, status.getStatus()); 
+        assertEquals(StringUtils.FLIGHT_ADDED, status.getStatus()); 
         
         ItineraryRepresentation getResult = client.resource(itineraryURI).
                 accept(MediaType.APPLICATION_XML).
