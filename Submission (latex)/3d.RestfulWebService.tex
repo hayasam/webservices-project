@@ -1,6 +1,15 @@
 \subsection{RESTful Web Service}
 
-\begin{table}[h]
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{images/REST}
+\caption{Class diagram of TravelGood REST.}
+\label{classdiagramREST}
+\end{figure}
+
+\begin{table}[H]
+\begin{adjustwidth}{-1cm}{-1cm}
+\centering
 \begin{tabular}{|l|l|l|} \hline
 \textbf{URI Path} & \textbf{Resource Class} & \textbf{HTTP Methods} \\ \hline
 \texttt{/users/{userid}/itinerary/{itineraryid}} & ItineraryResource & PUT, GET \\ \hline
@@ -12,10 +21,13 @@
 \texttt{/users/{userid}/itinerary/{itineraryid}/hotels/add} & HotelInfoResource & POST \\ \hline
 \end{tabular}
 \caption{API reference for TravelGood RESTful service}
-\label{TableAPIref}
+\label{tableAPIref}
+\end{adjustwidth}
 \end{table}
 
-\begin{table} [h]
+\begin{table}[H]
+\begin{adjustwidth}{-1cm}{-1cm}
+\centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|} \hline
 URI Path & \shortstack{create- \\ Itinerary} & \shortstack{getHotels/ \\ getFlights} & addHotel & addFlight & book & cancel & \shortstack{get- \\ Itinerary}\\ \hline
 \texttt{...} (PUT) 			&	&x	&	&	&	&	&x\\ \hline
@@ -29,6 +41,6 @@ URI Path & \shortstack{create- \\ Itinerary} & \shortstack{getHotels/ \\ getFlig
 \end{tabular}\\
 \captionsetup{justification=centering}
 \caption{Links returned to client for TravelGood RESTful service \\ \footnotesize *Only if booking fails, **Only if cancelled in planning phase}
-\label{TableLinks}
+\label{tableLinks}
+\end{adjustwidth}
 \end{table}
-
