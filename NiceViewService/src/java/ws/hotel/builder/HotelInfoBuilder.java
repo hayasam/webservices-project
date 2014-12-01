@@ -11,7 +11,8 @@ import ws.hotel.query.HotelType;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
+ * @author Cæcilie Bach Kjærulf
  */
 public class HotelInfoBuilder {
     

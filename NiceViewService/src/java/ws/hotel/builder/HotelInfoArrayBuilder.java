@@ -10,7 +10,8 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.HotelsInfoArray;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
+ * @author Cæcilie Bach Kjærulf
  */
 public class HotelInfoArrayBuilder {
     

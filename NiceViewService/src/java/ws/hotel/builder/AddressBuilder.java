@@ -8,7 +8,8 @@ import org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.AddressType;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
+ * @author Cæcilie Bach Kjærulf
  */
 public class AddressBuilder {
     
