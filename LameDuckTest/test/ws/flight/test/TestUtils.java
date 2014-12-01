@@ -18,7 +18,7 @@ import ws.flight.*;
 
 /**
  *
- * @author Monica
+ * @author Monica Coman
  */
 public class TestUtils {
     
