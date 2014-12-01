@@ -172,7 +172,11 @@ public class RequiredTests {
         itinerary = getItineraryOperation(itineraryId);
         assertEquals("CANCELLED", itinerary.getFlightInfoArray().getFlightInfo().get(0).getStatus());
         assertEquals("UNCONFIRMED", itinerary.getFlightInfoArray().getFlightInfo().get(1).getStatus());
-        assertEquals("CANCELLED", itinerary.getHotelsInfoArray().getHotelInfo().get(0).getStatus());
+        assertFalse("CONFIRMED".equals(itinerary.getHotelsInfoArray().getHotelInfo().get(0).getStatus()));
+        
+        // since we are using flows in the BPEL implementation, the hotel bookings and flight bookings are running in parallel,
+        // that means we cannot know if the flight booking failed before hotel booking done or not. 
+        // In either case, the hotel booking status shouldn't be confirmed.
     }
     
     @Test
