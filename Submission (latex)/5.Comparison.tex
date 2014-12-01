@@ -1,1 +1,21 @@
 \section{Comparison RESTfull and SOAP/BPEL Web Services}
+
+\subsection*{Ease of implementation}
+
+After implementing the same business logic using SOAP based web services and RESTful web services, we can say that SOAP based web services has a steep learning curve. We had to spend significant amount of time in order to build the process from scratch. Lack of tools for BPEL development is also affected our implementation speed. We have used OpenESB during the implementation and it has a lot of bugs that we had to deal with it. One other point is that debugging a BPEL process is not easy. We have created a simple debugger for simple flight web service in order to track what is going on behind the scenes and which third party web services are called during process runs. But at the end, we managed to fulfill the requirements and able to pass all the required tests.
+
+The compensation handling and fault handling in BPEL engines ease the pain of implementing transactionality and error handling from scratch. Although it was hard to adapt to their usage and include them into our solution.  
+
+In RESTful web service implementation, the main challenge was to handle resource/url mapping in a nice and elegant way. So whenever the user reads the url, it should be clear for him to understand what it does/which resource it maps to. JAX-RS was particularly easy to use and since we are experienced with java programming language, the implementation stage went smooth and we didn not hit a lot of issues. At the end, we can conclude that it was easier to use RESTful web services for this business process than to use SOAP based web-services. 
+
+\subsection*{Ease of understanding the implementation}
+
+BPEL has a big advantage such that you can create a business process by simply dragging/dropping blocks into one another. So you can see how process starts, iterates and terminates by just looking at the BPEL file. The only way to understand the implementation of RESTful services is to read the code behind. That makes it more time-consuming and harder to track the process. 
+
+\subsection*{Ease of changing the business process later}
+
+BPEL also has advantage on this point. Since it is easier to build the process using activities and blocks in the designer editor, it is also easy to change the process later without breaking any other parts of the system. We have actually seen this in action when we needed to modify our BPEL implementation couple of time to adjust to our needs, it worked smoothly. RESTful services are harder to change the process, since more coding and testing needs to be involved in order to adjust to current needs.
+
+\subsection*{Scalability}
+
+BPEL engines are designed to be scalable and run thousands of business processes concurrently. In order to make RESTful web services scalable, there should be design decisions such as if the resources in the web service are read-intensive or write-intensive. Then the underlying database/cache strategy can be chosen in order to reflect the needs. In short, BPEL engines by default are more scalable than RESTful services. 
