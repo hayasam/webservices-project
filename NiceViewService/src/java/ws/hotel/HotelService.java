@@ -35,7 +35,11 @@ public class HotelService {
                             .withHotelInfos(hotelInfos)
                             .create();
     }
-
+    
+    /**
+     *
+     * @author Paulina Bien
+     */
     public boolean bookHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.BookHotelInputType bookHotelInput) throws BookOperationFault, CreditCardFaultMessage {
         HotelInfoType hotelInfo = Hotels.getHotelInfo(bookHotelInput.getBookingNr());
         
@@ -76,6 +80,10 @@ public class HotelService {
         }
     }
 
+    /**
+     *
+     * @author Cæcilie Bach Kjærulf
+     */
     public boolean cancelHotelsOperation(org.netbeans.j2ee.wsdl.niceviewservice.java.hotels.CancelHotelInputType cancelHotelInput) throws CancelHotelFault {
         HotelInfoType hotelInfo = Hotels.getHotelInfo(cancelHotelInput.getBookingNr());
         

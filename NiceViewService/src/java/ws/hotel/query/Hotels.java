@@ -15,7 +15,8 @@ import ws.hotel.builder.HotelInfoBuilder;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
+ * @author Cæcilie Bach Kjærulf
  */
 public class Hotels {
 
