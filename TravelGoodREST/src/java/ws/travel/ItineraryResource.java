@@ -44,7 +44,7 @@ import ws.travel.services.HotelService;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 @Path("users/{userid}/itinerary/{itineraryid}")
 public class ItineraryResource {
@@ -117,7 +117,7 @@ public class ItineraryResource {
        
     /**
      * @POST
-     * [Oguz]
+     * @author: Oguz Demir
      * @Path("book")
      * Implement booking itinerary.
      */
@@ -228,7 +228,7 @@ public class ItineraryResource {
    }
     
     /**
-     * [Monica]
+     * @author: Monica Coman
      * Implement cancel itinerary.
      */
      @Path("cancel")
@@ -319,7 +319,7 @@ public class ItineraryResource {
      }
     /**
      * @PUT
-     * [Caecilie]
+     * @author: : Cæcilie Bach Kjærulf
      * Implement create itinerary.
      */
     @PUT

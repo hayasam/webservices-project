@@ -7,7 +7,7 @@ package ws.hotel.builder;
 import ws.bank.AccountType;
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class AccountBuilder {
     

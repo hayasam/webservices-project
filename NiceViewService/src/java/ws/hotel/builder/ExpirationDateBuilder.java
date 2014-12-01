@@ -8,7 +8,7 @@ import ws.bank.ExpirationDateType;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class ExpirationDateBuilder {
     

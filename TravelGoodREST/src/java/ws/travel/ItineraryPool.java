@@ -10,7 +10,7 @@ import ws.travel.data.Itinerary;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class ItineraryPool {
     

@@ -31,7 +31,7 @@ import ws.travel.data.FlightInfo;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class FlightService {
 

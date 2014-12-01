@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 @XmlRootElement()
 public class FlightInfos {

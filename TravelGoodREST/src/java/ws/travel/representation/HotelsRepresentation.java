@@ -10,7 +10,7 @@ import ws.travel.data.HotelInfo;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
  */
 @XmlRootElement()
 public class HotelsRepresentation extends Representation {
