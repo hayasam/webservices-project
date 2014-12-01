@@ -1,1 +1,26 @@
 \section{Advanced Web Service Technology}
+
+\subsection*{WS-Addressing}
+
+In SOAP based message exchange, messages don’t contain the sender information, ws-addressing protocol is created to overcome this issue. Moreover, you can override the replies and send to another endpoint than the caller, you can create message relationships to group messages together.
+
+For our case, we could have used ws-addressing protocol to group the requests coming from TravelGood to LameDuck/NiceView. By grouping, these two web services could extract the knowledge of which bookings are added/queried for an itinerary, which can then be used to gain knowledge of user interests. Moreover, we can use ws-addressing to see which clients are using TravelGood web services so that we can track the usage and get statistics from there. Another benefit of ws-addressing is the ability to reply to messages/faults to some other endpoints, for instance when a fault occurs during booking. So, when the fault occurs it should be returned back to TravelGood but if the booking succeeds, it should return the response directly to the user-endpoint.
+
+\subsection*{WS-ReliableMessaging}
+
+WS-ReliableMessaging ensures that messages are retransmitted until the receipt is acknowledged. This is an important property for our web service implementations. 
+
+The messaging between TravelGood and NiceView/LameDuck, as well as the messaging between NiceView/LameDuck and FastMoney, should be reliable since we are doing transactions that involve payment and bookings. The client should be ensured that the payment messages and responses are received from both the client and server side, and the end-user shouldn’t end up in the situation of paying double (or more) for his itinerary.
+
+\subsection*{WS-Security}
+
+When SOAP messages are using HTTP, then they can be easily read and changed by a third party. HTTPS itself, is not enough to secure a SOAP message since the receiver still cannot understand if a message is changed or not, even though a third party cannot read the message, he can still change it. 
+
+WS-Security becomes handy for our business process, since we are operating on sensitive data (such as credit card info) and we do not want any third parties to read/change that data. In particular we do not want any third party to read any data that is being transferred between the components in our business process. 
+
+\subsection*{WS-Policy}
+
+WS-Policy define rules that web services can impose for allowing access to their operations. These rules can be related either to the capabilities of the web service, what operations can the web service provide, or to the requirements of the web service, what does the web service need in order to execute those operations.
+Policies can be applied to different levels of the WSDL depending on whether the rules refer only to an input/output/fault message, to an operation, to certain endpoints (port/port type/binding) or to the entire service.
+ 
+A good example of a policy valuable for our business process would be a UsernameToken policy on all TravelGood operations. This type of restriction ensures that only authenticated users can create itineraries and operate on them (add flights/hotels, book/cancel them). In addition, imposing a UsernameToken with a hashed password as input to all operations will allow TravelGood to identify which itineraries belong to a specific user so that users are authorized to make changes only to their own itineraries. \ref{ws-policy}
