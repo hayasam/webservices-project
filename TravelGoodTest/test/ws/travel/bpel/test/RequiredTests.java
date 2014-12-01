@@ -18,7 +18,9 @@ import org.netbeans.xml.schema.itinerarydata.HotelsInfoArray;
 import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
 public class RequiredTests {
- 
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testP1 () throws BookItineraryOperationFault {
         // create an itinerary
@@ -71,7 +73,9 @@ public class RequiredTests {
         for (HotelInfoType hotel : itinerary.getHotelsInfoArray().getHotelInfo())
                 assertEquals("CONFIRMED", hotel.getStatus());
     }
-    
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testP2()
     {
@@ -95,7 +99,9 @@ public class RequiredTests {
     
         assertTrue(res);
     }
-    
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testC1() throws BookItineraryOperationFault
     {
@@ -132,7 +138,9 @@ public class RequiredTests {
             assertEquals("CANCELLED", hotelInfo.getStatus());
         } 
     }
-    
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testB() throws BookItineraryOperationFault {
         // create an itinerary
@@ -178,7 +186,9 @@ public class RequiredTests {
         // that means we cannot know if the flight booking failed before hotel booking done or not. 
         // In either case, the hotel booking status shouldn't be confirmed.
     }
-    
+    /*
+     * Author: Johannes Sanders
+     */
     @Test
     public void testC2() throws BookItineraryOperationFault {
         // create an itinerary

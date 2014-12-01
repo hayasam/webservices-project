@@ -59,7 +59,7 @@ public class ItineraryResource {
 
    
     /**
-     * @author: Johannes 
+     * @author: Johannes Sanders
      * @param userId
      * @param itineraryId
      * @return
