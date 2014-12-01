@@ -349,7 +349,6 @@ public class RequiredTests {
     
     /**
      * @author: Paulina Bien
-     * Helpers for C1 
      */
     private void assertAllBooked(String userid, String itineraryid)
     {
@@ -368,6 +367,9 @@ public class RequiredTests {
         }
     }
     
+    /**
+     * @author: Paulina Bien
+     */
     private void assertItineraryCancelled(String userid, String itineraryid)
     {
         StatusRepresentation cancelResult = client.resource(cancelItineraryUrl(userid, itineraryid))
@@ -377,6 +379,9 @@ public class RequiredTests {
         assertEquals(cancelResult.getStatus(), StringUtils.ITINERARY_SUCCESSFULLY_CANCELLED);
     }
     
+    /**
+     * @author: Paulina Bien
+     */
     private void assertBookingCancelled(String userid, String itineraryid)
     {
         ItineraryRepresentation cancelledItineraryResult = client.resource(itineraryUrl(userid, itineraryid))
