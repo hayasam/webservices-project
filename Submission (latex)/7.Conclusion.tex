@@ -1,1 +1,20 @@
 \section{Conclusion}
+The opportunity to work on the \textit{TravelGood} project provided us with an experience and understanding of the web services implementation processes. To sum up the report, we will discuss issues we encountered during the implementation as well as share some thoughts on what we actually did to deliver a good quality project and what we learnt from implementing all four web services.
+
+While working on the \textit{TravelGood} project we identified some obstacles which extended the time needed to successfully implement the required web services. First of all, the control version system we used (Git) does not deal well with BPEL files hence we usually had to merge changes manually which was definitely time consuming. Because of that, it was hard to divide tasks among all of the group members while working on BPEL since it was better to work on one version at a time to avoid version conflicts. In terms of group work, RESTful implementation process was definitely a lot easier to split up and implement in parallel.
+
+Although BPEL Editor interface in OpenESB is easy to use, it gets much harder and less user-friendly once the process becomes more complex. Arrows which connect elements make the process diagram hard to read. We came up with the conclusion that, in the case of this project, the interface started to get very confusing at some point. Moreover, in the beginning of the project we did not spend enough time on designing the data structures (complex types and elements) required by the SOAP services. Due to that, we had to refactor the WSDL files of all of the web services several times which resulted in an additional work regarding merging of the versions. This sometimes also caused code redundancy. However, we already took this experience as a starting learning point for the REST implementation when we thoroughly discussed the necessary resources before starting the implementation.
+
+We are also aware of what we could have done better since now we already have an experience in working with web services:
+\begin{itemize}
+\item give the designing process a lot of thought, in particular pay attention to identifying needed data structures in order to avoid code redundancy,
+\item simplify the BPEL process by making the best use of elements available in the design interface of the OpenESB environment,
+\item become acquainted with required tests as soon as possible, preferably already at the designing stage,
+\item define all data types in one document from the start (e.g. and .xsd file) so that common complex data types can be easily referenced and reused among web services 
+\end{itemize}
+
+On the other hand, we did our best to produce good quality code. For instance, we used the builder pattern for generating the flight and hotel objects, we created utility classes to accommodate static reusable variables (see \textit{StringUtils} in \textit{TravelGoodREST}), we provided special methods for commonly used operations (see \textit{TestUtils} in \textit{TravelGoodTest} project/bpel package) and, in general, tried to avoid code redundancy. 
+
+In addition, we touched most of the elements and activities available in the BPEL framework in order to provide the whole functionality of our business process (e.g. flow activities, compensation handlers, fault handlers).
+
+Last but not least, we ensured that all our tests are properly written such that assertions are not wrong (e.g. comparing two itinerary objects instead of the expected itinerary status) and the expected result is received. 

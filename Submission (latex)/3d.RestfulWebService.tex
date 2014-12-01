@@ -1,4 +1,11 @@
 \subsection{RESTful Web Service}
+\textit{TravelGood} RESTful service implements three types of resources:
+\begin{itemize}
+\item ItineraryResource
+\item FlightInfoResource
+\item HotelInfoResource
+\end{itemize}
+The reason for dividing resources into three types was that there are two types of resources provided by the external web services (flights and hotels) and one type of resource provided by the \textit{TravelGood} service (itinerary). The API reference for \textit{TravelGood} service is presented in table \ref{tableAPIref}.
 
 \begin{table}[H]
 \begin{adjustwidth}{-1cm}{-1cm}
@@ -13,10 +20,67 @@
 \texttt{/users/{userid}/itinerary/{itineraryid}/hotels} & HotelInfoResource & GET \\ \hline
 \texttt{/users/{userid}/itinerary/{itineraryid}/hotels/add} & HotelInfoResource & POST \\ \hline
 \end{tabular}
-\caption{API reference for TravelGood RESTful service}
+\caption{API reference for \textit{TravelGood} RESTful service}
 \label{tableAPIref}
 \end{adjustwidth}
 \end{table}
+
+\subsubsection*{Create phase}
+In BPEL implementation, itinerary is associated with a process. In RESTful implementation all itineraries are stored in the \textit{ItineraryPool} class. There, a static list represented as a HashMap contains all of the created itineraries. The key for each itinerary in the list is stored as \textit{userid}-\textit{itineraryid} and in this way the uniqueness of an itinerary is ensured.
+
+The process starts with creating an itinerary. A client initiates the process by sending a PUT request with user ID and itinerary ID as parameters. As opposed to BPEL, in RESTful implementation the id of an itinerary is generated on the client’s side. This means that the service does not create and return an itinerary id, instead, it just takes the value which has been sent in a request. We assume that every user has a unique id assigned and uses this id when sending requests to the web service. After the itinerary is created and added to the list of itineraries, a response with the information " itinerary successfully created\" is returned to the client. 
+
+\subsubsection*{Planning phase}
+\textbf{\textit{Exploring available flights and hotels}}\\
+The planning phase starts with getting a list of available flights or hotels. A client sends a GET request to the web service with query parameters specified:
+
+\begin{itemize}
+\item date, startAirport, endAirport for getting list of flights
+\item city, arrivalDate and departureDate for getting list of hotels
+\end{itemize}
+
+If the itinerary for given path parameters (\textit{userid}, \textit{itineraryid}) does not exist then the method returns a response object with status NOT\_FOUND. If the itinerary is already booked or cancelled then the method returns a response object with status NOT\_ACCEPTABLE. Otherwise, a response object with the list of available flights/hotels is returned to the client. That is the way we ensure that the client can see the list of available flights/hotels only if he has a valid itinerary which is not booked or cancelled.
+
+\textbf{\textit{Adding flights and hotels to itinerary}}\\
+In order to add a flight or a hotel to the itinerary, client has to send either a \textit{flightInfo} object or a \textit{hotelInfo} object in the body of a POST request (see table \ref{tableAPIref}). 
+
+Same as for getting the list of flights/hotels, if the itinerary for the given path parameters does not exist then the method returns a response object with status NOT\_FOUND. If the itinerary is already booked or cancelled then the method returns a response object with status NOT\_ACCEPTABLE. Otherwise, a response object with the information that the flight/hotel has been successfully added to the itinerary is returned to the client.
+
+\subsubsection*{Booking phase}
+Another operation in the Itinerary Resource class is the \textit{bookItinerary()}. A client sends a POST request with user ID, itinerary ID as path parameters and credit card information as request entity. An itinerary can only get booked if the status of the itinerary is unconfirmed. Hence, when receiving the POST request from a client, the booking operation starts by checking if the itinerary does not exist or status of the itinerary is already booked (CONFIRMED) or is already cancelled (CANCELLED). If that is the case, then a response with the information "itinerary not found", "itinerary booked already" or "itinerary cancelled already" is returned to the client. If the status is unconfirmed (UNCONFIRMED), it goes through every flight and hotel added to the itinerary and books them. If for some reason a booking fails, it catches a fault and starts cancelling everything that has been booked so far. The response with the information "Not all bookings were booked" is returned to the client. If all bookings succeed, it sets the status of the itinerary to CONFIRMED and a response with the information "itinerary successfully booked" is returned to the client. 
+
+\subsubsection*{Cancellation phase}
+In order to cancel an itinerary, the user sends a POST request to the \textit{TravelGood} REST service with the user ID, itinerary ID and credit card information as parameters. Both the user and the itinerary ID’s are sent as parameters in the path of the request whereas the credit card information is sent as an object in the body of the request. 
+
+After a POST request has been received, the \textit{getItinerary}() operation will look for the itinerary resource in the \textit{ItineraryPool}. If the requested resource is not found then a response with status NOT\_FOUND is returned to the user, otherwise the service will continue with the cancel operation based on the status of the itinerary:
+\begin{itemize}
+\item If itinerary is CONFIRMED
+\begin{itemize}
+\item The service will iterate through all the flights and hotels of the booking and try to cancel them by calling the external \textit{LameDuck}/\textit{NiceView} services.
+\item If any faults happen during the cancellation of one booking (either flight or hotel) the operation still continues and in the end the user will get a response with status "Not all bookings were cancelled" and a link for accessing the itinerary and check exactly the status of each booking
+\item If cancellation was completed successfully, the user will get back a response with status "itinerary successfully cancelled" and a link for accessing the itinerary and check exactly the status of each booking
+\end{itemize}
+
+\item If itinerary is CANCELLED
+
+\begin{itemize}
+\item The user will receive a response with the message "itinerary cancelled already"
+\end{itemize}
+
+\item If itinerary is UNCONFIRMED
+
+\begin{itemize}
+\item The itinerary will be deleted from the \textit{ItineraryPool} and the user will get a response with the status "itinerary terminated" and a link to create a new itinerary
+\end{itemize}
+
+\end{itemize}
+
+\subsubsection*{Get Status of Itinerary}
+During every state of an itinerary (UNCONFIRMED, CONFIRMED, CANCELLED), the operation \textit{getItinerary}() can be called. This operation is possible by making a GET request on the \textit{ItineraryResource} with a user ID (\textit{userid}) and itinerary ID (\textit{itineraryid}) as parameters. If no itinerary is found in the \textit{ItineraryPool} a response with the status NOT\_FOUND is sent. 
+If an itinerary is found it will check that all the flights/hotels are still valid (their start date has not passed). If either a fight or a hotel has a date in the past a response with status BAD\_REQUEST and message "itinerary terminated" otherwise the itinerary resource will be sent to the client along with all its data and relevant links.
+
+\subsubsection*{Next steps added as links}
+During the entire business process the customer is able to see what operations/calls can be done next. A set of links with the possible next steps (URI) is returned to the client. What links are returned is shown in table \ref{tableLinks}. 
 
 \begin{table}[H]
 \begin{adjustwidth}{-1cm}{-1cm}
@@ -33,7 +97,15 @@ URI Path & \shortstack{create- \\ Itinerary} & \shortstack{getHotels/ \\ getFlig
 \texttt{.../hotels/add} 	&	&x	&	&	&x	&x	&x\\ \hline
 \end{tabular}\\
 \captionsetup{justification=centering}
-\caption{Links returned to client for TravelGood RESTful service \\ \footnotesize *Only if booking fails, **Only if cancelled in planning phase}
+\caption{Links returned to client for \textit{TravelGood} RESTful service \\ \footnotesize *Only if booking fails, **Only if cancelled in planning phase}
 \label{tableLinks}
 \end{adjustwidth}
 \end{table}
+
+The different URI paths shown in the first column are all preceded by\\ \texttt{/users/{userid}/itinerary/{itineraryid}} and all possible operations(steps) from the business process are shown in the first row. 
+The x’s indicates whether the step is added as a link after the URI has been called. 
+
+For example, the next possible steps after calling\\ \texttt{/users/{userid}/itinerary/{itineraryid}/flights} are: getting list of hotels or flights, add flight to itinerary, book itinerary, cancel itinerary and get itinerary. Also, after booking, the customer can cancel the itinerary, get the itinerary and if the booking fails, get list of hotels and flights.
+
+In the whole REST implementation, we decided to use xml to present our resources to external clients. Our motivation was to keep the clients informed about the types of the return values. This might introduce longer messages than JSON representation but at least more clear and concise representation of the entities they represent. We also thought that if the clients start using browser based applications, we would think about migrating to JSON based representation since Javascript has built-in support for JSON objects.
+

@@ -1,27 +1,27 @@
 \subsection{Lame Duck and Nice View Web Services}
-As described in the problem description for this project we created web services for both NiceView and LameDuck. We implemented both web services as simple web services without databases. Objects containing information about available flights/hotels are stored in static arrays. In addition, we assume that all of the resources are unlimited which means that is it always possible to book every item which is listed in a list of available flights/hotels returned to the client. However, booking numbers are locally unique. That means when creating a bookable flight info, the booking number of the flight will be unique across the flight web service and this will remove the risk of booking number collisions which can cause bigger problems. The same steps regarding booking number are performed when creating a bookable hotel info. Booking numbers are represented as integer values. The next booking number is calculated using increase-and-set method. There could have been a better approach such as using GUID as a booking number, however using integers simplifies the process.
+As described in the problem description for this project we created web services for both \textit{NiceView} and \textit{LameDuck}. We implemented both web services as simple web services without databases. Objects containing information about available flights/hotels are stored in static arrays. In addition, we assume that all of the resources are unlimited which means that is it always possible to book every item which is listed in a list of available flights/hotels returned to the client. However, booking numbers are locally unique. That means when creating a bookable flight info, the booking number of the flight will be unique across the flight web service and this will remove the risk of booking number collisions which can cause bigger problems. The same steps regarding booking number are performed when creating a bookable hotel info. Booking numbers are represented as integer values. The next booking number is calculated using increase-and-set method. There could have been a better approach such as using GUID as a booking number, however using integers simplifies the process.
 
 The main structure of both services is the same. There are three packages:
 
 \begin{itemize}
-\item ws.flight/ws.hotel - packages which contain classes with implementation of web services’ functionality (see below) as well as classes with the bank service operations
-\item ws.flight.builder/ws.hotel.builder - in order to simplify the process of creating objects a builder pattern has been implemented
-\item ws.flight.query/ws.hotel.query -  packages which contain query engine that returns available hotel/flight information based on the query values.
+\item ws.flight/ws.hotel -- packages which contain classes with implementation of web services’ functionality (see below) as well as classes with the bank service operations,
+\item ws.flight.builder/ws.hotel.builder -- in order to simplify the process of creating objects a builder pattern has been implemented,
+\item ws.flight.query/ws.hotel.query --  packages which contain query engine that returns available hotel/flight information based on the query values.
 \end{itemize}
 In addition, there is a debugging package for the flight service called ws.flight.debugger which contains a class used to print out operations together with parameters on the server side in order to get a better understanding of what is being called. It was particularly useful during implementation and verification of BPEL part of the project.
 
-Moreover, a reference to the service FastMoney has been added to both LameDuck and NiceView to set up the following interactions with the bank: 
+Moreover, a reference to the service \textit{FastMoney} has been added to both \textit{LameDuck} and \textit{NiceView} to set up the following interactions with the bank: 
 \begin{itemize}
-\item charge credit card
-\item validate credit card
-\item refund money if booking is cancelled
+\item charge credit card,
+\item validate credit card,
+\item refund money if booking is cancelled.
 \end{itemize}
 
-The functionality offered by both LameDuck and NiceView, as specified in the problem description, is:
+The functionality offered by both \textit{LameDuck} and \textit{NiceView}, as specified in the problem description, is:
 \begin{itemize}
-\item getting list of available flights/hotels according to the query parameters (returning array of flights/hotels) 
-\item booking flight/hotel
-\item cancelling booking of flight/hotel
+\item getting list of available flights/hotels according to the query parameters (returning array of flights/hotels),
+\item booking flight/hotel,
+\item cancelling booking of flight/hotel.
 \end{itemize}
 
 The Web services have been generated from WSDL files and the used binding style is document/literal. The reason for using this structure is to keep the service simple and describing exactly what is communicated in the XML according to the predefined schema.
