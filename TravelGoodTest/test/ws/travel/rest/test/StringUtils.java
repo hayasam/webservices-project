@@ -6,7 +6,7 @@ package ws.travel.rest.test;
 
 /**
  *
- * @author Moni
+ * @author Monica Coman
  */
 public class StringUtils {
     

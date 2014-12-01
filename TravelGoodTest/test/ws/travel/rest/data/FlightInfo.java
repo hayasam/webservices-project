@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Moni
+ * @author Monica Coman
  */
 @XmlRootElement()
 public class FlightInfo {

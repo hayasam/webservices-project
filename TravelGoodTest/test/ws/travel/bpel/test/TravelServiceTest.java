@@ -21,7 +21,7 @@ import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 public class TravelServiceTest {
     

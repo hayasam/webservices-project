@@ -9,7 +9,7 @@ import ws.travel.rest.data.Itinerary;
 
 /**
  *
- * @author Paulina
+ * @author Paulina Bien
  */
 
 @XmlRootElement()

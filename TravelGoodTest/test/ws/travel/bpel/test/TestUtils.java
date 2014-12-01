@@ -36,7 +36,7 @@ import org.netbeans.xml.schema.itinerarydata.ItineraryInfoType;
 
 /**
  *
- * @author Monica
+ * @author Monica Coman
  */
 public class TestUtils {
     

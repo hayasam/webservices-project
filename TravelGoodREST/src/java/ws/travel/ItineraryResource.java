@@ -44,7 +44,7 @@ import ws.travel.services.HotelService;
 
 /**
  *
- * @author VAIO
+ * @author Oguz Demir
  */
 @Path("users/{userid}/itinerary/{itineraryid}")
 public class ItineraryResource {
@@ -59,14 +59,11 @@ public class ItineraryResource {
 
    
     /**
-     * Implement get current itinerary.
-     * 
-     * [Johannes]
-     * Still to be done:
-     * - if the itinerary is booked or unconfirmed, look for the first start 
-     *   date of either a flight or a hotel and check if it is in the past 
-     *    (smaller than the current date)
-     * - if YES, remove the itinerary and send a message back to the user.
+     * @author: Johannes 
+     * @param userId
+     * @param itineraryId
+     * @return
+     * @throws DatatypeConfigurationException 
      */
      @GET
      @Produces(MediaType.APPLICATION_XML)
@@ -123,10 +120,11 @@ public class ItineraryResource {
      }
        
     /**
-     * @POST
-     * [Oguz]
-     * @Path("book")
-     * Implement booking itinerary.
+     * @author: Oguz Demir
+     * @param userid
+     * @param itineraryid
+     * @param ccInfo
+     * @return 
      */
      @POST
      @Path("book")
@@ -235,8 +233,11 @@ public class ItineraryResource {
    }
     
     /**
-     * [Monica]
-     * Implement cancel itinerary.
+     * @author: Monica Coman
+     * @param userId
+     * @param itineraryId
+     * @param creditCard
+     * @return 
      */
      @Path("cancel")
      @POST
@@ -323,11 +324,13 @@ public class ItineraryResource {
             
             return Response.ok(status).build();
         }
-     }
+     } 
+     
     /**
-     * @PUT
-     * [Caecilie]
-     * Implement create itinerary.
+     * @author: Cæcilie Bach Kjærulf
+     * @param userid
+     * @param itineraryid
+     * @return 
      */
     @PUT
     @Produces(MediaType.APPLICATION_XML)
