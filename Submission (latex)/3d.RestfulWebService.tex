@@ -12,13 +12,13 @@ The reason for dividing resources into three types was that there are two types 
 \centering
 \begin{tabular}{|l|l|l|} \hline
 \textbf{URI Path} & \textbf{Resource Class} & \textbf{HTTP Methods} \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}} & ItineraryResource & PUT, GET \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/book} & ItineraryResource & POST \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/cancel} & ItineraryResource & POST \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/flights} & FlightInfoResource & GET \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/flights/add} & FlightInfoResource & POST \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/hotels} & HotelInfoResource & GET \\ \hline
-\texttt{/users/{userid}/itinerary/{itineraryid}/hotels/add} & HotelInfoResource & POST \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}} & ItineraryResource & PUT, GET \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/book} & ItineraryResource & POST \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/cancel} & ItineraryResource & POST \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/flights} & FlightInfoResource & GET \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/flights/add} & FlightInfoResource & POST \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/hotels} & HotelInfoResource & GET \\ \hline
+\texttt{/users/\{userid\}/itinerary/\{itineraryid\}/hotels/add} & HotelInfoResource & POST \\ \hline
 \end{tabular}
 \caption{API reference for \textit{TravelGood} RESTful service}
 \label{tableAPIref}
@@ -102,10 +102,10 @@ URI Path & \shortstack{create- \\ Itinerary} & \shortstack{getHotels/ \\ getFlig
 \end{adjustwidth}
 \end{table}
 
-The different URI paths shown in the first column are all preceded by\\ \texttt{/users/{userid}/itinerary/{itineraryid}} and all possible operations(steps) from the business process are shown in the first row. 
+The different URI paths shown in the first column are all preceded by\\ \texttt{/users/\{userid\}/itinerary/\{itineraryid\}} and all possible operations(steps) from the business process are shown in the first row. 
 The x’s indicates whether the step is added as a link after the URI has been called. 
 
-For example, the next possible steps after calling\\ \texttt{/users/{userid}/itinerary/{itineraryid}/flights} are: getting list of hotels or flights, add flight to itinerary, book itinerary, cancel itinerary and get itinerary. Also, after booking, the customer can cancel the itinerary, get the itinerary and if the booking fails, get list of hotels and flights.
+For example, the next possible steps after calling\\ \texttt{/users/\{userid\}/itinerary/\{itineraryid\}/flights} are: getting list of hotels or flights, add flight to itinerary, book itinerary, cancel itinerary and get itinerary. Also, after booking, the customer can cancel the itinerary, get the itinerary and if the booking fails, get list of hotels and flights.
 
 In the whole REST implementation, we decided to use xml to present our resources to external clients. Our motivation was to keep the clients informed about the types of the return values. This might introduce longer messages than JSON representation but at least more clear and concise representation of the entities they represent. We also thought that if the clients start using browser based applications, we would think about migrating to JSON based representation since Javascript has built-in support for JSON objects.
 
